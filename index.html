@@ -101,10 +101,12 @@
         <div class="header-actions" id="headerActions"></div>
     </header>
 
-    <div class="tabs">
-        <button class="tab active" onclick="mudarAba('pedido')">PEDIR SERVIÇO</button>
-        <button class="tab" onclick="mudarAba('painel')">PAINEL DO PROFISSIONAL</button>
-        <button class="tab" onclick="mudarAba('creditos')">CRÉDITOS</button>
+    <div class="tabs" style="overflow-x: auto; display: flex; flex-wrap: nowrap; border-bottom: 2px solid var(--laranja);">
+        <button class="tab active" onclick="mudarAba('pedido', this)" style="white-space:nowrap;">PEDIR SERVIÇO</button>
+        <button class="tab" onclick="mudarAba('buscar', this)" style="white-space:nowrap;">BUSCAR PROF.</button>
+        <button class="tab" onclick="mudarAba('painel', this)" style="white-space:nowrap;">MEU PAINEL</button>
+        <button class="tab" onclick="mudarAba('creditos', this)" style="white-space:nowrap;">CRÉDITOS</button>
+        <button class="tab" onclick="mudarAba('avaliacoes', this)" style="white-space:nowrap;">⭐ AVALIAÇÕES</button>
     </div>
 
     <div class="container">
@@ -158,7 +160,61 @@
             </div>
         </div>
 
-        <!-- ABA 2: PAINEL DO PROFISSIONAL -->
+        <!-- ABA 2: BUSCAR PROFISSIONAL -->
+        <div id="buscar" class="tab-content">
+            <div style="margin-top: 20px;">
+                <div class="form-group">
+                    <label>BUSCAR PROFISSIONAL</label>
+                    <input type="text" id="buscaInput" placeholder="Ex: Pedreiro, Elétrica, Engenheiro..." oninput="buscarProfissionais()">
+                </div>
+                <div class="form-group">
+                    <label>FILTRAR POR CATEGORIA</label>
+                    <select id="filtroCategoriaSelect" onchange="buscarProfissionais()">
+                        <option value="">Todas as categorias</option>
+                    </select>
+                </div>
+                <div id="resultadosBusca"><p style="text-align:center; color: var(--linha); margin-top: 20px;">Digite para buscar profissionais</p></div>
+            </div>
+        </div>
+
+        <!-- ABA 5: AVALIAÇÕES -->
+        <div id="avaliacoes" class="tab-content">
+            <div style="margin-top: 20px;">
+                <h3 style="font-family: Oswald; margin-bottom: 16px;">AVALIAR PROFISSIONAL</h3>
+                <div class="form-group">
+                    <label>BUSCAR PROFISSIONAL</label>
+                    <input type="text" id="buscaAvaliacaoInput" placeholder="Digite o nome do profissional..." oninput="buscarProfParaAvaliar()">
+                </div>
+                <div id="resultadosBuscaAvaliacao"></div>
+                <div id="formAvaliacao" style="display:none; background:white; padding:16px; border-radius:8px; margin-top:16px; border-left:4px solid var(--laranja);">
+                    <h4 id="nomeAvaliadoTitulo" style="margin-bottom:12px; font-family:Oswald;"></h4>
+                    <div class="form-group">
+                        <label>SEU NOME</label>
+                        <input type="text" id="nomeClienteAvaliacao" placeholder="Seu nome">
+                    </div>
+                    <div class="form-group">
+                        <label>NOTA</label>
+                        <div id="estrelasSeletor" style="display:flex; gap:8px; font-size:28px; cursor:pointer; margin-bottom:8px;">
+                            <span onclick="selecionarEstrelas(1)">☆</span>
+                            <span onclick="selecionarEstrelas(2)">☆</span>
+                            <span onclick="selecionarEstrelas(3)">☆</span>
+                            <span onclick="selecionarEstrelas(4)">☆</span>
+                            <span onclick="selecionarEstrelas(5)">☆</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>COMENTÁRIO</label>
+                        <textarea id="comentarioAvaliacao" placeholder="Como foi o serviço?"></textarea>
+                    </div>
+                    <button class="btn-primary" onclick="enviarAvaliacao()">ENVIAR AVALIAÇÃO</button>
+                    <button class="btn-secondary" style="width:100%; margin-top:8px;" onclick="cancelarAvaliacao()">CANCELAR</button>
+                </div>
+                <h3 style="font-family: Oswald; margin-top: 24px; margin-bottom: 16px;">AVALIAÇÕES RECENTES</h3>
+                <div id="listaAvaliacoes"><p style="text-align:center; color:var(--linha);">Carregando avaliações...</p></div>
+            </div>
+        </div>
+
+        <!-- ABA 3: PAINEL DO PROFISSIONAL -->
         <div id="painel" class="tab-content">
             <div id="loginArea" style="margin-top: 20px;">
                 <div class="form-group">
@@ -400,11 +456,182 @@
             } catch(err) { console.error('Erro:', err); }
         }
 
-        function mudarAba(aba) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+        function mudarAba(aba, el) {
+            document.querySelectorAll('.tab-content').forEach(e => e.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(e => e.classList.remove('active'));
             document.getElementById(aba).classList.add('active');
-            event.target.classList.add('active');
+            if(el) el.classList.add('active');
+            else if(event && event.target) event.target.classList.add('active');
+            if(aba === 'buscar') preencherFiltroCategoria();
+            if(aba === 'avaliacoes') carregarAvaliacoes();
+        }
+
+        function preencherFiltroCategoria() {
+            const sel = document.getElementById('filtroCategoriaSelect');
+            if(sel.options.length > 1) return;
+            Object.entries(CATEGORIAS).forEach(([key, cat]) => {
+                const opt = document.createElement('option');
+                opt.value = key;
+                opt.textContent = cat.nome;
+                sel.appendChild(opt);
+            });
+        }
+
+        async function buscarProfissionais() {
+            const termo = document.getElementById('buscaInput').value.trim().toLowerCase();
+            const categoria = document.getElementById('filtroCategoriaSelect').value;
+            const container = document.getElementById('resultadosBusca');
+            if(!termo && !categoria) { container.innerHTML = '<p style="text-align:center; color: var(--linha); margin-top: 20px;">Digite para buscar profissionais</p>'; return; }
+            container.innerHTML = '<p style="text-align:center; color: var(--linha);">Buscando...</p>';
+            try {
+                let query = supabaseClient.from('profissionais').select('id, nome, telefone, categoria, especialidades, saldo_creditos');
+                if(categoria) query = query.eq('categoria', categoria);
+                const { data, error } = await query;
+                if(error) { container.innerHTML = '<p style="text-align:center; color:red;">Erro na busca</p>'; return; }
+                let resultados = data || [];
+                if(termo) resultados = resultados.filter(p => (p.nome && p.nome.toLowerCase().includes(termo)) || (p.especialidades && p.especialidades.toLowerCase().includes(termo)) || (p.categoria && p.categoria.toLowerCase().includes(termo)));
+                if(resultados.length === 0) { container.innerHTML = '<p style="text-align:center; color: var(--linha); margin-top: 20px;">Nenhum profissional encontrado</p>'; return; }
+                container.innerHTML = '';
+                resultados.forEach(prof => {
+                    const catNome = CATEGORIAS[prof.categoria] ? CATEGORIAS[prof.categoria].nome : prof.categoria || '-';
+                    const card = document.createElement('div');
+                    card.className = 'chamado-card';
+                    card.innerHTML = `<h4>${prof.nome || 'Profissional'}</h4><div class="chamado-info">🏷️ ${catNome}</div><div class="chamado-info">🔧 ${prof.especialidades || '-'}</div>${usuarioAtual ? `<div class="chamado-info">📱 ${prof.telefone || 'Não informado'}</div>` : `<div class="contato-bloqueado">Faça login para ver o contato</div>`}`;
+                    container.appendChild(card);
+                });
+            } catch(err) { container.innerHTML = '<p style="text-align:center; color:red;">Erro na busca</p>'; }
+        }
+
+        let estrelasAvaliacao = 0;
+        let profissionalAvaliando = null;
+
+        function selecionarEstrelas(n) {
+            estrelasAvaliacao = n;
+            document.querySelectorAll('#estrelasSeletor span').forEach((s, i) => { s.textContent = i < n ? '⭐' : '☆'; });
+        }
+
+        async function buscarProfParaAvaliar() {
+            const termo = document.getElementById('buscaAvaliacaoInput').value.trim().toLowerCase();
+            const container = document.getElementById('resultadosBuscaAvaliacao');
+            if(!termo) { container.innerHTML = ''; return; }
+            const { data } = await supabaseClient.from('profissionais').select('id, nome, categoria, especialidades');
+            const resultados = (data || []).filter(p => (p.nome && p.nome.toLowerCase().includes(termo)) || (p.especialidades && p.especialidades.toLowerCase().includes(termo)));
+            container.innerHTML = '';
+            resultados.slice(0, 5).forEach(prof => {
+                const catNome = CATEGORIAS[prof.categoria] ? CATEGORIAS[prof.categoria].nome : prof.categoria || '';
+                const div = document.createElement('div');
+                div.style.cssText = 'background:white; padding:12px; border-radius:8px; margin-bottom:8px; cursor:pointer; border:2px solid transparent;';
+                div.innerHTML = `<strong>${prof.nome}</strong><br><small style="color:#888;">${catNome}</small>`;
+                div.onmouseover = () => div.style.borderColor = 'var(--laranja)';
+                div.onmouseout = () => div.style.borderColor = 'transparent';
+                div.onclick = () => abrirFormAvaliacao(prof);
+                container.appendChild(div);
+            });
+        }
+
+        function abrirFormAvaliacao(prof) {
+            profissionalAvaliando = prof;
+            document.getElementById('nomeAvaliadoTitulo').textContent = '⭐ Avaliar: ' + prof.nome;
+            document.getElementById('formAvaliacao').style.display = 'block';
+            document.getElementById('resultadosBuscaAvaliacao').innerHTML = '';
+            document.getElementById('buscaAvaliacaoInput').value = '';
+            estrelasAvaliacao = 0;
+            selecionarEstrelas(0);
+        }
+
+        function cancelarAvaliacao() {
+            profissionalAvaliando = null;
+            document.getElementById('formAvaliacao').style.display = 'none';
+            document.getElementById('nomeClienteAvaliacao').value = '';
+            document.getElementById('comentarioAvaliacao').value = '';
+            estrelasAvaliacao = 0;
+        }
+
+        async function enviarAvaliacao() {
+            const nome = document.getElementById('nomeClienteAvaliacao').value.trim();
+            const comentario = document.getElementById('comentarioAvaliacao').value.trim();
+            if(!nome) { alert('Digite seu nome'); return; }
+            if(!estrelasAvaliacao) { alert('Selecione uma nota'); return; }
+            if(!profissionalAvaliando) return;
+            const { error } = await supabaseClient.from('avaliacoes').insert({ profissional_id: profissionalAvaliando.id, nome_cliente: nome, estrelas: estrelasAvaliacao, comentarios: comentario });
+            if(error) { alert('Erro: ' + error.message); return; }
+            alert('✅ Avaliação enviada! Obrigado.');
+            cancelarAvaliacao();
+            carregarAvaliacoes();
+        }
+
+        async function carregarAvaliacoes() {
+            const container = document.getElementById('listaAvaliacoes');
+            if(!container) return;
+            try {
+                const { data } = await supabaseClient.from('avaliacoes').select('*').order('created_at', { ascending: false }).limit(20);
+                if(!data || data.length === 0) { container.innerHTML = '<p style="text-align:center; color:var(--linha);">Nenhuma avaliação ainda</p>'; return; }
+                container.innerHTML = '';
+                for(const av of data) {
+                    let nomeProf = 'Profissional';
+                    const { data: profData } = await supabaseClient.from('profissionais').select('nome').eq('id', av.profissional_id).single();
+                    if(profData) nomeProf = profData.nome;
+                    const estrelas = '⭐'.repeat(av.estrelas) + '☆'.repeat(5 - av.estrelas);
+                    const card = document.createElement('div');
+                    card.className = 'chamado-card';
+                    card.innerHTML = `<h4>${nomeProf}</h4><div style="font-size:18px; margin:4px 0;">${estrelas}</div><div class="chamado-info">👤 ${av.nome_cliente}</div>${av.comentarios ? `<div class="chamado-info" style="font-style:italic;">"${av.comentarios}"</div>` : ''}<div class="chamado-info" style="font-size:11px;">${new Date(av.created_at).toLocaleDateString('pt-BR')}</div>`;
+                    container.appendChild(card);
+                }
+            } catch(err) { container.innerHTML = '<p style="text-align:center; color:red;">Erro ao carregar</p>'; }
+        }
+
+        async function abrirModalAdmin() {
+            const { data: profissionais } = await supabaseClient.from('profissionais').select('*').order('criado_em', { ascending: false });
+            const { data: chamados } = await supabaseClient.from('chamados').select('*').eq('status', 'novo');
+            const totalProf = profissionais ? profissionais.length : 0;
+            const totalChamados = chamados ? chamados.length : 0;
+            let html = `<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px;"><div style="background:#1F2328; color:white; padding:16px; border-radius:8px; text-align:center;"><div style="font-size:32px; font-weight:700; color:#DC2626;">${totalProf}</div><div style="font-size:11px; letter-spacing:1px;">PROFISSIONAIS</div></div><div style="background:#1F2328; color:white; padding:16px; border-radius:8px; text-align:center;"><div style="font-size:32px; font-weight:700; color:#DC2626;">${totalChamados}</div><div style="font-size:11px; letter-spacing:1px;">CHAMADOS ABERTOS</div></div></div><div style="display:flex; gap:8px; margin-bottom:16px; border-bottom:2px solid #eee;"><button onclick="mostrarAbaAdmin('profissionais')" id="btnAdmProf" style="flex:1; padding:10px; background:none; border:none; font-weight:700; color:#DC2626; border-bottom:3px solid #DC2626; cursor:pointer;">PROFISSIONAIS</button><button onclick="mostrarAbaAdmin('chamados')" id="btnAdmCham" style="flex:1; padding:10px; background:none; border:none; font-weight:600; cursor:pointer;">CHAMADOS</button></div><div id="admProfissionais">`;
+            if(profissionais) profissionais.forEach(prof => {
+                const catNome = CATEGORIAS[prof.categoria] ? CATEGORIAS[prof.categoria].nome : prof.categoria || '-';
+                html += `<div style="background:#f8f8f8; padding:16px; border-radius:8px; margin-bottom:12px; border-left:3px solid #DC2626;"><strong style="font-size:14px;">${prof.nome || 'Sem nome'}</strong><br><span style="font-size:12px; color:#666;">📱 ${prof.telefone || 'Não informado'}</span><br><span style="font-size:12px; color:#666;">🏷️ ${catNome}</span><br><span style="font-size:12px; color:#666;">🔧 ${prof.especialidades || '-'}</span><br><span style="font-size:12px; color:#666;">💰 ${prof.saldo_creditos || 0} créditos</span><div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;"><input type="number" id="credInput_${prof.id}" placeholder="Qtd" style="width:70px; padding:8px; border:1px solid #ccc; border-radius:4px; font-size:12px;"><button onclick="adicionarCreditos('${prof.id}', '${prof.nome}')" style="flex:1; background:#2E7D5B; color:white; border:none; padding:8px; border-radius:4px; font-weight:600; cursor:pointer; font-size:12px;">+ CRÉDITOS</button><button onclick="tornarAdmin('${prof.id}', '${prof.nome}')" style="flex:1; background:#1F2328; color:white; border:none; padding:8px; border-radius:4px; font-weight:600; cursor:pointer; font-size:12px;">⭐ ADMIN</button><button onclick="excluirProfissional('${prof.id}', '${prof.nome}')" style="background:#e74c3c; color:white; border:none; padding:8px 12px; border-radius:4px; font-weight:600; cursor:pointer; font-size:12px;">🗑️</button></div></div>`;
+            });
+            html += `</div><div id="admChamados" style="display:none;">`;
+            if(chamados) chamados.forEach(c => { html += `<div style="background:#f8f8f8; padding:16px; border-radius:8px; margin-bottom:12px; border-left:3px solid #DC2626;"><strong>${c.nome_cliente}</strong><br><span style="font-size:12px; color:#666;">📱 ${c.telefone_cliente}</span><br><span style="font-size:12px; color:#666;">🔧 ${c.servico}</span><br><span style="font-size:12px; color:#666;">📍 ${c.bairro}</span><br><span style="font-size:12px; color:#666;">📝 ${c.descricao}</span></div>`; });
+            html += '</div>';
+            document.getElementById('adminContent').innerHTML = html;
+            document.getElementById('modalAdmin').classList.add('active');
+        }
+
+        function mostrarAbaAdmin(aba) {
+            document.getElementById('admProfissionais').style.display = aba === 'profissionais' ? 'block' : 'none';
+            document.getElementById('admChamados').style.display = aba === 'chamados' ? 'block' : 'none';
+            document.getElementById('btnAdmProf').style.color = aba === 'profissionais' ? '#DC2626' : '#666';
+            document.getElementById('btnAdmProf').style.borderBottom = aba === 'profissionais' ? '3px solid #DC2626' : 'none';
+            document.getElementById('btnAdmCham').style.color = aba === 'chamados' ? '#DC2626' : '#666';
+            document.getElementById('btnAdmCham').style.borderBottom = aba === 'chamados' ? '3px solid #DC2626' : 'none';
+        }
+
+        async function adicionarCreditos(profId, nome) {
+            const input = document.getElementById(`credInput_${profId}`);
+            const qtd = parseInt(input ? input.value : 0);
+            if(!qtd || qtd <= 0) { alert('Digite uma quantidade válida'); return; }
+            const { data: profData } = await supabaseClient.from('profissionais').select('saldo_creditos').eq('id', profId).single();
+            const novoSaldo = (profData.saldo_creditos || 0) + qtd;
+            const { error } = await supabaseClient.from('profissionais').update({ saldo_creditos: novoSaldo }).eq('id', profId);
+            if(error) { alert('Erro: ' + error.message); return; }
+            alert(`✅ ${qtd} créditos adicionados para ${nome}!`);
+            abrirModalAdmin();
+        }
+
+        async function tornarAdmin(profId, nome) {
+            if(!confirm(`Tornar ${nome} administrador?`)) return;
+            const { error } = await supabaseClient.from('profissionais').update({ is_admin: true }).eq('id', profId);
+            if(error) { alert('Erro: ' + error.message); return; }
+            alert(`✅ ${nome} agora é administrador!`);
+            abrirModalAdmin();
+        }
+
+        async function excluirProfissional(profId, nome) {
+            if(!confirm(`Excluir ${nome}? Esta ação não pode ser desfeita.`)) return;
+            const { error } = await supabaseClient.from('profissionais').delete().eq('id', profId);
+            if(error) { alert('Erro: ' + error.message); return; }
+            alert(`✅ ${nome} excluído!`);
+            abrirModalAdmin();
         }
 
         function renderizarCategorias() {
@@ -624,21 +851,6 @@
 
         function fecharModalPix() {
             document.getElementById('modalPix').classList.remove('active');
-        }
-
-        async function abrirModalAdmin() {
-            const { data: profissionais } = await supabaseClient.from('profissionais').select('*').order('criado_em', { ascending: false });
-            let html = '<div style="max-height: 400px; overflow-y: auto;">';
-            if(profissionais) profissionais.forEach(prof => { html += `<div class="admin-item"><strong>${prof.nome}</strong><br>💰 ${prof.saldo_creditos} créditos<br><button class="btn-secondary" style="width: 100%; margin-top: 8px;" onclick="adicionarCreditos('${prof.id}', '${prof.nome}')">Adicionar créditos</button></div>`; });
-            html += '</div>';
-            document.getElementById('adminContent').innerHTML = html;
-            document.getElementById('modalAdmin').classList.add('active');
-        }
-
-        function adicionarCreditos(profId, nome) {
-            const qtd = prompt(`Quantos créditos adicionar para ${nome}?`);
-            if(!qtd) return;
-            alert(`Adicionar ${qtd} créditos para ${nome}`);
         }
 
         function fecharModalAdmin() {
