@@ -16,13 +16,13 @@
     <style>
         :root {
             --grafite: #1F2328;
-            --laranja: #DC2626;
+            --laranja: #FF6B1A;
             --papel: #F5EFE6;
             --verde: #2E7D5B;
             --linha: #8A8F94;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; color: var(--grafite); min-height: 100vh; background-color: #F5EFE6; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='680' height='400'%3E%3Cg stroke='%23C9B99A' stroke-width='0.3' opacity='0.5'%3E%3Cline x1='40' y1='0' x2='40' y2='400'/%3E%3Cline x1='80' y1='0' x2='80' y2='400'/%3E%3Cline x1='120' y1='0' x2='120' y2='400'/%3E%3Cline x1='160' y1='0' x2='160' y2='400'/%3E%3Cline x1='200' y1='0' x2='200' y2='400'/%3E%3Cline x1='240' y1='0' x2='240' y2='400'/%3E%3Cline x1='280' y1='0' x2='280' y2='400'/%3E%3Cline x1='320' y1='0' x2='320' y2='400'/%3E%3Cline x1='360' y1='0' x2='360' y2='400'/%3E%3Cline x1='400' y1='0' x2='400' y2='400'/%3E%3Cline x1='440' y1='0' x2='440' y2='400'/%3E%3Cline x1='480' y1='0' x2='480' y2='400'/%3E%3Cline x1='520' y1='0' x2='520' y2='400'/%3E%3Cline x1='560' y1='0' x2='560' y2='400'/%3E%3Cline x1='600' y1='0' x2='600' y2='400'/%3E%3Cline x1='640' y1='0' x2='640' y2='400'/%3E%3Cline x1='0' y1='40' x2='680' y2='40'/%3E%3Cline x1='0' y1='80' x2='680' y2='80'/%3E%3Cline x1='0' y1='120' x2='680' y2='120'/%3E%3Cline x1='0' y1='160' x2='680' y2='160'/%3E%3Cline x1='0' y1='200' x2='680' y2='200'/%3E%3Cline x1='0' y1='240' x2='680' y2='240'/%3E%3Cline x1='0' y1='280' x2='680' y2='280'/%3E%3Cline x1='0' y1='320' x2='680' y2='320'/%3E%3Cline x1='0' y1='360' x2='680' y2='360'/%3E%3C/g%3E%3Cg stroke='%238B7355' stroke-width='1.2' fill='none' opacity='0.12'%3E%3Crect x='80' y='60' width='200' height='140'/%3E%3Crect x='80' y='200' width='100' height='100'/%3E%3Crect x='180' y='200' width='100' height='100'/%3E%3Crect x='280' y='60' width='120' height='80'/%3E%3Crect x='280' y='140' width='60' height='60'/%3E%3Crect x='400' y='60' width='80' height='120'/%3E%3Crect x='480' y='60' width='120' height='120'/%3E%3C/g%3E%3C/svg%3E"); background-repeat: repeat; background-size: 680px 400px; }
+        body { font-family: 'Inter', sans-serif; background: var(--papel); color: var(--grafite); min-height: 100vh; }
         header { background: var(--grafite); padding: 16px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
         .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: white; }
         .logo-circle { width: 48px; height: 48px; background: var(--laranja); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; }
@@ -92,7 +92,7 @@
 <body>
     <header>
         <a href="#" class="logo" onclick="location.reload(); return false;">
-            <svg width="48" height="52" viewBox="0 0 48 52" xmlns="http://www.w3.org/2000/svg"><polygon points="24,2 46,14 46,38 24,50 2,38 2,14" fill="#DC2626"/><polygon points="24,7 41,17 41,35 24,45 7,35 7,17" fill="none" stroke="#B91C1C" stroke-width="1"/><text x="24" y="27" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="13" fill="white" letter-spacing="1">FCS</text><text x="24" y="37" text-anchor="middle" font-family="Arial,sans-serif" font-weight="700" font-size="6" fill="#111" letter-spacing="2">CENTRAL</text></svg>
+            <div class="logo-circle">FC</div>
             <div class="logo-text">
                 <h1>FOSTER CENTRAL</h1>
                 <p>DE SERVIÇOS</p>
@@ -102,11 +102,12 @@
     </header>
 
     <div class="tabs" style="overflow-x: auto; display: flex; flex-wrap: nowrap; border-bottom: 2px solid var(--laranja);">
-        <button class="tab active" onclick="mudarAba('pedido', this)" style="white-space:nowrap;">PEDIR SERVIÇO</button>
-        <button class="tab" onclick="mudarAba('buscar', this)" style="white-space:nowrap;">BUSCAR PROF.</button>
-        <button class="tab" onclick="mudarAba('painel', this)" style="white-space:nowrap;">MEU PAINEL</button>
-        <button class="tab" onclick="mudarAba('creditos', this)" style="white-space:nowrap;">CRÉDITOS</button>
+        <button class="tab active" onclick="mudarAba('pedido', this)" style="white-space:nowrap;">🏗️ PEDIR SERVIÇO</button>
+        <button class="tab" onclick="mudarAba('cliente', this)" style="white-space:nowrap;">👤 SOU CLIENTE</button>
+        <button class="tab" onclick="mudarAba('painel', this)" style="white-space:nowrap;">🔧 SOU PROF.</button>
+        <button class="tab" onclick="mudarAba('buscar', this)" style="white-space:nowrap;">🔍 BUSCAR</button>
         <button class="tab" onclick="mudarAba('avaliacoes', this)" style="white-space:nowrap;">⭐ AVALIAÇÕES</button>
+        <button class="tab" onclick="mudarAba('creditos', this)" style="white-space:nowrap;">💰 CRÉDITOS</button>
     </div>
 
     <div class="container">
@@ -160,63 +161,68 @@
             </div>
         </div>
 
-        <!-- ABA 2: BUSCAR PROFISSIONAL -->
-        <div id="buscar" class="tab-content">
-            <div style="margin-top: 20px;">
-                <div class="form-group">
-                    <label>BUSCAR PROFISSIONAL</label>
-                    <input type="text" id="buscaInput" placeholder="Ex: Pedreiro, Elétrica, Engenheiro..." oninput="buscarProfissionais()">
+        <!-- ABA 2: SOU CLIENTE -->
+        <div id="cliente" class="tab-content">
+            <div id="clienteLoginArea" style="margin-top: 20px;">
+                <div style="background:white; padding:20px; border-radius:8px; border-left:4px solid var(--laranja); margin-bottom:20px;">
+                    <h3 style="font-family:Oswald; margin-bottom:8px;">👤 ÁREA DO CLIENTE</h3>
+                    <p style="font-size:13px; color:var(--linha);">Acesse para acompanhar seus pedidos e histórico de serviços.</p>
                 </div>
                 <div class="form-group">
-                    <label>FILTRAR POR CATEGORIA</label>
-                    <select id="filtroCategoriaSelect" onchange="buscarProfissionais()">
-                        <option value="">Todas as categorias</option>
-                    </select>
+                    <label>E-mail</label>
+                    <input type="email" id="emailCliente" placeholder="seu@email.com">
                 </div>
-                <div id="resultadosBusca"><p style="text-align:center; color: var(--linha); margin-top: 20px;">Digite para buscar profissionais</p></div>
+                <div class="form-group">
+                    <label>Senha</label>
+                    <input type="password" id="senhaCliente" placeholder="Sua senha">
+                </div>
+                <button class="btn-primary" onclick="loginCliente()">ENTRAR</button>
+                <button class="btn-secondary" style="width:100%; margin-top:8px;" onclick="mostrarCadastroCliente()">CADASTRE-SE</button>
+            </div>
+
+            <div id="clienteCadastroArea" style="display:none; margin-top:20px;">
+                <h3 style="font-family:Oswald; margin-bottom:16px;">CRIAR CONTA CLIENTE</h3>
+                <div class="form-group">
+                    <label>Nome completo</label>
+                    <input type="text" id="nomeClienteCad" placeholder="Seu nome completo">
+                </div>
+                <div class="form-group">
+                    <label>Telefone / WhatsApp</label>
+                    <input type="tel" id="telefoneClienteCad" placeholder="(11) 9999-9999">
+                </div>
+                <div class="form-group">
+                    <label>Cidade / Estado</label>
+                    <input type="text" id="cidadeClienteCad" placeholder="Ex: São Paulo, SP">
+                </div>
+                <div class="form-group">
+                    <label>E-mail</label>
+                    <input type="email" id="emailClienteCad" placeholder="seu@email.com">
+                </div>
+                <div class="form-group">
+                    <label>Senha</label>
+                    <input type="password" id="senhaClienteCad" placeholder="Crie uma senha">
+                </div>
+                <button class="btn-primary" onclick="cadastrarCliente()" style="margin-top:16px;">CADASTRAR</button>
+                <button class="btn-secondary" style="width:100%; margin-top:8px;" onclick="voltarLoginCliente()">VOLTAR</button>
+            </div>
+
+            <div id="clientePainelLogado" style="display:none; margin-top:20px;">
+                <div style="background:var(--grafite); color:white; padding:16px; border-radius:8px; margin-bottom:16px;">
+                    <h3 style="font-family:Oswald; font-size:14px;" id="clienteBoasVindas">Olá, Cliente!</h3>
+                    <p style="font-size:12px; color:var(--linha); margin-top:4px;">Seus pedidos recentes</p>
+                </div>
+                <h3 style="font-family:Oswald; margin-bottom:16px;">MEUS PEDIDOS</h3>
+                <div id="listaPedidosCliente"><p style="text-align:center; color:var(--linha);">Carregando seus pedidos...</p></div>
             </div>
         </div>
 
-        <!-- ABA 5: AVALIAÇÕES -->
-        <div id="avaliacoes" class="tab-content">
-            <div style="margin-top: 20px;">
-                <h3 style="font-family: Oswald; margin-bottom: 16px;">AVALIAR PROFISSIONAL</h3>
-                <div class="form-group">
-                    <label>BUSCAR PROFISSIONAL</label>
-                    <input type="text" id="buscaAvaliacaoInput" placeholder="Digite o nome do profissional..." oninput="buscarProfParaAvaliar()">
-                </div>
-                <div id="resultadosBuscaAvaliacao"></div>
-                <div id="formAvaliacao" style="display:none; background:white; padding:16px; border-radius:8px; margin-top:16px; border-left:4px solid var(--laranja);">
-                    <h4 id="nomeAvaliadoTitulo" style="margin-bottom:12px; font-family:Oswald;"></h4>
-                    <div class="form-group">
-                        <label>SEU NOME</label>
-                        <input type="text" id="nomeClienteAvaliacao" placeholder="Seu nome">
-                    </div>
-                    <div class="form-group">
-                        <label>NOTA</label>
-                        <div id="estrelasSeletor" style="display:flex; gap:8px; font-size:28px; cursor:pointer; margin-bottom:8px;">
-                            <span onclick="selecionarEstrelas(1)">☆</span>
-                            <span onclick="selecionarEstrelas(2)">☆</span>
-                            <span onclick="selecionarEstrelas(3)">☆</span>
-                            <span onclick="selecionarEstrelas(4)">☆</span>
-                            <span onclick="selecionarEstrelas(5)">☆</span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>COMENTÁRIO</label>
-                        <textarea id="comentarioAvaliacao" placeholder="Como foi o serviço?"></textarea>
-                    </div>
-                    <button class="btn-primary" onclick="enviarAvaliacao()">ENVIAR AVALIAÇÃO</button>
-                    <button class="btn-secondary" style="width:100%; margin-top:8px;" onclick="cancelarAvaliacao()">CANCELAR</button>
-                </div>
-                <h3 style="font-family: Oswald; margin-top: 24px; margin-bottom: 16px;">AVALIAÇÕES RECENTES</h3>
-                <div id="listaAvaliacoes"><p style="text-align:center; color:var(--linha);">Carregando avaliações...</p></div>
-            </div>
-        </div>
-
-        <!-- ABA 3: PAINEL DO PROFISSIONAL -->
+        <!-- ABA 3: SOU PROFISSIONAL (MEU PAINEL) -->
         <div id="painel" class="tab-content">
             <div id="loginArea" style="margin-top: 20px;">
+                <div style="background:white; padding:20px; border-radius:8px; border-left:4px solid var(--laranja); margin-bottom:20px;">
+                    <h3 style="font-family:Oswald; margin-bottom:8px;">🔧 ÁREA DO PROFISSIONAL</h3>
+                    <p style="font-size:13px; color:var(--linha);">Acesse projetos, gerencie seus créditos e conecte com clientes.</p>
+                </div>
                 <div class="form-group">
                     <label>E-mail</label>
                     <input type="email" id="emailProf" placeholder="seu@email.com">
@@ -289,7 +295,61 @@
             </div>
         </div>
 
-        <!-- ABA 3: CRÉDITOS -->
+        <!-- ABA 4: BUSCAR PROFISSIONAL -->
+        <div id="buscar" class="tab-content">
+            <div style="margin-top: 20px;">
+                <div class="form-group">
+                    <label>BUSCAR PROFISSIONAL</label>
+                    <input type="text" id="buscaInput" placeholder="Ex: Pedreiro, Elétrica, Engenheiro..." oninput="buscarProfissionais()">
+                </div>
+                <div class="form-group">
+                    <label>FILTRAR POR CATEGORIA</label>
+                    <select id="filtroCategoriaSelect" onchange="buscarProfissionais()">
+                        <option value="">Todas as categorias</option>
+                    </select>
+                </div>
+                <div id="resultadosBusca"><p style="text-align:center; color: var(--linha); margin-top: 20px;">Digite para buscar profissionais</p></div>
+            </div>
+        </div>
+
+        <!-- ABA 5: AVALIAÇÕES -->
+        <div id="avaliacoes" class="tab-content">
+            <div style="margin-top: 20px;">
+                <h3 style="font-family: Oswald; margin-bottom: 16px;">AVALIAR PROFISSIONAL</h3>
+                <div class="form-group">
+                    <label>BUSCAR PROFISSIONAL</label>
+                    <input type="text" id="buscaAvaliacaoInput" placeholder="Digite o nome do profissional..." oninput="buscarProfParaAvaliar()">
+                </div>
+                <div id="resultadosBuscaAvaliacao"></div>
+                <div id="formAvaliacao" style="display:none; background:white; padding:16px; border-radius:8px; margin-top:16px; border-left:4px solid var(--laranja);">
+                    <h4 id="nomeAvaliadoTitulo" style="margin-bottom:12px; font-family:Oswald;"></h4>
+                    <div class="form-group">
+                        <label>SEU NOME</label>
+                        <input type="text" id="nomeClienteAvaliacao" placeholder="Seu nome">
+                    </div>
+                    <div class="form-group">
+                        <label>NOTA</label>
+                        <div id="estrelasSeletor" style="display:flex; gap:8px; font-size:28px; cursor:pointer; margin-bottom:8px;">
+                            <span onclick="selecionarEstrelas(1)">☆</span>
+                            <span onclick="selecionarEstrelas(2)">☆</span>
+                            <span onclick="selecionarEstrelas(3)">☆</span>
+                            <span onclick="selecionarEstrelas(4)">☆</span>
+                            <span onclick="selecionarEstrelas(5)">☆</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>COMENTÁRIO</label>
+                        <textarea id="comentarioAvaliacao" placeholder="Como foi o serviço?"></textarea>
+                    </div>
+                    <button class="btn-primary" onclick="enviarAvaliacao()">ENVIAR AVALIAÇÃO</button>
+                    <button class="btn-secondary" style="width:100%; margin-top:8px;" onclick="cancelarAvaliacao()">CANCELAR</button>
+                </div>
+                <h3 style="font-family: Oswald; margin-top: 24px; margin-bottom: 16px;">AVALIAÇÕES RECENTES</h3>
+                <div id="listaAvaliacoes"><p style="text-align:center; color:var(--linha);">Carregando avaliações...</p></div>
+            </div>
+        </div>
+
+        <!-- ABA 6: CRÉDITOS -->
         <div id="creditos" class="tab-content">
             <div class="saldo" style="margin-top: 20px;">
                 <h3>SEU SALDO</h3>
@@ -464,6 +524,83 @@
             else if(event && event.target) event.target.classList.add('active');
             if(aba === 'buscar') preencherFiltroCategoria();
             if(aba === 'avaliacoes') carregarAvaliacoes();
+            if(aba === 'cliente' && usuarioCliente) carregarPedidosCliente();
+        }
+
+        // ===== ÁREA DO CLIENTE =====
+        let usuarioCliente = null;
+
+        function mostrarCadastroCliente() {
+            document.getElementById('clienteLoginArea').style.display = 'none';
+            document.getElementById('clienteCadastroArea').style.display = 'block';
+        }
+
+        function voltarLoginCliente() {
+            document.getElementById('clienteCadastroArea').style.display = 'none';
+            document.getElementById('clienteLoginArea').style.display = 'block';
+        }
+
+        async function cadastrarCliente() {
+            const nome = document.getElementById('nomeClienteCad').value.trim();
+            const telefone = document.getElementById('telefoneClienteCad').value.trim();
+            const cidade = document.getElementById('cidadeClienteCad').value.trim();
+            const email = document.getElementById('emailClienteCad').value.trim();
+            const senha = document.getElementById('senhaClienteCad').value;
+            if(!nome || !telefone || !email || !senha) { alert('Preencha todos os campos'); return; }
+            try {
+                const { data: authData, error: authError } = await supabaseClient.auth.signUp({ email, password: senha });
+                if(authError) { alert('Erro: ' + authError.message); return; }
+                const { error: dbError } = await supabaseClient.from('clientes').insert({ id: authData.user.id, nome, telefone, cidade, email });
+                if(dbError) {
+                    // Tabela pode não existir ainda, salva só no auth
+                    console.log('Aviso tabela clientes:', dbError.message);
+                }
+                alert('✅ Cadastro realizado! Bem-vindo(a) ' + nome);
+                voltarLoginCliente();
+            } catch(err) { alert('Erro ao cadastrar'); }
+        }
+
+        async function loginCliente() {
+            const email = document.getElementById('emailCliente').value.trim();
+            const senha = document.getElementById('senhaCliente').value;
+            if(!email || !senha) { alert('Preencha e-mail e senha'); return; }
+            try {
+                const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: senha });
+                if(error) { alert('Erro: ' + error.message); return; }
+                usuarioCliente = data.user;
+                mostrarPainelCliente();
+            } catch(err) { alert('Erro ao fazer login'); }
+        }
+
+        async function mostrarPainelCliente() {
+            if(!usuarioCliente) return;
+            document.getElementById('clienteLoginArea').style.display = 'none';
+            document.getElementById('clienteCadastroArea').style.display = 'none';
+            document.getElementById('clientePainelLogado').style.display = 'block';
+            // Buscar nome do cliente
+            const { data: clienteData } = await supabaseClient.from('clientes').select('nome').eq('id', usuarioCliente.id).single();
+            const nome = clienteData ? clienteData.nome : usuarioCliente.email;
+            document.getElementById('clienteBoasVindas').textContent = 'Olá, ' + nome + '! 👋';
+            carregarPedidosCliente();
+        }
+
+        async function carregarPedidosCliente() {
+            const container = document.getElementById('listaPedidosCliente');
+            if(!container || !usuarioCliente) return;
+            try {
+                const { data: pedidos } = await supabaseClient.from('chamados').select('*').eq('telefone_cliente', usuarioCliente.phone || '').order('criado_em', { ascending: false });
+                if(!pedidos || pedidos.length === 0) {
+                    container.innerHTML = '<p style="text-align:center; color:var(--linha);">Nenhum pedido encontrado.<br><small>Vá em "Pedir Serviço" para solicitar!</small></p>';
+                    return;
+                }
+                container.innerHTML = '';
+                pedidos.forEach(p => {
+                    const card = document.createElement('div');
+                    card.className = 'chamado-card';
+                    card.innerHTML = `<h4>${p.servico}</h4><div class="chamado-info">📍 ${p.bairro}</div><div class="chamado-info">📝 ${p.descricao}</div><div class="servico-badge">${p.status === 'novo' ? '🟡 Aguardando' : '✅ Atendido'}</div>`;
+                    container.appendChild(card);
+                });
+            } catch(err) { container.innerHTML = '<p style="text-align:center; color:red;">Erro ao carregar pedidos</p>'; }
         }
 
         function preencherFiltroCategoria() {
@@ -494,9 +631,14 @@
                 container.innerHTML = '';
                 resultados.forEach(prof => {
                     const catNome = CATEGORIAS[prof.categoria] ? CATEGORIAS[prof.categoria].nome : prof.categoria || '-';
+                    const tel = prof.telefone ? prof.telefone.replace(/\D/g, '') : '';
                     const card = document.createElement('div');
                     card.className = 'chamado-card';
-                    card.innerHTML = `<h4>${prof.nome || 'Profissional'}</h4><div class="chamado-info">🏷️ ${catNome}</div><div class="chamado-info">🔧 ${prof.especialidades || '-'}</div>${usuarioAtual ? `<div class="chamado-info">📱 ${prof.telefone || 'Não informado'}</div>` : `<div class="contato-bloqueado">Faça login para ver o contato</div>`}`;
+                    card.innerHTML = `<h4>${prof.nome || 'Profissional'}</h4>
+                        <div class="chamado-info">🏷️ ${catNome}</div>
+                        <div class="chamado-info">🔧 ${prof.especialidades || '-'}</div>
+                        ${usuarioAtual ? `<div class="chamado-info">📱 ${prof.telefone || 'Não informado'}</div>
+                        ${tel ? `<a href="https://wa.me/55${tel}?text=Olá%20${encodeURIComponent(prof.nome)}!%20Vi%20seu%20perfil%20na%20Foster%20Central%20e%20gostaria%20de%20um%20orçamento." target="_blank"><button class="btn-whatsapp" style="margin-top:8px;">💬 CHAMAR NO WHATSAPP</button></a>` : ''}` : `<div class="contato-bloqueado">Faça login para ver o contato</div>`}`;
                     container.appendChild(card);
                 });
             } catch(err) { container.innerHTML = '<p style="text-align:center; color:red;">Erro na busca</p>'; }
@@ -633,8 +775,6 @@
             alert(`✅ ${nome} excluído!`);
             abrirModalAdmin();
         }
-
-        function renderizarCategorias() {
             const container = document.getElementById('categoriasCliente');
             container.innerHTML = '';
             Object.entries(CATEGORIAS).forEach(([key, cat]) => {
@@ -851,6 +991,21 @@
 
         function fecharModalPix() {
             document.getElementById('modalPix').classList.remove('active');
+        }
+
+        async function abrirModalAdmin() {
+            const { data: profissionais } = await supabaseClient.from('profissionais').select('*').order('criado_em', { ascending: false });
+            let html = '<div style="max-height: 400px; overflow-y: auto;">';
+            if(profissionais) profissionais.forEach(prof => { html += `<div class="admin-item"><strong>${prof.nome}</strong><br>💰 ${prof.saldo_creditos} créditos<br><button class="btn-secondary" style="width: 100%; margin-top: 8px;" onclick="adicionarCreditos('${prof.id}', '${prof.nome}')">Adicionar créditos</button></div>`; });
+            html += '</div>';
+            document.getElementById('adminContent').innerHTML = html;
+            document.getElementById('modalAdmin').classList.add('active');
+        }
+
+        function adicionarCreditos(profId, nome) {
+            const qtd = prompt(`Quantos créditos adicionar para ${nome}?`);
+            if(!qtd) return;
+            alert(`Adicionar ${qtd} créditos para ${nome}`);
         }
 
         function fecharModalAdmin() {
