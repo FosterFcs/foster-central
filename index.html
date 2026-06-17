@@ -775,6 +775,8 @@
             alert(`✅ ${nome} excluído!`);
             abrirModalAdmin();
         }
+
+        function renderizarCategorias() {
             const container = document.getElementById('categoriasCliente');
             container.innerHTML = '';
             Object.entries(CATEGORIAS).forEach(([key, cat]) => {
@@ -991,21 +993,6 @@
 
         function fecharModalPix() {
             document.getElementById('modalPix').classList.remove('active');
-        }
-
-        async function abrirModalAdmin() {
-            const { data: profissionais } = await supabaseClient.from('profissionais').select('*').order('criado_em', { ascending: false });
-            let html = '<div style="max-height: 400px; overflow-y: auto;">';
-            if(profissionais) profissionais.forEach(prof => { html += `<div class="admin-item"><strong>${prof.nome}</strong><br>💰 ${prof.saldo_creditos} créditos<br><button class="btn-secondary" style="width: 100%; margin-top: 8px;" onclick="adicionarCreditos('${prof.id}', '${prof.nome}')">Adicionar créditos</button></div>`; });
-            html += '</div>';
-            document.getElementById('adminContent').innerHTML = html;
-            document.getElementById('modalAdmin').classList.add('active');
-        }
-
-        function adicionarCreditos(profId, nome) {
-            const qtd = prompt(`Quantos créditos adicionar para ${nome}?`);
-            if(!qtd) return;
-            alert(`Adicionar ${qtd} créditos para ${nome}`);
         }
 
         function fecharModalAdmin() {
