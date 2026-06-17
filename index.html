@@ -101,11 +101,12 @@
         <div class="header-actions" id="headerActions"></div>
     </header>
 
-    <div class="tabs">
-        <button class="tab active" onclick="mudarAba('pedido', this)">PEDIR SERVIÇO</button>
-        <button class="tab" onclick="mudarAba('buscar', this)">BUSCAR PROF.</button>
-        <button class="tab" onclick="mudarAba('painel', this)">MEU PAINEL</button>
-        <button class="tab" onclick="mudarAba('creditos', this)">CRÉDITOS</button>
+    <div class="tabs" style="overflow-x: auto; display: flex; flex-wrap: nowrap;">
+        <button class="tab active" onclick="mudarAba('pedido', this)" style="white-space:nowrap;">PEDIR SERVIÇO</button>
+        <button class="tab" onclick="mudarAba('buscar', this)" style="white-space:nowrap;">BUSCAR PROF.</button>
+        <button class="tab" onclick="mudarAba('painel', this)" style="white-space:nowrap;">MEU PAINEL</button>
+        <button class="tab" onclick="mudarAba('creditos', this)" style="white-space:nowrap;">CRÉDITOS</button>
+        <button class="tab" onclick="mudarAba('avaliacoes', this)" style="white-space:nowrap;">⭐ AVALIAÇÕES</button>
     </div>
 
     <div class="container">
@@ -173,6 +174,45 @@
                     </select>
                 </div>
                 <div id="resultadosBusca"><p style="text-align:center; color: var(--linha); margin-top: 20px;">Digite para buscar profissionais</p></div>
+            </div>
+        </div>
+
+        <!-- ABA 5: AVALIAÇÕES -->
+        <div id="avaliacoes" class="tab-content">
+            <div style="margin-top: 20px;">
+                <h3 style="font-family: Oswald; margin-bottom: 16px;">AVALIAR PROFISSIONAL</h3>
+                <div class="form-group">
+                    <label>BUSCAR PROFISSIONAL</label>
+                    <input type="text" id="buscaAvaliacaoInput" placeholder="Digite o nome do profissional..." oninput="buscarProfParaAvaliar()">
+                </div>
+                <div id="resultadosBuscaAvaliacao"></div>
+
+                <div id="formAvaliacao" style="display:none; background:white; padding:16px; border-radius:8px; margin-top:16px; border-left:4px solid var(--laranja);">
+                    <h4 id="nomeAvaliadoTitulo" style="margin-bottom:12px; font-family:Oswald;"></h4>
+                    <div class="form-group">
+                        <label>SEU NOME</label>
+                        <input type="text" id="nomeClienteAvaliacao" placeholder="Seu nome">
+                    </div>
+                    <div class="form-group">
+                        <label>NOTA</label>
+                        <div id="estrelasSeletor" style="display:flex; gap:8px; font-size:28px; cursor:pointer; margin-bottom:8px;">
+                            <span onclick="selecionarEstrelas(1)">☆</span>
+                            <span onclick="selecionarEstrelas(2)">☆</span>
+                            <span onclick="selecionarEstrelas(3)">☆</span>
+                            <span onclick="selecionarEstrelas(4)">☆</span>
+                            <span onclick="selecionarEstrelas(5)">☆</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>COMENTÁRIO</label>
+                        <textarea id="comentarioAvaliacao" placeholder="Como foi o serviço?"></textarea>
+                    </div>
+                    <button class="btn-primary" onclick="enviarAvaliacao()">ENVIAR AVALIAÇÃO</button>
+                    <button class="btn-secondary" style="width:100%; margin-top:8px;" onclick="cancelarAvaliacao()">CANCELAR</button>
+                </div>
+
+                <h3 style="font-family: Oswald; margin-top: 24px; margin-bottom: 16px;">AVALIAÇÕES RECENTES</h3>
+                <div id="listaAvaliacoes"><p style="text-align:center; color:var(--linha);">Carregando avaliações...</p></div>
             </div>
         </div>
 
@@ -424,6 +464,7 @@
             document.getElementById(aba).classList.add('active');
             if(el) el.classList.add('active');
             if(aba === 'buscar') preencherFiltroCategoria();
+            if(aba === 'avaliacoes') carregarAvaliacoes();
         }
 
         function renderizarCategorias() {
@@ -654,6 +695,102 @@
                 opt.textContent = cat.nome;
                 sel.appendChild(opt);
             });
+        }
+
+        let estrelasAvaliacao = 0;
+        let profissionalAvaliando = null;
+
+        function selecionarEstrelas(n) {
+            estrelasAvaliacao = n;
+            const spans = document.querySelectorAll('#estrelasSeletor span');
+            spans.forEach((s, i) => { s.textContent = i < n ? '⭐' : '☆'; });
+        }
+
+        async function buscarProfParaAvaliar() {
+            const termo = document.getElementById('buscaAvaliacaoInput').value.trim().toLowerCase();
+            const container = document.getElementById('resultadosBuscaAvaliacao');
+            if(!termo) { container.innerHTML = ''; return; }
+            const { data } = await supabaseClient.from('profissionais').select('id, nome, categoria, especialidades');
+            const resultados = (data || []).filter(p =>
+                (p.nome && p.nome.toLowerCase().includes(termo)) ||
+                (p.especialidades && p.especialidades.toLowerCase().includes(termo))
+            );
+            container.innerHTML = '';
+            resultados.slice(0, 5).forEach(prof => {
+                const catNome = CATEGORIAS[prof.categoria] ? CATEGORIAS[prof.categoria].nome : prof.categoria || '';
+                const div = document.createElement('div');
+                div.style.cssText = 'background:white; padding:12px; border-radius:8px; margin-bottom:8px; cursor:pointer; border:2px solid transparent;';
+                div.innerHTML = `<strong>${prof.nome}</strong><br><small style="color:#888;">${catNome}</small>`;
+                div.onmouseover = () => div.style.borderColor = 'var(--laranja)';
+                div.onmouseout = () => div.style.borderColor = 'transparent';
+                div.onclick = () => abrirFormAvaliacao(prof);
+                container.appendChild(div);
+            });
+        }
+
+        function abrirFormAvaliacao(prof) {
+            profissionalAvaliando = prof;
+            document.getElementById('nomeAvaliadoTitulo').textContent = '⭐ Avaliar: ' + prof.nome;
+            document.getElementById('formAvaliacao').style.display = 'block';
+            document.getElementById('resultadosBuscaAvaliacao').innerHTML = '';
+            document.getElementById('buscaAvaliacaoInput').value = '';
+            estrelasAvaliacao = 0;
+            selecionarEstrelas(0);
+        }
+
+        function cancelarAvaliacao() {
+            profissionalAvaliando = null;
+            document.getElementById('formAvaliacao').style.display = 'none';
+            document.getElementById('nomeClienteAvaliacao').value = '';
+            document.getElementById('comentarioAvaliacao').value = '';
+            estrelasAvaliacao = 0;
+        }
+
+        async function enviarAvaliacao() {
+            const nome = document.getElementById('nomeClienteAvaliacao').value.trim();
+            const comentario = document.getElementById('comentarioAvaliacao').value.trim();
+            if(!nome) { alert('Digite seu nome'); return; }
+            if(!estrelasAvaliacao) { alert('Selecione uma nota'); return; }
+            if(!profissionalAvaliando) return;
+            const { error } = await supabaseClient.from('avaliacoes').insert({
+                profissional_id: profissionalAvaliando.id,
+                nome_cliente: nome,
+                estrelas: estrelasAvaliacao,
+                comentarios: comentario
+            });
+            if(error) { alert('Erro: ' + error.message); return; }
+            alert('✅ Avaliação enviada! Obrigado.');
+            cancelarAvaliacao();
+            carregarAvaliacoes();
+        }
+
+        async function carregarAvaliacoes() {
+            const container = document.getElementById('listaAvaliacoes');
+            if(!container) return;
+            try {
+                const { data } = await supabaseClient.from('avaliacoes').select('*').order('created_at', { ascending: false }).limit(20);
+                if(!data || data.length === 0) {
+                    container.innerHTML = '<p style="text-align:center; color:var(--linha);">Nenhuma avaliação ainda</p>';
+                    return;
+                }
+                container.innerHTML = '';
+                for(const av of data) {
+                    let nomeProf = 'Profissional';
+                    const { data: profData } = await supabaseClient.from('profissionais').select('nome').eq('id', av.profissional_id).single();
+                    if(profData) nomeProf = profData.nome;
+                    const estrelas = '⭐'.repeat(av.estrelas) + '☆'.repeat(5 - av.estrelas);
+                    const card = document.createElement('div');
+                    card.className = 'chamado-card';
+                    card.innerHTML = `
+                        <h4>${nomeProf}</h4>
+                        <div style="font-size:18px; margin:4px 0;">${estrelas}</div>
+                        <div class="chamado-info">👤 ${av.nome_cliente}</div>
+                        ${av.comentarios ? `<div class="chamado-info" style="font-style:italic;">"${av.comentarios}"</div>` : ''}
+                        <div class="chamado-info" style="font-size:11px;">${new Date(av.created_at).toLocaleDateString('pt-BR')}</div>
+                    `;
+                    container.appendChild(card);
+                }
+            } catch(err) { container.innerHTML = '<p style="text-align:center; color:red;">Erro ao carregar</p>'; }
         }
 
         async function buscarProfissionais() {
