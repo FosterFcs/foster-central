@@ -102,9 +102,10 @@
     </header>
 
     <div class="tabs">
-        <button class="tab active" onclick="mudarAba('pedido')">PEDIR SERVIÇO</button>
-        <button class="tab" onclick="mudarAba('painel')">PAINEL DO PROFISSIONAL</button>
-        <button class="tab" onclick="mudarAba('creditos')">CRÉDITOS</button>
+        <button class="tab active" onclick="mudarAba('pedido', this)">PEDIR SERVIÇO</button>
+        <button class="tab" onclick="mudarAba('buscar', this)">BUSCAR PROF.</button>
+        <button class="tab" onclick="mudarAba('painel', this)">MEU PAINEL</button>
+        <button class="tab" onclick="mudarAba('creditos', this)">CRÉDITOS</button>
     </div>
 
     <div class="container">
@@ -158,7 +159,24 @@
             </div>
         </div>
 
-        <!-- ABA 2: PAINEL DO PROFISSIONAL -->
+        <!-- ABA 2: BUSCAR PROFISSIONAL -->
+        <div id="buscar" class="tab-content">
+            <div style="margin-top: 20px;">
+                <div class="form-group">
+                    <label>BUSCAR PROFISSIONAL</label>
+                    <input type="text" id="buscaInput" placeholder="Ex: Pedreiro, Elétrica, Médico..." oninput="buscarProfissionais()">
+                </div>
+                <div class="form-group">
+                    <label>FILTRAR POR CATEGORIA</label>
+                    <select id="filtroCategoriaSelect" onchange="buscarProfissionais()">
+                        <option value="">Todas as categorias</option>
+                    </select>
+                </div>
+                <div id="resultadosBusca"><p style="text-align:center; color: var(--linha); margin-top: 20px;">Digite para buscar profissionais</p></div>
+            </div>
+        </div>
+
+        <!-- ABA 3: PAINEL DO PROFISSIONAL -->
         <div id="painel" class="tab-content">
             <div id="loginArea" style="margin-top: 20px;">
                 <div class="form-group">
@@ -400,11 +418,12 @@
             } catch(err) { console.error('Erro:', err); }
         }
 
-        function mudarAba(aba) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+        function mudarAba(aba, el) {
+            document.querySelectorAll('.tab-content').forEach(e => e.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(e => e.classList.remove('active'));
             document.getElementById(aba).classList.add('active');
-            event.target.classList.add('active');
+            if(el) el.classList.add('active');
+            if(aba === 'buscar') preencherFiltroCategoria();
         }
 
         function renderizarCategorias() {
@@ -626,19 +645,145 @@
             document.getElementById('modalPix').classList.remove('active');
         }
 
+        function preencherFiltroCategoria() {
+            const sel = document.getElementById('filtroCategoriaSelect');
+            if(sel.options.length > 1) return;
+            Object.entries(CATEGORIAS).forEach(([key, cat]) => {
+                const opt = document.createElement('option');
+                opt.value = key;
+                opt.textContent = cat.nome;
+                sel.appendChild(opt);
+            });
+        }
+
+        async function buscarProfissionais() {
+            const termo = document.getElementById('buscaInput').value.trim().toLowerCase();
+            const categoria = document.getElementById('filtroCategoriaSelect').value;
+            const container = document.getElementById('resultadosBusca');
+            if(!termo && !categoria) {
+                container.innerHTML = '<p style="text-align:center; color: var(--linha); margin-top: 20px;">Digite para buscar profissionais</p>';
+                return;
+            }
+            container.innerHTML = '<p style="text-align:center; color: var(--linha);">Buscando...</p>';
+            try {
+                let query = supabaseClient.from('profissionais').select('id, nome, telefone, categoria, especialidades, saldo_creditos');
+                if(categoria) query = query.eq('categoria', categoria);
+                const { data, error } = await query;
+                if(error) { container.innerHTML = '<p style="text-align:center; color:red;">Erro na busca</p>'; return; }
+                let resultados = data || [];
+                if(termo) {
+                    resultados = resultados.filter(p =>
+                        (p.nome && p.nome.toLowerCase().includes(termo)) ||
+                        (p.especialidades && p.especialidades.toLowerCase().includes(termo)) ||
+                        (p.categoria && p.categoria.toLowerCase().includes(termo))
+                    );
+                }
+                if(resultados.length === 0) {
+                    container.innerHTML = '<p style="text-align:center; color: var(--linha); margin-top: 20px;">Nenhum profissional encontrado</p>';
+                    return;
+                }
+                container.innerHTML = '';
+                resultados.forEach(prof => {
+                    const catNome = CATEGORIAS[prof.categoria] ? CATEGORIAS[prof.categoria].nome : prof.categoria || '-';
+                    const card = document.createElement('div');
+                    card.className = 'chamado-card';
+                    card.innerHTML = `
+                        <h4>${prof.nome || 'Profissional'}</h4>
+                        <div class="chamado-info">🏷️ ${catNome}</div>
+                        <div class="chamado-info">🔧 ${prof.especialidades || '-'}</div>
+                        ${usuarioAtual ? `<div class="chamado-info">📱 ${prof.telefone || 'Não informado'}</div>` : `<div class="contato-bloqueado">Faça login para ver o contato</div>`}
+                    `;
+                    container.appendChild(card);
+                });
+            } catch(err) { container.innerHTML = '<p style="text-align:center; color:red;">Erro na busca</p>'; }
+        }
+
         async function abrirModalAdmin() {
             const { data: profissionais } = await supabaseClient.from('profissionais').select('*').order('criado_em', { ascending: false });
-            let html = '<div style="max-height: 400px; overflow-y: auto;">';
-            if(profissionais) profissionais.forEach(prof => { html += `<div class="admin-item"><strong>${prof.nome}</strong><br>💰 ${prof.saldo_creditos} créditos<br><button class="btn-secondary" style="width: 100%; margin-top: 8px;" onclick="adicionarCreditos('${prof.id}', '${prof.nome}')">Adicionar créditos</button></div>`; });
+            const { data: chamados } = await supabaseClient.from('chamados').select('*').eq('status', 'novo');
+            const totalProf = profissionais ? profissionais.length : 0;
+            const totalChamados = chamados ? chamados.length : 0;
+            let html = `<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px;">
+                <div style="background:#1F2328; color:white; padding:16px; border-radius:8px; text-align:center;">
+                    <div style="font-size:32px; font-weight:700; color:#FF6B1A;">${totalProf}</div>
+                    <div style="font-size:11px; letter-spacing:1px;">PROFISSIONAIS</div>
+                </div>
+                <div style="background:#1F2328; color:white; padding:16px; border-radius:8px; text-align:center;">
+                    <div style="font-size:32px; font-weight:700; color:#FF6B1A;">${totalChamados}</div>
+                    <div style="font-size:11px; letter-spacing:1px;">CHAMADOS ABERTOS</div>
+                </div>
+            </div>
+            <div style="display:flex; gap:8px; margin-bottom:16px; border-bottom:2px solid #eee;">
+                <button onclick="mostrarAbaAdmin('profissionais')" id="btnAdmProf" style="flex:1; padding:10px; background:none; border:none; font-weight:700; color:#FF6B1A; border-bottom:3px solid #FF6B1A; cursor:pointer;">PROFISSIONAIS</button>
+                <button onclick="mostrarAbaAdmin('chamados')" id="btnAdmCham" style="flex:1; padding:10px; background:none; border:none; font-weight:600; cursor:pointer;">CHAMADOS</button>
+            </div>
+            <div id="admProfissionais">`;
+            if(profissionais) profissionais.forEach(prof => {
+                const catNome = CATEGORIAS[prof.categoria] ? CATEGORIAS[prof.categoria].nome : prof.categoria || '-';
+                html += `<div class="admin-item" style="background:#f8f8f8; padding:16px; border-radius:8px; margin-bottom:12px; border-left:3px solid #FF6B1A;">
+                    <strong style="font-size:14px;">${prof.nome || 'Sem nome'}</strong><br>
+                    <span style="font-size:12px; color:#666;">📱 ${prof.telefone || 'Não informado'}</span><br>
+                    <span style="font-size:12px; color:#666;">🏷️ ${catNome}</span><br>
+                    <span style="font-size:12px; color:#666;">🔧 ${prof.especialidades || '-'}</span><br>
+                    <span style="font-size:12px; color:#666;">💰 ${prof.saldo_creditos || 0} créditos</span>
+                    <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">
+                        <input type="number" id="credInput_${prof.id}" placeholder="Qtd" style="width:70px; padding:8px; border:1px solid #ccc; border-radius:4px; font-size:12px;">
+                        <button onclick="adicionarCreditos('${prof.id}', '${prof.nome}')" style="flex:1; background:#2E7D5B; color:white; border:none; padding:8px; border-radius:4px; font-weight:600; cursor:pointer; font-size:12px;">+ CRÉDITOS</button>
+                        <button onclick="tornarAdmin('${prof.id}', '${prof.nome}')" style="flex:1; background:#1F2328; color:white; border:none; padding:8px; border-radius:4px; font-weight:600; cursor:pointer; font-size:12px;">⭐ ADMIN</button>
+                        <button onclick="excluirProfissional('${prof.id}', '${prof.nome}')" style="background:#e74c3c; color:white; border:none; padding:8px 12px; border-radius:4px; font-weight:600; cursor:pointer; font-size:12px;">🗑️</button>
+                    </div>
+                </div>`;
+            });
+            html += `</div><div id="admChamados" style="display:none;">`;
+            if(chamados) chamados.forEach(c => {
+                html += `<div style="background:#f8f8f8; padding:16px; border-radius:8px; margin-bottom:12px; border-left:3px solid #FF6B1A;">
+                    <strong>${c.nome_cliente}</strong><br>
+                    <span style="font-size:12px; color:#666;">📱 ${c.telefone_cliente}</span><br>
+                    <span style="font-size:12px; color:#666;">🔧 ${c.servico}</span><br>
+                    <span style="font-size:12px; color:#666;">📍 ${c.bairro}</span><br>
+                    <span style="font-size:12px; color:#666;">📝 ${c.descricao}</span>
+                </div>`;
+            });
             html += '</div>';
             document.getElementById('adminContent').innerHTML = html;
             document.getElementById('modalAdmin').classList.add('active');
         }
 
-        function adicionarCreditos(profId, nome) {
-            const qtd = prompt(`Quantos créditos adicionar para ${nome}?`);
-            if(!qtd) return;
-            alert(`Adicionar ${qtd} créditos para ${nome}`);
+        function mostrarAbaAdmin(aba) {
+            document.getElementById('admProfissionais').style.display = aba === 'profissionais' ? 'block' : 'none';
+            document.getElementById('admChamados').style.display = aba === 'chamados' ? 'block' : 'none';
+            document.getElementById('btnAdmProf').style.color = aba === 'profissionais' ? '#FF6B1A' : '#666';
+            document.getElementById('btnAdmProf').style.borderBottom = aba === 'profissionais' ? '3px solid #FF6B1A' : 'none';
+            document.getElementById('btnAdmCham').style.color = aba === 'chamados' ? '#FF6B1A' : '#666';
+            document.getElementById('btnAdmCham').style.borderBottom = aba === 'chamados' ? '3px solid #FF6B1A' : 'none';
+        }
+
+        async function adicionarCreditos(profId, nome) {
+            const input = document.getElementById(`credInput_${profId}`);
+            const qtd = parseInt(input ? input.value : 0);
+            if(!qtd || qtd <= 0) { alert('Digite uma quantidade válida'); return; }
+            const { data: profData } = await supabaseClient.from('profissionais').select('saldo_creditos').eq('id', profId).single();
+            const novoSaldo = (profData.saldo_creditos || 0) + qtd;
+            const { error } = await supabaseClient.from('profissionais').update({ saldo_creditos: novoSaldo }).eq('id', profId);
+            if(error) { alert('Erro: ' + error.message); return; }
+            alert(`✅ ${qtd} créditos adicionados para ${nome}!`);
+            abrirModalAdmin();
+        }
+
+        async function tornarAdmin(profId, nome) {
+            if(!confirm(`Tornar ${nome} administrador?`)) return;
+            const { error } = await supabaseClient.from('profissionais').update({ is_admin: true }).eq('id', profId);
+            if(error) { alert('Erro: ' + error.message); return; }
+            alert(`✅ ${nome} agora é administrador!`);
+            abrirModalAdmin();
+        }
+
+        async function excluirProfissional(profId, nome) {
+            if(!confirm(`Excluir ${nome}? Esta ação não pode ser desfeita.`)) return;
+            const { error } = await supabaseClient.from('profissionais').delete().eq('id', profId);
+            if(error) { alert('Erro: ' + error.message); return; }
+            alert(`✅ ${nome} excluído!`);
+            abrirModalAdmin();
         }
 
         function fecharModalAdmin() {
