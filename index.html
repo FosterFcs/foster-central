@@ -16,7 +16,7 @@
     <style>
         :root {
             --grafite: #1F2328;
-            --laranja: #FF6B1A;
+            --laranja: #CC3300;
             --papel: #F5EFE6;
             --verde: #2E7D5B;
             --linha: #8A8F94;
@@ -25,7 +25,23 @@
         body { font-family: 'Inter', sans-serif; background: var(--papel); color: var(--grafite); min-height: 100vh; }
         header { background: var(--grafite); padding: 16px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
         .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: white; }
-        .logo-circle { width: 48px; height: 48px; background: var(--laranja); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; }
+        .logo-circle { 
+            width: 60px; 
+            height: 60px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-weight: 700; 
+            font-size: 18px;
+            background: none;
+        }
+        .logo-hexagon {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         .logo-text h1 { font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 0.5px; }
         .logo-text p { font-size: 9px; color: var(--laranja); letter-spacing: 1px; }
         .header-actions { display: flex; gap: 12px; align-items: center; }
@@ -92,9 +108,12 @@
 <body>
     <header>
         <a href="#" class="logo" onclick="location.reload(); return false;">
-            <div class="logo-circle">FC</div>
+            <svg class="logo-hexagon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <polygon points="50,10 90,35 90,85 50,110 10,85 10,35" fill="#CC3300"/>
+                <text x="50" y="65" font-family="Oswald" font-size="32" font-weight="bold" fill="white" text-anchor="middle" dominant-baseline="middle">FCS</text>
+            </svg>
             <div class="logo-text">
-                <h1>FOSTER CENTRAL</h1>
+                <h1><span style="color: #CC3300;">FOSTER</span> <span style="color: #1F2328;">CENTRAL</span></h1>
                 <p>DE SERVIÇOS</p>
             </div>
         </a>
