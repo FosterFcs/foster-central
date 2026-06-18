@@ -16,14 +16,14 @@
     <style>
         :root {
             --grafite: #1F2328;
-            --laranja: #CC3300;
+            --laranja: #E00000;
             --papel: #F5EFE6;
             --verde: #2E7D5B;
             --linha: #8A8F94;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: var(--papel); color: var(--grafite); min-height: 100vh; }
-        header { background: var(--grafite); padding: 16px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        header { background: var(--grafite); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 12px rgba(0,0,0,0.2); position: sticky; top: 0; z-index: 100; border-bottom: 3px solid var(--laranja); }
         .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: white; }
         .logo-circle { 
             width: 60px; 
@@ -42,7 +42,7 @@
             align-items: center;
             justify-content: center;
         }
-        .logo-text h1 { font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 0.5px; }
+        .logo-text h1 { font-family: 'Oswald', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 1px; line-height: 1.2; }
         .logo-text p { font-size: 9px; color: var(--laranja); letter-spacing: 1px; }
         .header-actions { display: flex; gap: 12px; align-items: center; }
         .btn-logout { background: var(--laranja); color: white; border: none; padding: 8px 16px; border-radius: 4px; font-weight: 600; cursor: pointer; font-size: 12px; }
@@ -58,12 +58,12 @@
         textarea { resize: vertical; min-height: 100px; }
         input:focus, select:focus, textarea:focus { outline: none; border-color: var(--laranja); box-shadow: 0 0 0 3px rgba(255, 107, 26, 0.1); }
         .btn-primary { width: 100%; padding: 14px; background: var(--laranja); color: white; border: none; border-radius: 4px; font-weight: 700; font-size: 14px; letter-spacing: 1px; cursor: pointer; font-family: 'Oswald', sans-serif; text-transform: uppercase; }
-        .btn-primary:hover { background: #e55a0a; }
+        .btn-primary:hover { background: #c00000; }
         .btn-secondary { padding: 10px 16px; background: var(--verde); color: white; border: none; border-radius: 4px; font-weight: 600; font-size: 12px; cursor: pointer; margin-top: 8px; }
         .protocolo { background: var(--verde); color: white; padding: 24px; border-radius: 8px; text-align: center; margin: 20px 0; }
         .protocolo h3 { font-size: 12px; font-weight: 600; letter-spacing: 1px; margin-bottom: 8px; text-transform: uppercase; }
         .protocolo .numero { font-family: 'Oswald', sans-serif; font-size: 32px; font-weight: 700; margin-bottom: 12px; }
-        .chamado-card { background: white; padding: 16px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid var(--laranja); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .chamado-card { background: white; padding: 16px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid var(--laranja); box-shadow: 0 2px 6px rgba(0,0,0,0.07); transition: box-shadow 0.2s; } .chamado-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
         .chamado-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
         .chamado-info { font-size: 12px; color: var(--linha); margin-bottom: 4px; }
         .servico-badge { display: inline-block; background: var(--laranja); color: white; padding: 4px 8px; border-radius: 3px; font-size: 11px; font-weight: 600; margin-top: 8px; }
@@ -108,13 +108,14 @@
 <body>
     <header>
         <a href="#" class="logo" onclick="location.reload(); return false;">
-            <svg class="logo-hexagon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                <polygon points="50,10 90,35 90,85 50,110 10,85 10,35" fill="#CC3300"/>
-                <text x="50" y="65" font-family="Oswald" font-size="32" font-weight="bold" fill="white" text-anchor="middle" dominant-baseline="middle">FCS</text>
+            <svg class="logo-hexagon" viewBox="0 0 100 115" xmlns="http://www.w3.org/2000/svg" style="width:56px;height:64px;">
+                <polygon points="50,4 94,28 94,76 50,100 6,76 6,28" fill="#E00000"/>
+                <text x="50" y="58" font-family="Oswald,sans-serif" font-size="30" font-weight="900" fill="white" text-anchor="middle" dominant-baseline="middle">FCS</text>
+                <text x="50" y="80" font-family="Oswald,sans-serif" font-size="11" font-weight="700" fill="white" text-anchor="middle" dominant-baseline="middle" letter-spacing="1">CENTRAL</text>
             </svg>
             <div class="logo-text">
-                <h1><span style="color: #CC3300;">FOSTER</span> <span style="color: #1F2328;">CENTRAL</span></h1>
-                <p>DE SERVIÇOS</p>
+                <h1><span style="color: #E00000;">FOSTER</span> <span style="color: white;">CENTRAL</span></h1>
+                <p style="color:#E00000; font-size:9px; letter-spacing:1.5px;">DE SERVIÇOS</p>
             </div>
         </a>
         <div class="header-actions" id="headerActions"></div>
