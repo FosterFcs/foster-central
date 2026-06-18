@@ -103,6 +103,13 @@
         .sobre-content p { margin-bottom: 12px; }
         .sobre-contact { background: var(--papel); padding: 12px; border-radius: 4px; margin-top: 16px; font-size: 13px; }
         .descricao-app { background: white; padding: 16px; border-radius: 8px; margin: 20px 0; border-left: 4px solid var(--laranja); font-size: 13px; color: var(--grafite); }
+        .contador-banner { background: var(--grafite); color: white; padding: 14px 16px; display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; }
+        .contador-item { display: flex; align-items: center; gap: 8px; }
+        .contador-num { font-family: 'Oswald', sans-serif; font-size: 24px; font-weight: 700; color: var(--laranja); min-width: 40px; text-align: center; }
+        .contador-label { font-size: 11px; letter-spacing: 1px; color: #ccc; text-transform: uppercase; }
+        .contador-divider { width: 1px; height: 32px; background: rgba(255,255,255,0.15); }
+        @keyframes countUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        .contador-num.loaded { animation: countUp 0.4s ease; }
     </style>
 </head>
 <body>
@@ -272,17 +279,23 @@
 
                 <div class="form-group">
                     <label>Telefone / WhatsApp</label>
-                    <input type="tel" id="telefoneProf" placeholder="(11) 9999-9999">
+                    <input type="tel" id="telefoneProf" placeholder="(11) 9999-9999" oninput="formatarTelefone(this)">
+                </div>
+
+                <div class="form-group">
+                    <label>Senha <small style="font-weight:400; text-transform:none;">(mín. 8 caracteres)</small></label>
+                    <div style="position:relative;">
+                        <input type="password" id="senhaCadastro" placeholder="Crie uma senha forte" oninput="verificarForcaSenha(this.value)">
+                    </div>
+                    <div id="forcaSenhaBar" style="height:4px; border-radius:2px; margin-top:6px; background:#eee; overflow:hidden;">
+                        <div id="forcaSenhaFill" style="height:100%; width:0%; transition:width 0.3s, background 0.3s;"></div>
+                    </div>
+                    <small id="forcaSenhaTexto" style="font-size:11px; color:var(--linha); margin-top:2px; display:block;"></small>
                 </div>
 
                 <div class="form-group">
                     <label>E-mail</label>
                     <input type="email" id="emailCadastro" placeholder="seu@email.com">
-                </div>
-
-                <div class="form-group">
-                    <label>Senha</label>
-                    <input type="password" id="senhaCadastro" placeholder="Crie uma senha">
                 </div>
 
                 <div class="form-group">
@@ -518,12 +531,48 @@
         let categoriaAtual = null;
         let especialidadesSelecionadas = [];
 
+        function animarNumero(el, valor) {
+            el.classList.remove('loaded');
+            let inicio = 0;
+            const duracao = 800;
+            const incremento = valor / (duracao / 16);
+            const timer = setInterval(() => {
+                inicio += incremento;
+                if(inicio >= valor) { inicio = valor; clearInterval(timer); }
+                el.textContent = Math.floor(inicio);
+            }, 16);
+            void el.offsetWidth;
+            el.classList.add('loaded');
+        }
+
+        async function carregarContadores() {
+            try {
+                const [{ count: totalProf }, { data: profData }, { count: totalChamados }] = await Promise.all([
+                    supabaseClient.from('profissionais').select('*', { count: 'exact', head: true }),
+                    supabaseClient.from('profissionais').select('telefone'),
+                    supabaseClient.from('chamados').select('*', { count: 'exact', head: true }).eq('status', 'novo')
+                ]);
+
+                // Estimar cidades únicas pelo DDD do telefone
+                const ddds = new Set((profData || []).map(p => p.telefone ? p.telefone.replace(/\D/g,'').substring(0,2) : null).filter(Boolean));
+
+                const banner = document.getElementById('contadorBanner');
+                if((totalProf || 0) > 0) {
+                    banner.style.display = 'flex';
+                    animarNumero(document.getElementById('contadorProf'), totalProf || 0);
+                    animarNumero(document.getElementById('contadorCidades'), ddds.size || 0);
+                    animarNumero(document.getElementById('contadorChamados'), totalChamados || 0);
+                }
+            } catch(err) { console.log('Contador:', err); }
+        }
+
         async function inicializar() {
             try {
                 supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
                 renderizarCategorias();
                 carregarPacotesCredito();
                 verificarLoginProf();
+                carregarContadores();
                 supabaseClient.auth.onAuthStateChange((event, session) => {
                     if(event === 'SIGNED_IN' || event === 'USER_UPDATED') {
                         usuarioAtual = session.user;
@@ -890,25 +939,98 @@
             especialidadesSelecionadas = Array.from(document.querySelectorAll('#especialidades input[type="checkbox"]:checked')).map(el => el.value);
         }
 
-        async function cadastrarProf() {
-            const nome = document.getElementById('nomeProf').value;
-            const telefone = document.getElementById('telefoneProf').value;
-            const email = document.getElementById('emailCadastro').value;
-            const senha = document.getElementById('senhaCadastro').value;
-            if(!nome || !telefone || !email || !senha || !categoriaAtual || especialidadesSelecionadas.length === 0) {
-                alert('Preencha todos os campos e selecione especialidades');
-                return;
+        // ===== SEGURANÇA: Validações =====
+        function formatarTelefone(input) {
+            let v = input.value.replace(/\D/g, '').slice(0, 11);
+            if(v.length > 10) v = v.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+            else if(v.length > 6) v = v.replace(/(\d{2})(\d{4,5})(\d{0,4})/, '($1) $2-$3');
+            else if(v.length > 2) v = v.replace(/(\d{2})(\d{0,5})/, '($1) $2');
+            input.value = v;
+        }
+
+        function verificarForcaSenha(senha) {
+            const fill = document.getElementById('forcaSenhaFill');
+            const texto = document.getElementById('forcaSenhaTexto');
+            if(!fill) return;
+            let forca = 0;
+            if(senha.length >= 8) forca++;
+            if(/[A-Z]/.test(senha)) forca++;
+            if(/[0-9]/.test(senha)) forca++;
+            if(/[^A-Za-z0-9]/.test(senha)) forca++;
+            const niveis = [
+                { pct: '0%', cor: '#eee', txt: '' },
+                { pct: '25%', cor: '#e00000', txt: '⚠️ Muito fraca' },
+                { pct: '50%', cor: '#f5a623', txt: '🔶 Fraca' },
+                { pct: '75%', cor: '#2E7D5B', txt: '🔷 Boa' },
+                { pct: '100%', cor: '#1a5c3f', txt: '✅ Forte' }
+            ];
+            const n = senha.length === 0 ? 0 : forca;
+            fill.style.width = niveis[n].pct;
+            fill.style.background = niveis[n].cor;
+            texto.textContent = niveis[n].txt;
+        }
+
+        function checarRateLimit() {
+            const key = 'fc_cadastros';
+            const agora = Date.now();
+            const janela = 60 * 60 * 1000; // 1 hora
+            let tentativas = JSON.parse(localStorage.getItem(key) || '[]');
+            tentativas = tentativas.filter(t => agora - t < janela);
+            if(tentativas.length >= 3) {
+                const restante = Math.ceil((janela - (agora - tentativas[0])) / 60000);
+                alert(`Muitas tentativas de cadastro. Tente novamente em ${restante} minutos.`);
+                return false;
             }
+            tentativas.push(agora);
+            localStorage.setItem(key, JSON.stringify(tentativas));
+            return true;
+        }
+
+        async function cadastrarProf() {
+            const nome = document.getElementById('nomeProf').value.trim();
+            const telefone = document.getElementById('telefoneProf').value.trim();
+
+            const email = document.getElementById('emailCadastro').value.trim();
+            const senha = document.getElementById('senhaCadastro').value;
+
+            // Validações
+            if(!nome || !telefone || !email || !senha || !categoriaAtual || especialidadesSelecionadas.length === 0) {
+                alert('Preencha todos os campos e selecione especialidades'); return;
+            }
+            if(nome.trim().split(' ').length < 2) {
+                alert('Digite seu nome completo (nome e sobrenome)'); return;
+            }
+            const telNumeros = telefone.replace(/\D/g,'');
+            if(telNumeros.length < 10 || telNumeros.length > 11) {
+                alert('Telefone inválido. Use o formato (11) 9999-9999'); return;
+            }
+
+            if(senha.length < 8) {
+                alert('A senha deve ter pelo menos 8 caracteres'); return;
+            }
+            if(!checarRateLimit()) return;
+
             try {
-                const { data: authData, error: authError } = await supabaseClient.auth.signUp({ email, password: senha });
+                // Verificar se telefone já existe
+                const { data: telExiste } = await supabaseClient.from('profissionais').select('id').eq('telefone', telefone).maybeSingle();
+                if(telExiste) { alert('Este telefone já está cadastrado.'); return; }
+
+                const { data: authData, error: authError } = await supabaseClient.auth.signUp({
+                    email, password: senha,
+                    options: { emailRedirectTo: window.location.href }
+                });
                 if(authError) { alert('Erro: ' + authError.message); return; }
+
                 const { error: dbError } = await supabaseClient.from('profissionais').insert({
-                    id: authData.user.id, nome, telefone, especialidades: especialidadesSelecionadas.join(','), categoria: categoriaAtual, saldo_creditos: 10
+                    id: authData.user.id, nome, telefone,
+                    especialidades: especialidadesSelecionadas.join(','),
+                    categoria: categoriaAtual, saldo_creditos: 10
                 });
                 if(dbError) { alert('Erro: ' + dbError.message); return; }
-                alert('Cadastro realizado! Você ganhou 10 créditos grátis.');
+
+                alert('✅ Cadastro realizado! Verifique seu e-mail para confirmar a conta.\nVocê ganhou 10 créditos grátis!');
                 voltarLogin();
-            } catch(err) { alert('Erro ao cadastrar'); }
+            } catch(err) { alert('Erro ao cadastrar. Tente novamente.'); }
         }
 
         async function loginProf() {
