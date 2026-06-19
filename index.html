@@ -17,40 +17,18 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
     <style>
-        :root {
-            --grafite: #1F2328;
-            --laranja: #E00000;
-            --papel: #F5EFE6;
-            --verde: #2E7D5B;
-            --linha: #8A8F94;
-        }
+        :root { --grafite: #1F2328; --laranja: #E00000; --papel: #F5EFE6; --verde: #2E7D5B; --linha: #8A8F94; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: var(--papel); color: var(--grafite); min-height: 100vh; }
         header { background: var(--grafite); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 12px rgba(0,0,0,0.2); position: sticky; top: 0; z-index: 100; border-bottom: 3px solid var(--laranja); }
         .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: white; }
-        .logo-circle { 
-            width: 60px; 
-            height: 60px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-weight: 700; 
-            font-size: 18px;
-            background: none;
-        }
-        .logo-hexagon {
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+        .logo-hexagon { width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; }
         .logo-text h1 { font-family: 'Oswald', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 1px; line-height: 1.2; }
         .logo-text p { font-size: 9px; color: var(--laranja); letter-spacing: 1px; }
         .header-actions { display: flex; gap: 12px; align-items: center; }
         .btn-logout { background: var(--laranja); color: white; border: none; padding: 8px 16px; border-radius: 4px; font-weight: 600; cursor: pointer; font-size: 12px; }
-        .tabs { display: flex; background: var(--grafite); border-bottom: 2px solid var(--laranja); }
-        .tab { flex: 1; padding: 14px; text-align: center; cursor: pointer; border: none; background: var(--grafite); color: var(--linha); font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase; border-bottom: 3px solid transparent; margin-bottom: -2px; }
+        .tabs { display: flex; background: var(--grafite); border-bottom: 2px solid var(--laranja); overflow-x: auto; flex-wrap: nowrap; }
+        .tab { flex: 1; padding: 14px; text-align: center; cursor: pointer; border: none; background: var(--grafite); color: var(--linha); font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase; border-bottom: 3px solid transparent; margin-bottom: -2px; white-space: nowrap; }
         .tab.active { color: var(--laranja); border-bottom-color: var(--laranja); }
         .container { max-width: 600px; margin: 0 auto; padding: 16px; }
         .tab-content { display: none; }
@@ -59,14 +37,15 @@
         label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--grafite); }
         input, select, textarea { width: 100%; padding: 12px; border: 1px solid var(--linha); border-radius: 4px; font-family: 'Inter', sans-serif; font-size: 14px; background: white; color: var(--grafite); }
         textarea { resize: vertical; min-height: 100px; }
-        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--laranja); box-shadow: 0 0 0 3px rgba(255, 107, 26, 0.1); }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--laranja); box-shadow: 0 0 0 3px rgba(224,0,0,0.1); }
         .btn-primary { width: 100%; padding: 14px; background: var(--laranja); color: white; border: none; border-radius: 4px; font-weight: 700; font-size: 14px; letter-spacing: 1px; cursor: pointer; font-family: 'Oswald', sans-serif; text-transform: uppercase; }
         .btn-primary:hover { background: #c00000; }
         .btn-secondary { padding: 10px 16px; background: var(--verde); color: white; border: none; border-radius: 4px; font-weight: 600; font-size: 12px; cursor: pointer; margin-top: 8px; }
         .protocolo { background: var(--verde); color: white; padding: 24px; border-radius: 8px; text-align: center; margin: 20px 0; }
         .protocolo h3 { font-size: 12px; font-weight: 600; letter-spacing: 1px; margin-bottom: 8px; text-transform: uppercase; }
         .protocolo .numero { font-family: 'Oswald', sans-serif; font-size: 32px; font-weight: 700; margin-bottom: 12px; }
-        .chamado-card { background: white; padding: 16px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid var(--laranja); box-shadow: 0 2px 6px rgba(0,0,0,0.07); transition: box-shadow 0.2s; } .chamado-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+        .chamado-card { background: white; padding: 16px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid var(--laranja); box-shadow: 0 2px 6px rgba(0,0,0,0.07); transition: box-shadow 0.2s; }
+        .chamado-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
         .chamado-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
         .chamado-info { font-size: 12px; color: var(--linha); margin-bottom: 4px; }
         .servico-badge { display: inline-block; background: var(--laranja); color: white; padding: 4px 8px; border-radius: 3px; font-size: 11px; font-weight: 600; margin-top: 8px; }
@@ -98,7 +77,6 @@
         .btn-close { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--linha); }
         .admin-panel { background: var(--grafite); color: white; padding: 16px; border-radius: 8px; margin-bottom: 16px; }
         .admin-panel h3 { font-family: 'Oswald', sans-serif; margin-bottom: 12px; font-size: 14px; }
-        .admin-item { background: rgba(255,255,255,0.1); padding: 12px; border-radius: 4px; margin-bottom: 8px; font-size: 12px; }
         footer { background: var(--grafite); color: var(--linha); padding: 24px 16px; text-align: center; font-size: 12px; margin-top: 40px; }
         footer a { color: var(--laranja); text-decoration: none; cursor: pointer; font-weight: 600; }
         .sobre-content { font-size: 14px; line-height: 1.6; color: var(--grafite); }
@@ -106,11 +84,6 @@
         .sobre-content p { margin-bottom: 12px; }
         .sobre-contact { background: var(--papel); padding: 12px; border-radius: 4px; margin-top: 16px; font-size: 13px; }
         .descricao-app { background: white; padding: 16px; border-radius: 8px; margin: 20px 0; border-left: 4px solid var(--laranja); font-size: 13px; color: var(--grafite); }
-        .contador-banner { background: var(--grafite); color: white; padding: 14px 16px; display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; }
-        .contador-item { display: flex; align-items: center; gap: 8px; }
-        .contador-num { font-family: 'Oswald', sans-serif; font-size: 24px; font-weight: 700; color: var(--laranja); min-width: 40px; text-align: center; }
-        .contador-label { font-size: 11px; letter-spacing: 1px; color: #ccc; text-transform: uppercase; }
-        .contador-divider { width: 1px; height: 32px; background: rgba(255,255,255,0.15); }
         @keyframes countUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
         .contador-num.loaded { animation: countUp 0.4s ease; }
     </style>
@@ -124,280 +97,168 @@
                 <text x="50" y="80" font-family="Oswald,sans-serif" font-size="11" font-weight="700" fill="white" text-anchor="middle" dominant-baseline="middle" letter-spacing="1">CENTRAL</text>
             </svg>
             <div class="logo-text">
-                <h1><span style="color: #E00000;">FOSTER</span> <span style="color: white;">CENTRAL</span></h1>
-                <p style="color:#E00000; font-size:9px; letter-spacing:1.5px;">DE SERVIÇOS</p>
+                <h1><span style="color:#E00000;">FOSTER</span> <span style="color:white;">CENTRAL</span></h1>
+                <p style="color:#E00000;font-size:9px;letter-spacing:1.5px;">DE SERVIÇOS</p>
             </div>
         </a>
         <div class="header-actions" id="headerActions"></div>
     </header>
 
-    <div class="tabs" style="overflow-x: auto; display: flex; flex-wrap: nowrap; border-bottom: 2px solid var(--laranja);">
-        <button class="tab active" onclick="mudarAba('pedido', this)" style="white-space:nowrap;">🏗️ PEDIR SERVIÇO</button>
-        <button class="tab" onclick="mudarAba('cliente', this)" style="white-space:nowrap;">👤 SOU CLIENTE</button>
-        <button class="tab" onclick="mudarAba('painel', this)" style="white-space:nowrap;">🔧 SOU PROF.</button>
-        <button class="tab" onclick="mudarAba('buscar', this)" style="white-space:nowrap;">🔍 BUSCAR</button>
-        <button class="tab" onclick="mudarAba('avaliacoes', this)" style="white-space:nowrap;">⭐ AVALIAÇÕES</button>
-        <button class="tab" onclick="mudarAba('creditos', this)" style="white-space:nowrap;">💰 CRÉDITOS</button>
+    <div class="tabs">
+        <button class="tab active" onclick="mudarAba('pedido',this)">🏗️ PEDIR SERVIÇO</button>
+        <button class="tab" onclick="mudarAba('cliente',this)">👤 SOU CLIENTE</button>
+        <button class="tab" onclick="mudarAba('painel',this)">🔧 SOU PROF.</button>
+        <button class="tab" onclick="mudarAba('buscar',this)">🔍 BUSCAR</button>
+        <button class="tab" onclick="mudarAba('avaliacoes',this)">⭐ AVALIAÇÕES</button>
+        <button class="tab" onclick="mudarAba('creditos',this)">💰 CRÉDITOS</button>
     </div>
 
     <div class="container">
         <!-- ABA 1: PEDIR SERVIÇO -->
         <div id="pedido" class="tab-content active">
-            <div class="descricao-app" style="margin-top: 20px;">
+            <div class="descricao-app" style="margin-top:20px;">
                 <strong>🏗️ Foster Central de Serviços</strong><br>
                 Conectando clientes com profissionais de construção, engenharia e arquitetura em todo Brasil.
             </div>
-
             <div class="form-group">
                 <label>CATEGORIA</label>
                 <div class="categoria-select" id="categoriasCliente"></div>
             </div>
-
-            <form id="formPedido" onsubmit="enviarPedido(event)" style="display: none;">
-                <div class="form-group">
-                    <label>Seu nome</label>
-                    <input type="text" id="nomeCliente" required placeholder="Ex: Maria Silva">
-                </div>
-
-                <div class="form-group">
-                    <label>Telefone / WhatsApp</label>
-                    <input type="tel" id="telefoneCliente" required placeholder="(11) 9999-9999">
-                </div>
-
-                <div class="form-group">
-                    <label>Tipo de serviço</label>
-                    <select id="servicoCliente" required></select>
-                </div>
-
-                <div class="form-group">
-                    <label>Cidade / Região</label>
-                    <input type="text" id="bairroCliente" required placeholder="Ex: São Paulo, SP">
-                </div>
-
-                <div class="form-group">
-                    <label>Descrição do projeto</label>
-                    <textarea id="descricaoCliente" required placeholder="Descreva detalhes do seu projeto..."></textarea>
-                </div>
-
+            <form id="formPedido" onsubmit="enviarPedido(event)" style="display:none;">
+                <div class="form-group"><label>Seu nome</label><input type="text" id="nomeCliente" required placeholder="Ex: Maria Silva"></div>
+                <div class="form-group"><label>Telefone / WhatsApp</label><input type="tel" id="telefoneCliente" required placeholder="(11) 9999-9999"></div>
+                <div class="form-group"><label>Tipo de serviço</label><select id="servicoCliente" required></select></div>
+                <div class="form-group"><label>Cidade / Região</label><input type="text" id="bairroCliente" required placeholder="Ex: São Paulo, SP"></div>
+                <div class="form-group"><label>Descrição do projeto</label><textarea id="descricaoCliente" required placeholder="Descreva detalhes do seu projeto..."></textarea></div>
                 <button type="submit" class="btn-primary">ENVIAR PEDIDO</button>
             </form>
-
-            <div id="confirmacaoPedido" style="display: none;">
+            <div id="confirmacaoPedido" style="display:none;">
                 <div class="protocolo">
                     <h3>Pedido enviado com sucesso!</h3>
                     <div class="numero" id="numeroProtocolo">#0000</div>
-                    <p style="font-size: 12px; margin-top: 8px;">Profissionais já estão vendo seu pedido.<br>Fique atento aos contatos!</p>
+                    <p style="font-size:12px;margin-top:8px;">Profissionais já estão vendo seu pedido.<br>Fique atento aos contatos!</p>
                 </div>
             </div>
         </div>
 
         <!-- ABA 2: SOU CLIENTE -->
         <div id="cliente" class="tab-content">
-            <div id="clienteLoginArea" style="margin-top: 20px;">
-                <div style="background:white; padding:20px; border-radius:8px; border-left:4px solid var(--laranja); margin-bottom:20px;">
-                    <h3 style="font-family:Oswald; margin-bottom:8px;">👤 ÁREA DO CLIENTE</h3>
-                    <p style="font-size:13px; color:var(--linha);">Acesse para acompanhar seus pedidos e histórico de serviços.</p>
+            <div id="clienteLoginArea" style="margin-top:20px;">
+                <div style="background:white;padding:20px;border-radius:8px;border-left:4px solid var(--laranja);margin-bottom:20px;">
+                    <h3 style="font-family:Oswald;margin-bottom:8px;">👤 ÁREA DO CLIENTE</h3>
+                    <p style="font-size:13px;color:var(--linha);">Acesse para acompanhar seus pedidos e histórico de serviços.</p>
                 </div>
-                <div class="form-group">
-                    <label>E-mail</label>
-                    <input type="email" id="emailCliente" placeholder="seu@email.com">
-                </div>
-                <div class="form-group">
-                    <label>Senha</label>
-                    <input type="password" id="senhaCliente" placeholder="Sua senha">
-                </div>
+                <div class="form-group"><label>E-mail</label><input type="email" id="emailCliente" placeholder="seu@email.com"></div>
+                <div class="form-group"><label>Senha</label><input type="password" id="senhaCliente" placeholder="Sua senha"></div>
                 <button class="btn-primary" onclick="loginCliente()">ENTRAR</button>
-                <button class="btn-secondary" style="width:100%; margin-top:8px;" onclick="mostrarCadastroCliente()">CADASTRE-SE</button>
+                <button class="btn-secondary" style="width:100%;margin-top:8px;" onclick="mostrarCadastroCliente()">CADASTRE-SE</button>
             </div>
-
-            <div id="clienteCadastroArea" style="display:none; margin-top:20px;">
-                <h3 style="font-family:Oswald; margin-bottom:16px;">CRIAR CONTA CLIENTE</h3>
-                <div class="form-group">
-                    <label>Nome completo</label>
-                    <input type="text" id="nomeClienteCad" placeholder="Seu nome completo">
-                </div>
-                <div class="form-group">
-                    <label>Telefone / WhatsApp</label>
-                    <input type="tel" id="telefoneClienteCad" placeholder="(11) 9999-9999">
-                </div>
-                <div class="form-group">
-                    <label>Cidade / Estado</label>
-                    <input type="text" id="cidadeClienteCad" placeholder="Ex: São Paulo, SP">
-                </div>
-                <div class="form-group">
-                    <label>E-mail</label>
-                    <input type="email" id="emailClienteCad" placeholder="seu@email.com">
-                </div>
-                <div class="form-group">
-                    <label>Senha</label>
-                    <input type="password" id="senhaClienteCad" placeholder="Crie uma senha">
-                </div>
+            <div id="clienteCadastroArea" style="display:none;margin-top:20px;">
+                <h3 style="font-family:Oswald;margin-bottom:16px;">CRIAR CONTA CLIENTE</h3>
+                <div class="form-group"><label>Nome completo</label><input type="text" id="nomeClienteCad" placeholder="Seu nome completo"></div>
+                <div class="form-group"><label>Telefone / WhatsApp</label><input type="tel" id="telefoneClienteCad" placeholder="(11) 9999-9999"></div>
+                <div class="form-group"><label>Cidade / Estado</label><input type="text" id="cidadeClienteCad" placeholder="Ex: São Paulo, SP"></div>
+                <div class="form-group"><label>E-mail</label><input type="email" id="emailClienteCad" placeholder="seu@email.com"></div>
+                <div class="form-group"><label>Senha</label><input type="password" id="senhaClienteCad" placeholder="Crie uma senha"></div>
                 <button class="btn-primary" onclick="cadastrarCliente()" style="margin-top:16px;">CADASTRAR</button>
-                <button class="btn-secondary" style="width:100%; margin-top:8px;" onclick="voltarLoginCliente()">VOLTAR</button>
+                <button class="btn-secondary" style="width:100%;margin-top:8px;" onclick="voltarLoginCliente()">VOLTAR</button>
             </div>
-
-            <div id="clientePainelLogado" style="display:none; margin-top:20px;">
-                <div style="background:var(--grafite); color:white; padding:16px; border-radius:8px; margin-bottom:16px;">
-                    <h3 style="font-family:Oswald; font-size:14px;" id="clienteBoasVindas">Olá, Cliente!</h3>
-                    <p style="font-size:12px; color:var(--linha); margin-top:4px;">Seus pedidos recentes</p>
+            <div id="clientePainelLogado" style="display:none;margin-top:20px;">
+                <div style="background:var(--grafite);color:white;padding:16px;border-radius:8px;margin-bottom:16px;">
+                    <h3 style="font-family:Oswald;font-size:14px;" id="clienteBoasVindas">Olá, Cliente!</h3>
+                    <p style="font-size:12px;color:var(--linha);margin-top:4px;">Seus pedidos recentes</p>
                 </div>
-                <h3 style="font-family:Oswald; margin-bottom:16px;">MEUS PEDIDOS</h3>
-                <div id="listaPedidosCliente"><p style="text-align:center; color:var(--linha);">Carregando seus pedidos...</p></div>
+                <h3 style="font-family:Oswald;margin-bottom:16px;">MEUS PEDIDOS</h3>
+                <div id="listaPedidosCliente"><p style="text-align:center;color:var(--linha);">Carregando seus pedidos...</p></div>
             </div>
         </div>
 
-        <!-- ABA 3: SOU PROFISSIONAL (MEU PAINEL) -->
+        <!-- ABA 3: SOU PROFISSIONAL -->
         <div id="painel" class="tab-content">
-            <div id="loginArea" style="margin-top: 20px;">
-                <div style="background:white; padding:20px; border-radius:8px; border-left:4px solid var(--laranja); margin-bottom:20px;">
-                    <h3 style="font-family:Oswald; margin-bottom:8px;">🔧 ÁREA DO PROFISSIONAL</h3>
-                    <p style="font-size:13px; color:var(--linha);">Acesse projetos, gerencie seus créditos e conecte com clientes.</p>
+            <div id="loginArea" style="margin-top:20px;">
+                <div style="background:white;padding:20px;border-radius:8px;border-left:4px solid var(--laranja);margin-bottom:20px;">
+                    <h3 style="font-family:Oswald;margin-bottom:8px;">🔧 ÁREA DO PROFISSIONAL</h3>
+                    <p style="font-size:13px;color:var(--linha);">Acesse projetos, gerencie seus créditos e conecte com clientes.</p>
                 </div>
-                <div class="form-group">
-                    <label>E-mail</label>
-                    <input type="email" id="emailProf" placeholder="seu@email.com">
-                </div>
-
-                <div class="form-group">
-                    <label>Senha</label>
-                    <input type="password" id="senhaProf" placeholder="Sua senha">
-                </div>
-
+                <div class="form-group"><label>E-mail</label><input type="email" id="emailProf" placeholder="seu@email.com"></div>
+                <div class="form-group"><label>Senha</label><input type="password" id="senhaProf" placeholder="Sua senha"></div>
                 <button class="btn-primary" onclick="loginProf()">ENTRAR</button>
-                <button class="btn-secondary" style="width: 100%;" onclick="mostrarCadastro()">CADASTRE-SE</button>
+                <button class="btn-secondary" style="width:100%;" onclick="mostrarCadastro()">CADASTRE-SE</button>
             </div>
-
-            <div id="cadastroArea" style="display: none; margin-top: 20px;">
-                <h3 style="font-family: Oswald; margin-bottom: 16px;">CRIAR CONTA</h3>
-
+            <div id="cadastroArea" style="display:none;margin-top:20px;">
+                <h3 style="font-family:Oswald;margin-bottom:16px;">CRIAR CONTA</h3>
+                <div class="form-group"><label>Nome completo</label><input type="text" id="nomeProf" placeholder="Seu nome"></div>
+                <div class="form-group"><label>CREA/Inscrição (opcional)</label><input type="text" id="creaProf" placeholder="Ex: CREA 1234567"></div>
+                <div class="form-group"><label>Telefone / WhatsApp</label><input type="tel" id="telefoneProf" placeholder="(11) 9999-9999" oninput="formatarTelefone(this)"></div>
                 <div class="form-group">
-                    <label>Nome completo</label>
-                    <input type="text" id="nomeProf" placeholder="Seu nome">
+                    <label>Senha <small style="font-weight:400;text-transform:none;">(mín. 8 caracteres)</small></label>
+                    <input type="password" id="senhaCadastro" placeholder="Crie uma senha forte" oninput="verificarForcaSenha(this.value)">
+                    <div id="forcaSenhaBar" style="height:4px;border-radius:2px;margin-top:6px;background:#eee;overflow:hidden;"><div id="forcaSenhaFill" style="height:100%;width:0%;transition:width 0.3s,background 0.3s;"></div></div>
+                    <small id="forcaSenhaTexto" style="font-size:11px;color:var(--linha);margin-top:2px;display:block;"></small>
                 </div>
-
-                <div class="form-group">
-                    <label>CREA/Inscrição (opcional)</label>
-                    <input type="text" id="creaProf" placeholder="Ex: CREA 1234567">
-                </div>
-
-                <div class="form-group">
-                    <label>Telefone / WhatsApp</label>
-                    <input type="tel" id="telefoneProf" placeholder="(11) 9999-9999" oninput="formatarTelefone(this)">
-                </div>
-
-                <div class="form-group">
-                    <label>Senha <small style="font-weight:400; text-transform:none;">(mín. 8 caracteres)</small></label>
-                    <div style="position:relative;">
-                        <input type="password" id="senhaCadastro" placeholder="Crie uma senha forte" oninput="verificarForcaSenha(this.value)">
-                    </div>
-                    <div id="forcaSenhaBar" style="height:4px; border-radius:2px; margin-top:6px; background:#eee; overflow:hidden;">
-                        <div id="forcaSenhaFill" style="height:100%; width:0%; transition:width 0.3s, background 0.3s;"></div>
-                    </div>
-                    <small id="forcaSenhaTexto" style="font-size:11px; color:var(--linha); margin-top:2px; display:block;"></small>
-                </div>
-
-                <div class="form-group">
-                    <label>E-mail</label>
-                    <input type="email" id="emailCadastro" placeholder="seu@email.com">
-                </div>
-
-                <div class="form-group">
-                    <label>CATEGORIA PRINCIPAL</label>
-                    <div class="categoria-select" id="categoriasCadastro"></div>
-                </div>
-
-                <div id="especialidadesArea" style="display: none;">
+                <div class="form-group"><label>E-mail</label><input type="email" id="emailCadastro" placeholder="seu@email.com"></div>
+                <div class="form-group"><label>CATEGORIA PRINCIPAL</label><div class="categoria-select" id="categoriasCadastro"></div></div>
+                <div id="especialidadesArea" style="display:none;">
                     <label>ESPECIALIDADES (Selecione as suas)</label>
                     <div class="especialidades" id="especialidades"></div>
                 </div>
-
-                <button class="btn-primary" onclick="cadastrarProf()" style="margin-top: 16px;">CADASTRAR</button>
-                <button class="btn-secondary" style="width: 100%; margin-top: 8px;" onclick="voltarLogin()">VOLTAR</button>
+                <button class="btn-primary" onclick="cadastrarProf()" style="margin-top:16px;">CADASTRAR</button>
+                <button class="btn-secondary" style="width:100%;margin-top:8px;" onclick="voltarLogin()">VOLTAR</button>
             </div>
-
-            <div id="painelLogado" style="display: none;">
-                <div class="admin-panel" id="adminPanel" style="display: none;">
+            <div id="painelLogado" style="display:none;">
+                <div class="admin-panel" id="adminPanel" style="display:none;">
                     <h3>⚙️ PAINEL ADMIN</h3>
-                    <button class="btn-secondary" style="width: 100%;" onclick="abrirModalAdmin()">GERENCIAR PROFISSIONAIS</button>
+                    <button class="btn-secondary" style="width:100%;" onclick="abrirModalAdmin()">GERENCIAR PROFISSIONAIS</button>
                 </div>
-
-                <div class="saldo">
-                    <h3>SEUS CRÉDITOS</h3>
-                    <div class="numero" id="saldoCreditos">0</div>
-                </div>
-
-                <h3 style="font-family: Oswald; margin-top: 20px; margin-bottom: 16px;">PROJETOS DISPONÍVEIS</h3>
+                <div class="saldo"><h3>SEUS CRÉDITOS</h3><div class="numero" id="saldoCreditos">0</div></div>
+                <h3 style="font-family:Oswald;margin-top:20px;margin-bottom:16px;">PROJETOS DISPONÍVEIS</h3>
                 <div id="listaChamados"></div>
             </div>
         </div>
 
-        <!-- ABA 4: BUSCAR PROFISSIONAL -->
+        <!-- ABA 4: BUSCAR -->
         <div id="buscar" class="tab-content">
-            <div style="margin-top: 20px;">
-                <div class="form-group">
-                    <label>BUSCAR PROFISSIONAL</label>
-                    <input type="text" id="buscaInput" placeholder="Ex: Pedreiro, Elétrica, Engenheiro..." oninput="buscarProfissionais()">
-                </div>
+            <div style="margin-top:20px;">
+                <div class="form-group"><label>BUSCAR PROFISSIONAL</label><input type="text" id="buscaInput" placeholder="Ex: Pedreiro, Elétrica, Engenheiro..." oninput="buscarProfissionais()"></div>
                 <div class="form-group">
                     <label>FILTRAR POR CATEGORIA</label>
-                    <select id="filtroCategoriaSelect" onchange="buscarProfissionais()">
-                        <option value="">Todas as categorias</option>
-                    </select>
+                    <select id="filtroCategoriaSelect" onchange="buscarProfissionais()"><option value="">Todas as categorias</option></select>
                 </div>
-                <div id="resultadosBusca"><p style="text-align:center; color: var(--linha); margin-top: 20px;">Digite para buscar profissionais</p></div>
+                <div id="resultadosBusca"><p style="text-align:center;color:var(--linha);margin-top:20px;">Digite para buscar profissionais</p></div>
             </div>
         </div>
 
         <!-- ABA 5: AVALIAÇÕES -->
         <div id="avaliacoes" class="tab-content">
-            <div style="margin-top: 20px;">
-                <h3 style="font-family: Oswald; margin-bottom: 16px;">AVALIAR PROFISSIONAL</h3>
-                <div class="form-group">
-                    <label>BUSCAR PROFISSIONAL</label>
-                    <input type="text" id="buscaAvaliacaoInput" placeholder="Digite o nome do profissional..." oninput="buscarProfParaAvaliar()">
-                </div>
+            <div style="margin-top:20px;">
+                <h3 style="font-family:Oswald;margin-bottom:16px;">AVALIAR PROFISSIONAL</h3>
+                <div class="form-group"><label>BUSCAR PROFISSIONAL</label><input type="text" id="buscaAvaliacaoInput" placeholder="Digite o nome do profissional..." oninput="buscarProfParaAvaliar()"></div>
                 <div id="resultadosBuscaAvaliacao"></div>
-                <div id="formAvaliacao" style="display:none; background:white; padding:16px; border-radius:8px; margin-top:16px; border-left:4px solid var(--laranja);">
-                    <h4 id="nomeAvaliadoTitulo" style="margin-bottom:12px; font-family:Oswald;"></h4>
-                    <div class="form-group">
-                        <label>SEU NOME</label>
-                        <input type="text" id="nomeClienteAvaliacao" placeholder="Seu nome">
-                    </div>
+                <div id="formAvaliacao" style="display:none;background:white;padding:16px;border-radius:8px;margin-top:16px;border-left:4px solid var(--laranja);">
+                    <h4 id="nomeAvaliadoTitulo" style="margin-bottom:12px;font-family:Oswald;"></h4>
+                    <div class="form-group"><label>SEU NOME</label><input type="text" id="nomeClienteAvaliacao" placeholder="Seu nome"></div>
                     <div class="form-group">
                         <label>NOTA</label>
-                        <div id="estrelasSeletor" style="display:flex; gap:8px; font-size:28px; cursor:pointer; margin-bottom:8px;">
-                            <span onclick="selecionarEstrelas(1)">☆</span>
-                            <span onclick="selecionarEstrelas(2)">☆</span>
-                            <span onclick="selecionarEstrelas(3)">☆</span>
-                            <span onclick="selecionarEstrelas(4)">☆</span>
-                            <span onclick="selecionarEstrelas(5)">☆</span>
+                        <div id="estrelasSeletor" style="display:flex;gap:8px;font-size:28px;cursor:pointer;margin-bottom:8px;">
+                            <span onclick="selecionarEstrelas(1)">☆</span><span onclick="selecionarEstrelas(2)">☆</span><span onclick="selecionarEstrelas(3)">☆</span><span onclick="selecionarEstrelas(4)">☆</span><span onclick="selecionarEstrelas(5)">☆</span>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label>COMENTÁRIO</label>
-                        <textarea id="comentarioAvaliacao" placeholder="Como foi o serviço?"></textarea>
-                    </div>
+                    <div class="form-group"><label>COMENTÁRIO</label><textarea id="comentarioAvaliacao" placeholder="Como foi o serviço?"></textarea></div>
                     <button class="btn-primary" onclick="enviarAvaliacao()">ENVIAR AVALIAÇÃO</button>
-                    <button class="btn-secondary" style="width:100%; margin-top:8px;" onclick="cancelarAvaliacao()">CANCELAR</button>
+                    <button class="btn-secondary" style="width:100%;margin-top:8px;" onclick="cancelarAvaliacao()">CANCELAR</button>
                 </div>
-                <h3 style="font-family: Oswald; margin-top: 24px; margin-bottom: 16px;">AVALIAÇÕES RECENTES</h3>
-                <div id="listaAvaliacoes"><p style="text-align:center; color:var(--linha);">Carregando avaliações...</p></div>
+                <h3 style="font-family:Oswald;margin-top:24px;margin-bottom:16px;">AVALIAÇÕES RECENTES</h3>
+                <div id="listaAvaliacoes"><p style="text-align:center;color:var(--linha);">Carregando avaliações...</p></div>
             </div>
         </div>
 
         <!-- ABA 6: CRÉDITOS -->
         <div id="creditos" class="tab-content">
-            <div class="saldo" style="margin-top: 20px;">
-                <h3>SEU SALDO</h3>
-                <div class="numero" id="saldoCreditos2">0</div>
-                <p style="font-size: 12px; margin-top: 8px;">Escolha um pacote para começar</p>
-            </div>
-
+            <div class="saldo" style="margin-top:20px;"><h3>SEU SALDO</h3><div class="numero" id="saldoCreditos2">0</div><p style="font-size:12px;margin-top:8px;">Escolha um pacote para começar</p></div>
             <div id="pacotesCredito"></div>
-
-            <div style="margin-top: 24px; padding: 16px; background: white; border-radius: 8px; font-size: 12px; color: var(--linha);">
+            <div style="margin-top:24px;padding:16px;background:white;border-radius:8px;font-size:12px;color:var(--linha);">
                 <p><strong>💡 Como funciona:</strong></p>
-                <ul style="margin-left: 16px; margin-top: 8px;">
+                <ul style="margin-left:16px;margin-top:8px;">
                     <li>Cada profissão tem um custo em créditos (1-3)</li>
                     <li>Você ganha 10 créditos GRÁTIS ao se cadastrar</li>
                     <li>Use créditos para desbloquear contato do cliente</li>
@@ -410,10 +271,7 @@
     <!-- MODAL PIX -->
     <div id="modalPix" class="modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2>COMPRAR CRÉDITOS</h2>
-                <button class="btn-close" onclick="fecharModalPix()">×</button>
-            </div>
+            <div class="modal-header"><h2>COMPRAR CRÉDITOS</h2><button class="btn-close" onclick="fecharModalPix()">×</button></div>
             <div id="pixContent"></div>
         </div>
     </div>
@@ -421,10 +279,7 @@
     <!-- MODAL ADMIN -->
     <div id="modalAdmin" class="modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2>GERENCIAR PROFISSIONAIS</h2>
-                <button class="btn-close" onclick="fecharModalAdmin()">×</button>
-            </div>
+            <div class="modal-header"><h2>GERENCIAR PROFISSIONAIS</h2><button class="btn-close" onclick="fecharModalAdmin()">×</button></div>
             <div id="adminContent"></div>
         </div>
     </div>
@@ -432,25 +287,16 @@
     <!-- MODAL SOBRE -->
     <div id="modalSobre" class="modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2>SOBRE FOSTER CENTRAL</h2>
-                <button class="btn-close" onclick="fecharModalSobre()">×</button>
-            </div>
+            <div class="modal-header"><h2>SOBRE FOSTER CENTRAL</h2><button class="btn-close" onclick="fecharModalSobre()">×</button></div>
             <div class="sobre-content">
                 <h3>Foster Central de Serviços</h3>
                 <p>Conectando profissionais e clientes em todo Brasil desde <strong>2012</strong>.</p>
-
                 <p>A Foster Central começou com uma missão simples: conectar profissionais qualificados de construção, engenharia e arquitetura com clientes que precisam de serviços de qualidade, sem intermediários caros.</p>
-
-                <p>Somos especialistas em construção civil, engenharia e arquitetura. Aqui você encontra desde pedreiros e eletricistas até engenheiros e arquitetos.</p>
-
                 <h3>Missão</h3>
                 <p><strong>"PEGA • CONECTE • RESOLVA"</strong></p>
-
                 <div class="sobre-contact">
                     <p><strong>Entre em contato:</strong></p>
                     <p>📧 comercial@fosterconstrucoes.com.br</p>
-                    <p>📱 WhatsApp disponível</p>
                 </div>
             </div>
         </div>
@@ -458,115 +304,48 @@
 
     <footer>
         <p>Foster Central de Serviços © 2026 — Desenvolvido por <strong>Wilson Foster</strong></p>
-        <p style="margin-top: 8px;"><a onclick="abrirModalSobre()">Sobre Foster Central</a></p>
+        <p style="margin-top:8px;"><a onclick="abrirModalSobre()">Sobre Foster Central</a></p>
     </footer>
 
     <script>
         const CATEGORIAS = {
-            engenharia: {
-                nome: '📐 Engenharia',
-                servicos: ['Projeto Estrutural', 'Projeto Elétrico', 'Projeto Hidráulico', 'Laudo Técnico', 'Vistoria', 'Regularização de Imóvel', 'Cálculo de Estrutura', 'Mapeamento de Estrutura']
-            },
-            arquitetura: {
-                nome: '🏛️ Arquitetura',
-                servicos: ['Projeto Arquitetônico', 'Design de Interiores', 'Reforma com Projeto', 'Paisagismo', 'Planejamento de Espaço']
-            },
-            gestao: {
-                nome: '📊 Gestão de Obras',
-                servicos: ['Gerenciamento de Projeto', 'Coordenação de Obra', 'Fiscalização de Obra', 'Orçamento de Projeto', 'Planejamento de Execução']
-            },
-            tecnico: {
-                nome: '🛠️ Técnicos',
-                servicos: ['Levantamento Topográfico', 'Projeto em CAD', 'Mapeamento de Terreno', 'Desenho Técnico', 'Geoprocessamento']
-            },
-            civil: {
-                nome: '🏗️ Infraestrutura Civil',
-                servicos: ['Alicerce e Fundação', 'Estrutura de Concreto', 'Alvenaria', 'Armação de Ferro', 'Carpintaria', 'Pavimentação', 'Escavação e Terraplanagem', 'Compactação']
-            },
-            eletrica: {
-                nome: '⚡ Instalações Elétricas',
-                servicos: ['Instalação de Tomadas', 'Fiação Elétrica', 'Quadro de Disjuntores', 'Iluminação', 'Energia Solar', 'Instalação de CFTV', 'Instalação de Alarme']
-            },
-            hidraulica: {
-                nome: '💧 Instalações Hidráulicas',
-                servicos: ['Tubulação de Água', 'Banheiro Completo', 'Cozinha Completa', 'Instalação de Gás', 'Aquecimento Solar', 'Sistema de Drenagem']
-            },
-            acabamento: {
-                nome: '🎨 Revestimentos e Acabamentos',
-                servicos: ['Pintura', 'Revestimento em Cerâmica', 'Piso Porcelanato', 'Impermeabilização', 'Gesso e Drywall', 'Rejuntamento', 'Espelho e Vidro']
-            },
-            estrutura: {
-                nome: '⚙️ Estruturas Metálicas',
-                servicos: ['Portão de Ferro', 'Escada de Ferro', 'Cobertura Metálica', 'Moldura Metálica', 'Serralheria', 'Soldagem']
-            },
-            esquadrias: {
-                nome: '🪟 Esquadrias e Marcenaria',
-                servicos: ['Portas de Madeira', 'Janelas', 'Móvel Planejado', 'Armário', 'Piso de Madeira', 'Vidraçaria']
-            },
-            cobertura: {
-                nome: '🏠 Coberturas e Fachadas',
-                servicos: ['Cobertura em Telha', 'Calha e Condutores', 'Fachada de Revestimento', 'ACM/Alumínio Composto', 'Impermeabilização de Cobertura', 'Limpeza de Fachada']
-            },
-            complementar: {
-                nome: '🔧 Serviços Complementares',
-                servicos: ['Ar-Condicionado', 'Limpeza Pós-Obra', 'Dedetizador', 'Cerca Elétrica', 'Paisagismo', 'Jardineiro']
-            }
+            engenharia: { nome: '📐 Engenharia', servicos: ['Projeto Estrutural','Projeto Elétrico','Projeto Hidráulico','Laudo Técnico','Vistoria','Regularização de Imóvel','Cálculo de Estrutura','Mapeamento de Estrutura'] },
+            arquitetura: { nome: '🏛️ Arquitetura', servicos: ['Projeto Arquitetônico','Design de Interiores','Reforma com Projeto','Paisagismo','Planejamento de Espaço'] },
+            gestao: { nome: '📊 Gestão de Obras', servicos: ['Gerenciamento de Projeto','Coordenação de Obra','Fiscalização de Obra','Orçamento de Projeto','Planejamento de Execução'] },
+            tecnico: { nome: '🛠️ Técnicos', servicos: ['Levantamento Topográfico','Projeto em CAD','Mapeamento de Terreno','Desenho Técnico','Geoprocessamento'] },
+            civil: { nome: '🏗️ Infraestrutura Civil', servicos: ['Alicerce e Fundação','Estrutura de Concreto','Alvenaria','Armação de Ferro','Carpintaria','Pavimentação','Escavação e Terraplanagem','Compactação'] },
+            eletrica: { nome: '⚡ Instalações Elétricas', servicos: ['Instalação de Tomadas','Fiação Elétrica','Quadro de Disjuntores','Iluminação','Energia Solar','Instalação de CFTV','Instalação de Alarme'] },
+            hidraulica: { nome: '💧 Instalações Hidráulicas', servicos: ['Tubulação de Água','Banheiro Completo','Cozinha Completa','Instalação de Gás','Aquecimento Solar','Sistema de Drenagem'] },
+            acabamento: { nome: '🎨 Revestimentos e Acabamentos', servicos: ['Pintura','Revestimento em Cerâmica','Piso Porcelanato','Impermeabilização','Gesso e Drywall','Rejuntamento','Espelho e Vidro'] },
+            estrutura: { nome: '⚙️ Estruturas Metálicas', servicos: ['Portão de Ferro','Escada de Ferro','Cobertura Metálica','Moldura Metálica','Serralheria','Soldagem'] },
+            esquadrias: { nome: '🪟 Esquadrias e Marcenaria', servicos: ['Portas de Madeira','Janelas','Móvel Planejado','Armário','Piso de Madeira','Vidraçaria'] },
+            cobertura: { nome: '🏠 Coberturas e Fachadas', servicos: ['Cobertura em Telha','Calha e Condutores','Fachada de Revestimento','ACM/Alumínio Composto','Impermeabilização de Cobertura','Limpeza de Fachada'] },
+            complementar: { nome: '🔧 Serviços Complementares', servicos: ['Ar-Condicionado','Limpeza Pós-Obra','Dedetizador','Cerca Elétrica','Paisagismo','Jardineiro'] }
         };
 
         const PRECOS_SERVICOS = {
-            'Engenheiro Civil': 3, 'Engenheiro Estrutural': 3, 'Engenheiro Eletricista': 3, 'Engenheiro Hidráulico': 3, 'Arquiteto e Urbanista': 3, 'Engenheiro de Segurança': 3,
-            'Gerente de Projetos': 3, 'Gerente de Obras': 3, 'Fiscal de Obras': 2, 'Mestre de Obras': 2,
-            'Pedreiro': 1, 'Eletricista Predial': 2, 'Encanador': 2, 'Pintor': 1, 'Carpinteiro': 2,
-            'Topógrafo': 2, 'CADista': 2, 'Soldador': 2, 'Serralheiro': 2,
-            'Azulejista': 1, 'Impermeabilizador': 2, 'Telhadista': 2, 'Vidraceiro': 2, 'Marceneiro': 2,
-            'Operador de Retroescavadeira': 2, 'Operador de Escavadeira': 2, 'Instalador de Energia Solar': 2,
-            'Técnico em Edificações': 2, 'Paisagista': 2, 'Instalador Elétrico': 2, 'Instalador de Gás': 2
+            'Engenheiro Civil':3,'Engenheiro Estrutural':3,'Engenheiro Eletricista':3,'Engenheiro Hidráulico':3,'Arquiteto e Urbanista':3,'Engenheiro de Segurança':3,
+            'Gerente de Projetos':3,'Gerente de Obras':3,'Fiscal de Obras':2,'Mestre de Obras':2,
+            'Pedreiro':1,'Eletricista Predial':2,'Encanador':2,'Pintor':1,'Carpinteiro':2,
+            'Topógrafo':2,'CADista':2,'Soldador':2,'Serralheiro':2,
+            'Azulejista':1,'Impermeabilizador':2,'Telhadista':2,'Vidraceiro':2,'Marceneiro':2,
+            'Operador de Retroescavadeira':2,'Operador de Escavadeira':2,'Instalador de Energia Solar':2,
+            'Técnico em Edificações':2,'Paisagista':2,'Instalador Elétrico':2,'Instalador de Gás':2
         };
 
         let supabaseClient = null;
         let usuarioAtual = null;
+        let usuarioCliente = null;
         let categoriaAtual = null;
         let especialidadesSelecionadas = [];
 
-        function animarNumero(el, valor) {
-            el.classList.remove('loaded');
-            let inicio = 0;
-            const duracao = 800;
-            const incremento = valor / (duracao / 16);
-            const timer = setInterval(() => {
-                inicio += incremento;
-                if(inicio >= valor) { inicio = valor; clearInterval(timer); }
-                el.textContent = Math.floor(inicio);
-            }, 16);
-            void el.offsetWidth;
-            el.classList.add('loaded');
-        }
-
-        async function carregarContadores() {
-            try {
-                const [{ count: totalProf }, { data: profData }, { count: totalChamados }] = await Promise.all([
-                    supabaseClient.from('profissionais').select('*', { count: 'exact', head: true }),
-                    supabaseClient.from('profissionais').select('telefone'),
-                    supabaseClient.from('chamados').select('*', { count: 'exact', head: true }).eq('status', 'novo')
-                ]);
-                const ddds = new Set((profData || []).map(p => p.telefone ? p.telefone.replace(/\D/g,'').substring(0,2) : null).filter(Boolean));
-                const banner = document.getElementById('contadorBanner');
-                if(banner && (totalProf || 0) > 0) {
-                    banner.style.display = 'flex';
-                    animarNumero(document.getElementById('contadorProf'), totalProf || 0);
-                    animarNumero(document.getElementById('contadorCidades'), ddds.size || 0);
-                    animarNumero(document.getElementById('contadorChamados'), totalChamados || 0);
-                }
-            } catch(err) { console.log('Contador:', err); }
-        }
-
+        // ===== INIT =====
         async function inicializar() {
             try {
                 supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
                 renderizarCategorias();
                 carregarPacotesCredito();
                 verificarLoginProf();
-                carregarContadores();
                 supabaseClient.auth.onAuthStateChange((event, session) => {
                     if(event === 'SIGNED_IN' || event === 'USER_UPDATED') {
                         usuarioAtual = session.user;
@@ -576,9 +355,10 @@
                         atualizarPainelProf();
                     }
                 });
-            } catch(err) { console.error('Erro:', err); }
+            } catch(err) { console.error('Erro init:', err); }
         }
 
+        // ===== ABAS =====
         function mudarAba(aba, el) {
             document.querySelectorAll('.tab-content').forEach(e => e.classList.remove('active'));
             document.querySelectorAll('.tab').forEach(e => e.classList.remove('active'));
@@ -589,268 +369,13 @@
             if(aba === 'cliente' && usuarioCliente) carregarPedidosCliente();
         }
 
-        // ===== ÁREA DO CLIENTE =====
-        let usuarioCliente = null;
-
-        function mostrarCadastroCliente() {
-            document.getElementById('clienteLoginArea').style.display = 'none';
-            document.getElementById('clienteCadastroArea').style.display = 'block';
-        }
-
-        function voltarLoginCliente() {
-            document.getElementById('clienteCadastroArea').style.display = 'none';
-            document.getElementById('clienteLoginArea').style.display = 'block';
-        }
-
-        async function cadastrarCliente() {
-            const nome = document.getElementById('nomeClienteCad').value.trim();
-            const telefone = document.getElementById('telefoneClienteCad').value.trim();
-            const cidade = document.getElementById('cidadeClienteCad').value.trim();
-            const email = document.getElementById('emailClienteCad').value.trim();
-            const senha = document.getElementById('senhaClienteCad').value;
-            if(!nome || !telefone || !email || !senha) { alert('Preencha todos os campos'); return; }
-            try {
-                const { data: authData, error: authError } = await supabaseClient.auth.signUp({ email, password: senha });
-                if(authError) { alert('Erro: ' + authError.message); return; }
-                const { error: dbError } = await supabaseClient.from('clientes').insert({ id: authData.user.id, nome, telefone, cidade, email });
-                if(dbError) { console.log('Aviso tabela clientes:', dbError.message); }
-                alert('✅ Cadastro realizado! Bem-vindo(a) ' + nome);
-                voltarLoginCliente();
-            } catch(err) { alert('Erro ao cadastrar'); }
-        }
-
-        async function loginCliente() {
-            const email = document.getElementById('emailCliente').value.trim();
-            const senha = document.getElementById('senhaCliente').value;
-            if(!email || !senha) { alert('Preencha e-mail e senha'); return; }
-            try {
-                const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: senha });
-                if(error) { alert('Erro: ' + error.message); return; }
-                usuarioCliente = data.user;
-                mostrarPainelCliente();
-            } catch(err) { alert('Erro ao fazer login'); }
-        }
-
-        async function mostrarPainelCliente() {
-            if(!usuarioCliente) return;
-            document.getElementById('clienteLoginArea').style.display = 'none';
-            document.getElementById('clienteCadastroArea').style.display = 'none';
-            document.getElementById('clientePainelLogado').style.display = 'block';
-            const { data: clienteData } = await supabaseClient.from('clientes').select('nome').eq('id', usuarioCliente.id).single();
-            const nome = clienteData ? clienteData.nome : usuarioCliente.email;
-            document.getElementById('clienteBoasVindas').textContent = 'Olá, ' + nome + '! 👋';
-            carregarPedidosCliente();
-        }
-
-        async function carregarPedidosCliente() {
-            const container = document.getElementById('listaPedidosCliente');
-            if(!container || !usuarioCliente) return;
-            try {
-                const { data: pedidos } = await supabaseClient.from('chamados').select('*').eq('telefone_cliente', usuarioCliente.phone || '').order('criado_em', { ascending: false });
-                if(!pedidos || pedidos.length === 0) {
-                    container.innerHTML = '<p style="text-align:center; color:var(--linha);">Nenhum pedido encontrado.<br><small>Vá em "Pedir Serviço" para solicitar!</small></p>';
-                    return;
-                }
-                container.innerHTML = '';
-                pedidos.forEach(p => {
-                    const card = document.createElement('div');
-                    card.className = 'chamado-card';
-                    card.innerHTML = `<h4>${p.servico}</h4><div class="chamado-info">📍 ${p.bairro}</div><div class="chamado-info">📝 ${p.descricao}</div><div class="servico-badge">${p.status === 'novo' ? '🟡 Aguardando' : '✅ Atendido'}</div>`;
-                    container.appendChild(card);
-                });
-            } catch(err) { container.innerHTML = '<p style="text-align:center; color:red;">Erro ao carregar pedidos</p>'; }
-        }
-
-        function preencherFiltroCategoria() {
-            const sel = document.getElementById('filtroCategoriaSelect');
-            if(sel.options.length > 1) return;
-            Object.entries(CATEGORIAS).forEach(([key, cat]) => {
-                const opt = document.createElement('option');
-                opt.value = key;
-                opt.textContent = cat.nome;
-                sel.appendChild(opt);
-            });
-        }
-
-        async function buscarProfissionais() {
-            const termo = document.getElementById('buscaInput').value.trim().toLowerCase();
-            const categoria = document.getElementById('filtroCategoriaSelect').value;
-            const container = document.getElementById('resultadosBusca');
-            if(!termo && !categoria) { container.innerHTML = '<p style="text-align:center; color: var(--linha); margin-top: 20px;">Digite para buscar profissionais</p>'; return; }
-            container.innerHTML = '<p style="text-align:center; color: var(--linha);">Buscando...</p>';
-            try {
-                let query = supabaseClient.from('profissionais').select('id, nome, telefone, categoria, especialidades, saldo_creditos');
-                if(categoria) query = query.eq('categoria', categoria);
-                const { data, error } = await query;
-                if(error) { container.innerHTML = '<p style="text-align:center; color:red;">Erro na busca</p>'; return; }
-                let resultados = data || [];
-                if(termo) resultados = resultados.filter(p => (p.nome && p.nome.toLowerCase().includes(termo)) || (p.especialidades && p.especialidades.toLowerCase().includes(termo)) || (p.categoria && p.categoria.toLowerCase().includes(termo)));
-                if(resultados.length === 0) { container.innerHTML = '<p style="text-align:center; color: var(--linha); margin-top: 20px;">Nenhum profissional encontrado</p>'; return; }
-                container.innerHTML = '';
-                resultados.forEach(prof => {
-                    const catNome = CATEGORIAS[prof.categoria] ? CATEGORIAS[prof.categoria].nome : prof.categoria || '-';
-                    const tel = prof.telefone ? prof.telefone.replace(/\D/g, '') : '';
-                    const card = document.createElement('div');
-                    card.className = 'chamado-card';
-                    card.innerHTML = `<h4>${prof.nome || 'Profissional'}</h4>
-                        <div class="chamado-info">🏷️ ${catNome}</div>
-                        <div class="chamado-info">🔧 ${prof.especialidades || '-'}</div>
-                        ${usuarioAtual ? `<div class="chamado-info">📱 ${prof.telefone || 'Não informado'}</div>
-                        ${tel ? `<a href="https://wa.me/55${tel}?text=Olá%20${encodeURIComponent(prof.nome)}!%20Vi%20seu%20perfil%20na%20Foster%20Central%20e%20gostaria%20de%20um%20orçamento." target="_blank"><button class="btn-whatsapp" style="margin-top:8px;">💬 CHAMAR NO WHATSAPP</button></a>` : ''}` : `<div class="contato-bloqueado">Faça login para ver o contato</div>`}`;
-                    container.appendChild(card);
-                });
-            } catch(err) { container.innerHTML = '<p style="text-align:center; color:red;">Erro na busca</p>'; }
-        }
-
-        let estrelasAvaliacao = 0;
-        let profissionalAvaliando = null;
-
-        function selecionarEstrelas(n) {
-            estrelasAvaliacao = n;
-            document.querySelectorAll('#estrelasSeletor span').forEach((s, i) => { s.textContent = i < n ? '⭐' : '☆'; });
-        }
-
-        async function buscarProfParaAvaliar() {
-            const termo = document.getElementById('buscaAvaliacaoInput').value.trim().toLowerCase();
-            const container = document.getElementById('resultadosBuscaAvaliacao');
-            if(!termo) { container.innerHTML = ''; return; }
-            const { data } = await supabaseClient.from('profissionais').select('id, nome, categoria, especialidades');
-            const resultados = (data || []).filter(p => (p.nome && p.nome.toLowerCase().includes(termo)) || (p.especialidades && p.especialidades.toLowerCase().includes(termo)));
-            container.innerHTML = '';
-            resultados.slice(0, 5).forEach(prof => {
-                const catNome = CATEGORIAS[prof.categoria] ? CATEGORIAS[prof.categoria].nome : prof.categoria || '';
-                const div = document.createElement('div');
-                div.style.cssText = 'background:white; padding:12px; border-radius:8px; margin-bottom:8px; cursor:pointer; border:2px solid transparent;';
-                div.innerHTML = `<strong>${prof.nome}</strong><br><small style="color:#888;">${catNome}</small>`;
-                div.onmouseover = () => div.style.borderColor = 'var(--laranja)';
-                div.onmouseout = () => div.style.borderColor = 'transparent';
-                div.onclick = () => abrirFormAvaliacao(prof);
-                container.appendChild(div);
-            });
-        }
-
-        function abrirFormAvaliacao(prof) {
-            profissionalAvaliando = prof;
-            document.getElementById('nomeAvaliadoTitulo').textContent = '⭐ Avaliar: ' + prof.nome;
-            document.getElementById('formAvaliacao').style.display = 'block';
-            document.getElementById('resultadosBuscaAvaliacao').innerHTML = '';
-            document.getElementById('buscaAvaliacaoInput').value = '';
-            estrelasAvaliacao = 0;
-            selecionarEstrelas(0);
-        }
-
-        function cancelarAvaliacao() {
-            profissionalAvaliando = null;
-            document.getElementById('formAvaliacao').style.display = 'none';
-            document.getElementById('nomeClienteAvaliacao').value = '';
-            document.getElementById('comentarioAvaliacao').value = '';
-            estrelasAvaliacao = 0;
-        }
-
-        // ✅ CORRIGIDO: nomes das colunas alinhados com o banco
-        async function enviarAvaliacao() {
-            const nome = document.getElementById('nomeClienteAvaliacao').value.trim();
-            const comentario = document.getElementById('comentarioAvaliacao').value.trim();
-            if(!nome) { alert('Digite seu nome'); return; }
-            if(!estrelasAvaliacao) { alert('Selecione uma nota'); return; }
-            if(!profissionalAvaliando) return;
-            const { error } = await supabaseClient.from('avaliacoes').insert({
-                prof_id: profissionalAvaliando.id,
-                nota: estrelasAvaliacao,
-                comentario: comentario
-            });
-            if(error) { alert('Erro: ' + error.message); return; }
-            alert('✅ Avaliação enviada! Obrigado.');
-            cancelarAvaliacao();
-            carregarAvaliacoes();
-        }
-
-        // ✅ CORRIGIDO: nomes das colunas alinhados com o banco
-        async function carregarAvaliacoes() {
-            const container = document.getElementById('listaAvaliacoes');
-            if(!container) return;
-            try {
-                const { data } = await supabaseClient.from('avaliacoes').select('*').order('criado_em', { ascending: false }).limit(20);
-                if(!data || data.length === 0) { container.innerHTML = '<p style="text-align:center; color:var(--linha);">Nenhuma avaliação ainda</p>'; return; }
-                container.innerHTML = '';
-                for(const av of data) {
-                    let nomeProf = 'Profissional';
-                    const { data: profData } = await supabaseClient.from('profissionais').select('nome').eq('id', av.prof_id).single();
-                    if(profData) nomeProf = profData.nome;
-                    const estrelas = '⭐'.repeat(av.nota) + '☆'.repeat(5 - av.nota);
-                    const card = document.createElement('div');
-                    card.className = 'chamado-card';
-                    card.innerHTML = `<h4>${nomeProf}</h4>
-                        <div style="font-size:18px; margin:4px 0;">${estrelas}</div>
-                        ${av.comentario ? `<div class="chamado-info" style="font-style:italic;">"${av.comentario}"</div>` : ''}
-                        <div class="chamado-info" style="font-size:11px;">${new Date(av.criado_em).toLocaleDateString('pt-BR')}</div>`;
-                    container.appendChild(card);
-                }
-            } catch(err) { container.innerHTML = '<p style="text-align:center; color:red;">Erro ao carregar</p>'; }
-        }
-
-        async function abrirModalAdmin() {
-            const { data: profissionais } = await supabaseClient.from('profissionais').select('*').order('criado_em', { ascending: false });
-            const { data: chamados } = await supabaseClient.from('chamados').select('*').eq('status', 'novo');
-            const totalProf = profissionais ? profissionais.length : 0;
-            const totalChamados = chamados ? chamados.length : 0;
-            let html = `<div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px;"><div style="background:#1F2328; color:white; padding:16px; border-radius:8px; text-align:center;"><div style="font-size:32px; font-weight:700; color:#DC2626;">${totalProf}</div><div style="font-size:11px; letter-spacing:1px;">PROFISSIONAIS</div></div><div style="background:#1F2328; color:white; padding:16px; border-radius:8px; text-align:center;"><div style="font-size:32px; font-weight:700; color:#DC2626;">${totalChamados}</div><div style="font-size:11px; letter-spacing:1px;">CHAMADOS ABERTOS</div></div></div><div style="display:flex; gap:8px; margin-bottom:16px; border-bottom:2px solid #eee;"><button onclick="mostrarAbaAdmin('profissionais')" id="btnAdmProf" style="flex:1; padding:10px; background:none; border:none; font-weight:700; color:#DC2626; border-bottom:3px solid #DC2626; cursor:pointer;">PROFISSIONAIS</button><button onclick="mostrarAbaAdmin('chamados')" id="btnAdmCham" style="flex:1; padding:10px; background:none; border:none; font-weight:600; cursor:pointer;">CHAMADOS</button></div><div id="admProfissionais">`;
-            if(profissionais) profissionais.forEach(prof => {
-                const catNome = CATEGORIAS[prof.categoria] ? CATEGORIAS[prof.categoria].nome : prof.categoria || '-';
-                html += `<div style="background:#f8f8f8; padding:16px; border-radius:8px; margin-bottom:12px; border-left:3px solid #DC2626;"><strong style="font-size:14px;">${prof.nome || 'Sem nome'}</strong><br><span style="font-size:12px; color:#666;">📱 ${prof.telefone || 'Não informado'}</span><br><span style="font-size:12px; color:#666;">🏷️ ${catNome}</span><br><span style="font-size:12px; color:#666;">🔧 ${prof.especialidades || '-'}</span><br><span style="font-size:12px; color:#666;">💰 ${prof.saldo_creditos || 0} créditos</span><div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;"><input type="number" id="credInput_${prof.id}" placeholder="Qtd" style="width:70px; padding:8px; border:1px solid #ccc; border-radius:4px; font-size:12px;"><button onclick="adicionarCreditos('${prof.id}', '${prof.nome}')" style="flex:1; background:#2E7D5B; color:white; border:none; padding:8px; border-radius:4px; font-weight:600; cursor:pointer; font-size:12px;">+ CRÉDITOS</button><button onclick="tornarAdmin('${prof.id}', '${prof.nome}')" style="flex:1; background:#1F2328; color:white; border:none; padding:8px; border-radius:4px; font-weight:600; cursor:pointer; font-size:12px;">⭐ ADMIN</button><button onclick="excluirProfissional('${prof.id}', '${prof.nome}')" style="background:#e74c3c; color:white; border:none; padding:8px 12px; border-radius:4px; font-weight:600; cursor:pointer; font-size:12px;">🗑️</button></div></div>`;
-            });
-            html += `</div><div id="admChamados" style="display:none;">`;
-            if(chamados) chamados.forEach(c => { html += `<div style="background:#f8f8f8; padding:16px; border-radius:8px; margin-bottom:12px; border-left:3px solid #DC2626;"><strong>${c.nome_cliente}</strong><br><span style="font-size:12px; color:#666;">📱 ${c.telefone_cliente}</span><br><span style="font-size:12px; color:#666;">🔧 ${c.servico}</span><br><span style="font-size:12px; color:#666;">📍 ${c.bairro}</span><br><span style="font-size:12px; color:#666;">📝 ${c.descricao}</span></div>`; });
-            html += '</div>';
-            document.getElementById('adminContent').innerHTML = html;
-            document.getElementById('modalAdmin').classList.add('active');
-        }
-
-        function mostrarAbaAdmin(aba) {
-            document.getElementById('admProfissionais').style.display = aba === 'profissionais' ? 'block' : 'none';
-            document.getElementById('admChamados').style.display = aba === 'chamados' ? 'block' : 'none';
-            document.getElementById('btnAdmProf').style.color = aba === 'profissionais' ? '#DC2626' : '#666';
-            document.getElementById('btnAdmProf').style.borderBottom = aba === 'profissionais' ? '3px solid #DC2626' : 'none';
-            document.getElementById('btnAdmCham').style.color = aba === 'chamados' ? '#DC2626' : '#666';
-            document.getElementById('btnAdmCham').style.borderBottom = aba === 'chamados' ? '3px solid #DC2626' : 'none';
-        }
-
-        async function adicionarCreditos(profId, nome) {
-            const input = document.getElementById(`credInput_${profId}`);
-            const qtd = parseInt(input ? input.value : 0);
-            if(!qtd || qtd <= 0) { alert('Digite uma quantidade válida'); return; }
-            const { data: profData } = await supabaseClient.from('profissionais').select('saldo_creditos').eq('id', profId).single();
-            const novoSaldo = (profData.saldo_creditos || 0) + qtd;
-            const { error } = await supabaseClient.from('profissionais').update({ saldo_creditos: novoSaldo }).eq('id', profId);
-            if(error) { alert('Erro: ' + error.message); return; }
-            alert(`✅ ${qtd} créditos adicionados para ${nome}!`);
-            abrirModalAdmin();
-        }
-
-        async function tornarAdmin(profId, nome) {
-            if(!confirm(`Tornar ${nome} administrador?`)) return;
-            const { error } = await supabaseClient.from('profissionais').update({ is_admin: true }).eq('id', profId);
-            if(error) { alert('Erro: ' + error.message); return; }
-            alert(`✅ ${nome} agora é administrador!`);
-            abrirModalAdmin();
-        }
-
-        async function excluirProfissional(profId, nome) {
-            if(!confirm(`Excluir ${nome}? Esta ação não pode ser desfeita.`)) return;
-            const { error } = await supabaseClient.from('profissionais').delete().eq('id', profId);
-            if(error) { alert('Erro: ' + error.message); return; }
-            alert(`✅ ${nome} excluído!`);
-            abrirModalAdmin();
-        }
-
+        // ===== CATEGORIAS =====
         function renderizarCategorias() {
             const container = document.getElementById('categoriasCliente');
             container.innerHTML = '';
             Object.entries(CATEGORIAS).forEach(([key, cat]) => {
                 const btn = document.createElement('button');
-                btn.className = 'categoria-btn';
-                btn.type = 'button';
-                btn.innerHTML = cat.nome;
+                btn.className = 'categoria-btn'; btn.type = 'button'; btn.innerHTML = cat.nome;
                 btn.onclick = (e) => { e.preventDefault(); selecionarCategoriaCliente(key, cat, e); };
                 container.appendChild(btn);
             });
@@ -862,46 +387,9 @@
             document.getElementById('confirmacaoPedido').style.display = 'none';
             const select = document.getElementById('servicoCliente');
             select.innerHTML = '';
-            cat.servicos.forEach(servico => {
-                const option = document.createElement('option');
-                option.value = servico;
-                option.textContent = servico;
-                select.appendChild(option);
-            });
-            document.querySelectorAll('#categoriasCliente .categoria-btn').forEach(btn => btn.classList.remove('active'));
+            cat.servicos.forEach(s => { const o = document.createElement('option'); o.value = s; o.textContent = s; select.appendChild(o); });
+            document.querySelectorAll('#categoriasCliente .categoria-btn').forEach(b => b.classList.remove('active'));
             if(e && e.target) e.target.classList.add('active');
-        }
-
-        async function enviarPedido(e) {
-            e.preventDefault();
-            const nome = document.getElementById('nomeCliente').value;
-            const telefone = document.getElementById('telefoneCliente').value;
-            const servico = document.getElementById('servicoCliente').value;
-            const bairro = document.getElementById('bairroCliente').value;
-            const descricao = document.getElementById('descricaoCliente').value;
-            try {
-                const { data, error } = await supabaseClient.from('chamados').insert({
-                    nome_cliente: nome, telefone_cliente: telefone, servico: servico, bairro: bairro, descricao: descricao, status: 'novo'
-                }).select();
-                if(error) { alert('Erro: ' + error.message); return; }
-                if(data && data.length > 0) {
-                    document.getElementById('numeroProtocolo').textContent = '#' + String(data[0].id).padStart(4, '0');
-                    document.getElementById('formPedido').style.display = 'none';
-                    document.getElementById('confirmacaoPedido').style.display = 'block';
-                    document.getElementById('formPedido').reset();
-                }
-            } catch(err) { alert('Erro ao enviar'); }
-        }
-
-        function mostrarCadastro() {
-            document.getElementById('loginArea').style.display = 'none';
-            document.getElementById('cadastroArea').style.display = 'block';
-            renderizarCategoriasCadastro();
-        }
-
-        function voltarLogin() {
-            document.getElementById('cadastroArea').style.display = 'none';
-            document.getElementById('loginArea').style.display = 'block';
         }
 
         function renderizarCategoriasCadastro() {
@@ -909,9 +397,7 @@
             container.innerHTML = '';
             Object.entries(CATEGORIAS).forEach(([key, cat]) => {
                 const btn = document.createElement('button');
-                btn.className = 'categoria-btn';
-                btn.type = 'button';
-                btn.innerHTML = cat.nome;
+                btn.className = 'categoria-btn'; btn.type = 'button'; btn.innerHTML = cat.nome;
                 btn.onclick = (e) => { e.preventDefault(); selecionarCategoriaCadastro(key, cat, e); };
                 container.appendChild(btn);
             });
@@ -922,13 +408,12 @@
             document.getElementById('especialidadesArea').style.display = 'block';
             const container = document.getElementById('especialidades');
             container.innerHTML = '';
-            cat.servicos.forEach(servico => {
-                const div = document.createElement('div');
-                div.className = 'checkbox-item';
-                div.innerHTML = `<input type="checkbox" id="esp_${servico}" value="${servico}" onchange="atualizarEspecialidades()"><label for="esp_${servico}">${servico}</label>`;
+            cat.servicos.forEach(s => {
+                const div = document.createElement('div'); div.className = 'checkbox-item';
+                div.innerHTML = `<input type="checkbox" id="esp_${s}" value="${s}" onchange="atualizarEspecialidades()"><label for="esp_${s}">${s}</label>`;
                 container.appendChild(div);
             });
-            document.querySelectorAll('#categoriasCadastro .categoria-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('#categoriasCadastro .categoria-btn').forEach(b => b.classList.remove('active'));
             if(e && e.target) e.target.classList.add('active');
         }
 
@@ -936,107 +421,370 @@
             especialidadesSelecionadas = Array.from(document.querySelectorAll('#especialidades input[type="checkbox"]:checked')).map(el => el.value);
         }
 
+        // ===== PEDIDO =====
+        async function enviarPedido(e) {
+            e.preventDefault();
+            const nome = document.getElementById('nomeCliente').value;
+            const telefone = document.getElementById('telefoneCliente').value;
+            const servico = document.getElementById('servicoCliente').value;
+            const bairro = document.getElementById('bairroCliente').value;
+            const descricao = document.getElementById('descricaoCliente').value;
+            try {
+                const { data, error } = await supabaseClient.from('chamados').insert({ nome_cliente:nome, telefone_cliente:telefone, servico, bairro, descricao, status:'novo' }).select();
+                if(error) { alert('Erro: ' + error.message); return; }
+                if(data && data.length > 0) {
+                    document.getElementById('numeroProtocolo').textContent = '#' + String(data[0].id).padStart(4,'0');
+                    document.getElementById('formPedido').style.display = 'none';
+                    document.getElementById('confirmacaoPedido').style.display = 'block';
+                    document.getElementById('formPedido').reset();
+                }
+            } catch(err) { alert('Erro ao enviar'); }
+        }
+
+        // ===== ÁREA CLIENTE =====
+        function mostrarCadastroCliente() { document.getElementById('clienteLoginArea').style.display='none'; document.getElementById('clienteCadastroArea').style.display='block'; }
+        function voltarLoginCliente() { document.getElementById('clienteCadastroArea').style.display='none'; document.getElementById('clienteLoginArea').style.display='block'; }
+
+        async function cadastrarCliente() {
+            const nome=document.getElementById('nomeClienteCad').value.trim(), telefone=document.getElementById('telefoneClienteCad').value.trim(), cidade=document.getElementById('cidadeClienteCad').value.trim(), email=document.getElementById('emailClienteCad').value.trim(), senha=document.getElementById('senhaClienteCad').value;
+            if(!nome||!telefone||!email||!senha){alert('Preencha todos os campos');return;}
+            try {
+                const{data:authData,error:authError}=await supabaseClient.auth.signUp({email,password:senha});
+                if(authError){alert('Erro: '+authError.message);return;}
+                await supabaseClient.from('clientes').insert({id:authData.user.id,nome,telefone,cidade,email});
+                alert('✅ Cadastro realizado! Bem-vindo(a) '+nome);
+                voltarLoginCliente();
+            } catch(err){alert('Erro ao cadastrar');}
+        }
+
+        async function loginCliente() {
+            const email=document.getElementById('emailCliente').value.trim(), senha=document.getElementById('senhaCliente').value;
+            if(!email||!senha){alert('Preencha e-mail e senha');return;}
+            try {
+                const{data,error}=await supabaseClient.auth.signInWithPassword({email,password:senha});
+                if(error){alert('Erro: '+error.message);return;}
+                usuarioCliente=data.user; mostrarPainelCliente();
+            } catch(err){alert('Erro ao fazer login');}
+        }
+
+        async function mostrarPainelCliente() {
+            if(!usuarioCliente) return;
+            document.getElementById('clienteLoginArea').style.display='none';
+            document.getElementById('clienteCadastroArea').style.display='none';
+            document.getElementById('clientePainelLogado').style.display='block';
+            const{data:cd}=await supabaseClient.from('clientes').select('nome').eq('id',usuarioCliente.id).single();
+            document.getElementById('clienteBoasVindas').textContent='Olá, '+(cd?cd.nome:usuarioCliente.email)+'! 👋';
+            carregarPedidosCliente();
+        }
+
+        async function carregarPedidosCliente() {
+            const container=document.getElementById('listaPedidosCliente');
+            if(!container||!usuarioCliente) return;
+            try {
+                const{data:pedidos}=await supabaseClient.from('chamados').select('*').eq('telefone_cliente',usuarioCliente.phone||'').order('criado_em',{ascending:false});
+                if(!pedidos||pedidos.length===0){container.innerHTML='<p style="text-align:center;color:var(--linha);">Nenhum pedido encontrado.<br><small>Vá em "Pedir Serviço" para solicitar!</small></p>';return;}
+                container.innerHTML='';
+                pedidos.forEach(p=>{const card=document.createElement('div');card.className='chamado-card';card.innerHTML=`<h4>${p.servico}</h4><div class="chamado-info">📍 ${p.bairro}</div><div class="chamado-info">📝 ${p.descricao}</div><div class="servico-badge">${p.status==='novo'?'🟡 Aguardando':'✅ Atendido'}</div>`;container.appendChild(card);});
+            } catch(err){container.innerHTML='<p style="text-align:center;color:red;">Erro ao carregar pedidos</p>';}
+        }
+
+        // ===== ÁREA PROFISSIONAL =====
+        function mostrarCadastro() { document.getElementById('loginArea').style.display='none'; document.getElementById('cadastroArea').style.display='block'; renderizarCategoriasCadastro(); }
+        function voltarLogin() { document.getElementById('cadastroArea').style.display='none'; document.getElementById('loginArea').style.display='block'; }
+
         function formatarTelefone(input) {
-            let v = input.value.replace(/\D/g, '').slice(0, 11);
-            if(v.length > 10) v = v.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
-            else if(v.length > 6) v = v.replace(/(\d{2})(\d{4,5})(\d{0,4})/, '($1) $2-$3');
-            else if(v.length > 2) v = v.replace(/(\d{2})(\d{0,5})/, '($1) $2');
-            input.value = v;
+            let v=input.value.replace(/\D/g,'').slice(0,11);
+            if(v.length>10) v=v.replace(/(\d{2})(\d{5})(\d{4})/,'($1) $2-$3');
+            else if(v.length>6) v=v.replace(/(\d{2})(\d{4,5})(\d{0,4})/,'($1) $2-$3');
+            else if(v.length>2) v=v.replace(/(\d{2})(\d{0,5})/,'($1) $2');
+            input.value=v;
         }
 
         function verificarForcaSenha(senha) {
-            const fill = document.getElementById('forcaSenhaFill');
-            const texto = document.getElementById('forcaSenhaTexto');
+            const fill=document.getElementById('forcaSenhaFill'), texto=document.getElementById('forcaSenhaTexto');
             if(!fill) return;
-            let forca = 0;
-            if(senha.length >= 8) forca++;
-            if(/[A-Z]/.test(senha)) forca++;
-            if(/[0-9]/.test(senha)) forca++;
-            if(/[^A-Za-z0-9]/.test(senha)) forca++;
-            const niveis = [
-                { pct: '0%', cor: '#eee', txt: '' },
-                { pct: '25%', cor: '#e00000', txt: '⚠️ Muito fraca' },
-                { pct: '50%', cor: '#f5a623', txt: '🔶 Fraca' },
-                { pct: '75%', cor: '#2E7D5B', txt: '🔷 Boa' },
-                { pct: '100%', cor: '#1a5c3f', txt: '✅ Forte' }
-            ];
-            const n = senha.length === 0 ? 0 : forca;
-            fill.style.width = niveis[n].pct;
-            fill.style.background = niveis[n].cor;
-            texto.textContent = niveis[n].txt;
+            let f=0;
+            if(senha.length>=8)f++; if(/[A-Z]/.test(senha))f++; if(/[0-9]/.test(senha))f++; if(/[^A-Za-z0-9]/.test(senha))f++;
+            const n=[{p:'0%',c:'#eee',t:''},{p:'25%',c:'#e00000',t:'⚠️ Muito fraca'},{p:'50%',c:'#f5a623',t:'🔶 Fraca'},{p:'75%',c:'#2E7D5B',t:'🔷 Boa'},{p:'100%',c:'#1a5c3f',t:'✅ Forte'}];
+            const i=senha.length===0?0:f;
+            fill.style.width=n[i].p; fill.style.background=n[i].c; texto.textContent=n[i].t;
         }
 
         function checarRateLimit() {
-            const key = 'fc_cadastros';
-            const agora = Date.now();
-            const janela = 60 * 60 * 1000;
-            let tentativas = JSON.parse(localStorage.getItem(key) || '[]');
-            tentativas = tentativas.filter(t => agora - t < janela);
-            if(tentativas.length >= 3) {
-                const restante = Math.ceil((janela - (agora - tentativas[0])) / 60000);
-                alert(`Muitas tentativas de cadastro. Tente novamente em ${restante} minutos.`);
-                return false;
-            }
-            tentativas.push(agora);
-            localStorage.setItem(key, JSON.stringify(tentativas));
-            return true;
+            const key='fc_cadastros', agora=Date.now(), janela=3600000;
+            let t=JSON.parse(localStorage.getItem(key)||'[]').filter(x=>agora-x<janela);
+            if(t.length>=3){alert(`Muitas tentativas. Tente em ${Math.ceil((janela-(agora-t[0]))/60000)} minutos.`);return false;}
+            t.push(agora); localStorage.setItem(key,JSON.stringify(t)); return true;
         }
 
         async function cadastrarProf() {
-            const nome = document.getElementById('nomeProf').value.trim();
-            const telefone = document.getElementById('telefoneProf').value.trim();
-            const email = document.getElementById('emailCadastro').value.trim();
-            const senha = document.getElementById('senhaCadastro').value;
-            if(!nome || !telefone || !email || !senha || !categoriaAtual || especialidadesSelecionadas.length === 0) {
-                alert('Preencha todos os campos e selecione especialidades'); return;
-            }
-            if(nome.trim().split(' ').length < 2) {
-                alert('Digite seu nome completo (nome e sobrenome)'); return;
-            }
-            const telNumeros = telefone.replace(/\D/g,'');
-            if(telNumeros.length < 10 || telNumeros.length > 11) {
-                alert('Telefone inválido. Use o formato (11) 9999-9999'); return;
-            }
-            if(senha.length < 8) {
-                alert('A senha deve ter pelo menos 8 caracteres'); return;
-            }
+            const nome=document.getElementById('nomeProf').value.trim(), telefone=document.getElementById('telefoneProf').value.trim(), email=document.getElementById('emailCadastro').value.trim(), senha=document.getElementById('senhaCadastro').value;
+            if(!nome||!telefone||!email||!senha||!categoriaAtual||especialidadesSelecionadas.length===0){alert('Preencha todos os campos e selecione especialidades');return;}
+            if(nome.trim().split(' ').length<2){alert('Digite seu nome completo');return;}
+            if(telefone.replace(/\D/g,'').length<10){alert('Telefone inválido');return;}
+            if(senha.length<8){alert('Senha deve ter pelo menos 8 caracteres');return;}
             if(!checarRateLimit()) return;
             try {
-                const { data: telExiste } = await supabaseClient.from('profissionais').select('id').eq('telefone', telefone).maybeSingle();
-                if(telExiste) { alert('Este telefone já está cadastrado.'); return; }
-                const { data: authData, error: authError } = await supabaseClient.auth.signUp({
-                    email, password: senha,
-                    options: { emailRedirectTo: window.location.href }
-                });
-                if(authError) { alert('Erro: ' + authError.message); return; }
-                const { error: dbError } = await supabaseClient.from('profissionais').insert({
-                    id: authData.user.id, nome, telefone,
-                    especialidades: especialidadesSelecionadas.join(','),
-                    categoria: categoriaAtual, saldo_creditos: 10
-                });
-                if(dbError) { alert('Erro: ' + dbError.message); return; }
-                alert('✅ Cadastro realizado! Verifique seu e-mail para confirmar a conta.\nVocê ganhou 10 créditos grátis!');
+                const{data:telExiste}=await supabaseClient.from('profissionais').select('id').eq('telefone',telefone).maybeSingle();
+                if(telExiste){alert('Este telefone já está cadastrado.');return;}
+                const{data:authData,error:authError}=await supabaseClient.auth.signUp({email,password:senha,options:{emailRedirectTo:window.location.href}});
+                if(authError){alert('Erro: '+authError.message);return;}
+                const{error:dbError}=await supabaseClient.from('profissionais').insert({id:authData.user.id,nome,telefone,especialidades:especialidadesSelecionadas.join(','),categoria:categoriaAtual,saldo_creditos:10});
+                if(dbError){alert('Erro: '+dbError.message);return;}
+                alert('✅ Cadastro realizado! Verifique seu e-mail.\nVocê ganhou 10 créditos grátis!');
                 voltarLogin();
-            } catch(err) { alert('Erro ao cadastrar. Tente novamente.'); }
+            } catch(err){alert('Erro ao cadastrar. Tente novamente.');}
         }
 
         async function loginProf() {
-            const email = document.getElementById('emailProf').value;
-            const senha = document.getElementById('senhaProf').value;
-            if(!email || !senha) { alert('Preencha e-mail e senha'); return; }
+            const email=document.getElementById('emailProf').value, senha=document.getElementById('senhaProf').value;
+            if(!email||!senha){alert('Preencha e-mail e senha');return;}
             try {
-                const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: senha });
-                if(error) { alert('Erro: ' + error.message); return; }
-                usuarioAtual = data.user;
-                atualizarPainelProf();
-            } catch(err) { alert('Erro ao fazer login'); }
+                const{data,error}=await supabaseClient.auth.signInWithPassword({email,password:senha});
+                if(error){alert('Erro: '+error.message);return;}
+                usuarioAtual=data.user; atualizarPainelProf();
+            } catch(err){alert('Erro ao fazer login');}
         }
 
         async function verificarLoginProf() {
             try {
-                const { data: { session } } = await supabaseClient.auth.getSession();
-                if(session) { usuarioAtual = session.user; atualizarPainelProf(); }
-            } catch(err) {}
+                const{data:{session}}=await supabaseClient.auth.getSession();
+                if(session){usuarioAtual=session.user; atualizarPainelProf();}
+            } catch(err){}
         }
 
-        async function atualizarPaine
+        async function atualizarPainelProf() {
+            const loginArea=document.getElementById('loginArea'), cadastroArea=document.getElementById('cadastroArea'), painelLogado=document.getElementById('painelLogado'), headerActions=document.getElementById('headerActions');
+            if(!usuarioAtual){
+                loginArea.style.display='block'; cadastroArea.style.display='none'; painelLogado.style.display='none'; headerActions.innerHTML=''; return;
+            }
+            loginArea.style.display='none'; cadastroArea.style.display='none'; painelLogado.style.display='block';
+            headerActions.innerHTML=`<button class="btn-logout" onclick="logoutProf()">SAIR</button>`;
+            try {
+                const{data:profData}=await supabaseClient.from('profissionais').select('*').eq('id',usuarioAtual.id).single();
+                if(profData){
+                    document.getElementById('saldoCreditos').textContent=profData.saldo_creditos||0;
+                    document.getElementById('saldoCreditos2').textContent=profData.saldo_creditos||0;
+                    if(profData.is_admin) document.getElementById('adminPanel').style.display='block';
+                }
+            } catch(err){console.log('Erro perfil:',err);}
+            carregarChamados();
+        }
+
+        async function carregarChamados() {
+            const container=document.getElementById('listaChamados');
+            if(!container||!usuarioAtual) return;
+            try {
+                const{data:profData}=await supabaseClient.from('profissionais').select('categoria,saldo_creditos').eq('id',usuarioAtual.id).single();
+                const{data:chamados}=await supabaseClient.from('chamados').select('*').eq('status','novo').order('criado_em',{ascending:false});
+                if(!chamados||chamados.length===0){container.innerHTML='<p style="text-align:center;color:var(--linha);">Nenhum projeto disponível no momento</p>';return;}
+                const{data:desbloqueados}=await supabaseClient.from('desbloqueios').select('chamado_id').eq('prof_id',usuarioAtual.id);
+                const idsDesbloqueados=new Set((desbloqueados||[]).map(d=>d.chamado_id));
+                container.innerHTML='';
+                chamados.forEach(c=>{
+                    const jaDesbloqueado=idsDesbloqueados.has(c.id), custo=PRECOS_SERVICOS[c.servico]||1, saldo=profData?(profData.saldo_creditos||0):0;
+                    const card=document.createElement('div'); card.className='chamado-card';
+                    if(jaDesbloqueado){
+                        const tel=c.telefone_cliente?c.telefone_cliente.replace(/\D/g,''):'';
+                        card.innerHTML=`<h4>${c.servico}</h4><div class="chamado-info">📍 ${c.bairro}</div><div class="chamado-info">👤 ${c.nome_cliente}</div><div class="chamado-info">📝 ${c.descricao}</div>${tel?`<a href="https://wa.me/55${tel}?text=Olá%20${encodeURIComponent(c.nome_cliente)}!%20Vi%20seu%20pedido%20na%20Foster%20Central%20e%20tenho%20interesse%20em%20${encodeURIComponent(c.servico)}." target="_blank"><button class="btn-whatsapp">💬 CHAMAR NO WHATSAPP</button></a>`:''}`;
+                    } else {
+                        card.innerHTML=`<h4>${c.servico}</h4><div class="chamado-info">📍 ${c.bairro}</div><div class="chamado-info">📝 ${c.descricao}</div><div class="contato-bloqueado">🔒 Contato bloqueado — custa ${custo} crédito${custo>1?'s':''}</div><button class="btn-desbloquear" onclick="desbloquearChamado(${c.id},${custo})" ${saldo<custo?'disabled style="opacity:0.5;cursor:not-allowed;"':''}>
+                            ${saldo<custo?'❌ CRÉDITOS INSUFICIENTES':`🔓 DESBLOQUEAR (${custo} crédito${custo>1?'s':''})`}</button>`;
+                    }
+                    container.appendChild(card);
+                });
+            } catch(err){container.innerHTML='<p style="text-align:center;color:red;">Erro ao carregar projetos</p>';}
+        }
+
+        async function desbloquearChamado(chamadoId, custo) {
+            if(!usuarioAtual) return;
+            try {
+                const{data,error}=await supabaseClient.rpc('desbloquear_chamado',{p_prof_id:usuarioAtual.id,p_chamado_id:chamadoId,p_custo:custo});
+                if(error){alert('Erro: '+error.message);return;}
+                if(data===false){alert('Créditos insuficientes!');return;}
+                await atualizarPainelProf();
+            } catch(err){alert('Erro ao desbloquear');}
+        }
+
+        async function logoutProf() {
+            await supabaseClient.auth.signOut(); usuarioAtual=null; atualizarPainelProf();
+        }
+
+        // ===== BUSCAR =====
+        function preencherFiltroCategoria() {
+            const sel=document.getElementById('filtroCategoriaSelect');
+            if(sel.options.length>1) return;
+            Object.entries(CATEGORIAS).forEach(([key,cat])=>{const o=document.createElement('option');o.value=key;o.textContent=cat.nome;sel.appendChild(o);});
+        }
+
+        async function buscarProfissionais() {
+            const termo=document.getElementById('buscaInput').value.trim().toLowerCase(), categoria=document.getElementById('filtroCategoriaSelect').value, container=document.getElementById('resultadosBusca');
+            if(!termo&&!categoria){container.innerHTML='<p style="text-align:center;color:var(--linha);margin-top:20px;">Digite para buscar profissionais</p>';return;}
+            container.innerHTML='<p style="text-align:center;color:var(--linha);">Buscando...</p>';
+            try {
+                let query=supabaseClient.from('profissionais').select('id,nome,telefone,categoria,especialidades,saldo_creditos');
+                if(categoria) query=query.eq('categoria',categoria);
+                const{data,error}=await query;
+                if(error){container.innerHTML='<p style="text-align:center;color:red;">Erro na busca</p>';return;}
+                let resultados=data||[];
+                if(termo) resultados=resultados.filter(p=>(p.nome&&p.nome.toLowerCase().includes(termo))||(p.especialidades&&p.especialidades.toLowerCase().includes(termo))||(p.categoria&&p.categoria.toLowerCase().includes(termo)));
+                if(resultados.length===0){container.innerHTML='<p style="text-align:center;color:var(--linha);margin-top:20px;">Nenhum profissional encontrado</p>';return;}
+                container.innerHTML='';
+                resultados.forEach(prof=>{
+                    const catNome=CATEGORIAS[prof.categoria]?CATEGORIAS[prof.categoria].nome:prof.categoria||'-', tel=prof.telefone?prof.telefone.replace(/\D/g,''):'';
+                    const card=document.createElement('div'); card.className='chamado-card';
+                    card.innerHTML=`<h4>${prof.nome||'Profissional'}</h4><div class="chamado-info">🏷️ ${catNome}</div><div class="chamado-info">🔧 ${prof.especialidades||'-'}</div>${usuarioAtual?`<div class="chamado-info">📱 ${prof.telefone||'Não informado'}</div>${tel?`<a href="https://wa.me/55${tel}?text=Olá%20${encodeURIComponent(prof.nome)}!%20Vi%20seu%20perfil%20na%20Foster%20Central%20e%20gostaria%20de%20um%20orçamento." target="_blank"><button class="btn-whatsapp" style="margin-top:8px;">💬 CHAMAR NO WHATSAPP</button></a>`:''}`:
+                    `<div class="contato-bloqueado">Faça login para ver o contato</div>`}`;
+                    container.appendChild(card);
+                });
+            } catch(err){container.innerHTML='<p style="text-align:center;color:red;">Erro na busca</p>';}
+        }
+
+        // ===== AVALIAÇÕES =====
+        let estrelasAvaliacao=0, profissionalAvaliando=null;
+
+        function selecionarEstrelas(n) {
+            estrelasAvaliacao=n;
+            document.querySelectorAll('#estrelasSeletor span').forEach((s,i)=>{s.textContent=i<n?'⭐':'☆';});
+        }
+
+        async function buscarProfParaAvaliar() {
+            const termo=document.getElementById('buscaAvaliacaoInput').value.trim().toLowerCase(), container=document.getElementById('resultadosBuscaAvaliacao');
+            if(!termo){container.innerHTML='';return;}
+            const{data}=await supabaseClient.from('profissionais').select('id,nome,categoria,especialidades');
+            const resultados=(data||[]).filter(p=>(p.nome&&p.nome.toLowerCase().includes(termo))||(p.especialidades&&p.especialidades.toLowerCase().includes(termo)));
+            container.innerHTML='';
+            resultados.slice(0,5).forEach(prof=>{
+                const catNome=CATEGORIAS[prof.categoria]?CATEGORIAS[prof.categoria].nome:prof.categoria||'';
+                const div=document.createElement('div');
+                div.style.cssText='background:white;padding:12px;border-radius:8px;margin-bottom:8px;cursor:pointer;border:2px solid transparent;';
+                div.innerHTML=`<strong>${prof.nome}</strong><br><small style="color:#888;">${catNome}</small>`;
+                div.onmouseover=()=>div.style.borderColor='var(--laranja)'; div.onmouseout=()=>div.style.borderColor='transparent';
+                div.onclick=()=>abrirFormAvaliacao(prof);
+                container.appendChild(div);
+            });
+        }
+
+        function abrirFormAvaliacao(prof) {
+            profissionalAvaliando=prof;
+            document.getElementById('nomeAvaliadoTitulo').textContent='⭐ Avaliar: '+prof.nome;
+            document.getElementById('formAvaliacao').style.display='block';
+            document.getElementById('resultadosBuscaAvaliacao').innerHTML='';
+            document.getElementById('buscaAvaliacaoInput').value='';
+            estrelasAvaliacao=0; selecionarEstrelas(0);
+        }
+
+        function cancelarAvaliacao() {
+            profissionalAvaliando=null;
+            document.getElementById('formAvaliacao').style.display='none';
+            document.getElementById('nomeClienteAvaliacao').value='';
+            document.getElementById('comentarioAvaliacao').value='';
+            estrelasAvaliacao=0;
+        }
+
+        async function enviarAvaliacao() {
+            const nome=document.getElementById('nomeClienteAvaliacao').value.trim(), comentario=document.getElementById('comentarioAvaliacao').value.trim();
+            if(!nome){alert('Digite seu nome');return;} if(!estrelasAvaliacao){alert('Selecione uma nota');return;} if(!profissionalAvaliando) return;
+            const{error}=await supabaseClient.from('avaliacoes').insert({prof_id:profissionalAvaliando.id,nota:estrelasAvaliacao,comentario});
+            if(error){alert('Erro: '+error.message);return;}
+            alert('✅ Avaliação enviada! Obrigado.'); cancelarAvaliacao(); carregarAvaliacoes();
+        }
+
+        async function carregarAvaliacoes() {
+            const container=document.getElementById('listaAvaliacoes');
+            if(!container) return;
+            try {
+                const{data}=await supabaseClient.from('avaliacoes').select('*').order('criado_em',{ascending:false}).limit(20);
+                if(!data||data.length===0){container.innerHTML='<p style="text-align:center;color:var(--linha);">Nenhuma avaliação ainda</p>';return;}
+                container.innerHTML='';
+                for(const av of data){
+                    let nomeProf='Profissional';
+                    const{data:pd}=await supabaseClient.from('profissionais').select('nome').eq('id',av.prof_id).single();
+                    if(pd) nomeProf=pd.nome;
+                    const estrelas='⭐'.repeat(av.nota)+'☆'.repeat(5-av.nota);
+                    const card=document.createElement('div'); card.className='chamado-card';
+                    card.innerHTML=`<h4>${nomeProf}</h4><div style="font-size:18px;margin:4px 0;">${estrelas}</div>${av.comentario?`<div class="chamado-info" style="font-style:italic;">"${av.comentario}"</div>`:''}<div class="chamado-info" style="font-size:11px;">${new Date(av.criado_em).toLocaleDateString('pt-BR')}</div>`;
+                    container.appendChild(card);
+                }
+            } catch(err){container.innerHTML='<p style="text-align:center;color:red;">Erro ao carregar</p>';}
+        }
+
+        // ===== CRÉDITOS / PIX =====
+        function carregarPacotesCredito() {
+            const pacotes=[{creditos:5,preco:'R$ 9,90',descricao:'Pacote Básico'},{creditos:15,preco:'R$ 24,90',descricao:'Pacote Profissional'},{creditos:30,preco:'R$ 44,90',descricao:'Pacote Premium'},{creditos:60,preco:'R$ 79,90',descricao:'Pacote Master'}];
+            const container=document.getElementById('pacotesCredito'); if(!container) return; container.innerHTML='';
+            pacotes.forEach(p=>{const card=document.createElement('div');card.className='credito-card';card.innerHTML=`<h4>${p.creditos} Créditos</h4><p>${p.descricao}</p><div style="font-size:22px;font-weight:700;margin:8px 0;">${p.preco}</div><button class="btn-primary" onclick="abrirModalPix(${p.creditos},'${p.preco}')">COMPRAR VIA PIX</button>`;container.appendChild(card);});
+        }
+
+        function abrirModalPix(creditos, preco) {
+            const chave='comercial@fosterconstrucoes.com.br';
+            document.getElementById('pixContent').innerHTML=`<div class="pix-info"><p style="font-size:14px;font-weight:700;margin-bottom:8px;">Você está comprando:</p><p style="font-size:24px;font-weight:700;color:var(--laranja);">${creditos} Créditos — ${preco}</p></div><p style="font-size:13px;margin-bottom:12px;text-align:center;">Envie o PIX para a chave abaixo:</p><div class="pix-chave">${chave}</div><button class="btn-primary" onclick="copiarPix('${chave}')">📋 COPIAR CHAVE PIX</button><p style="font-size:11px;color:var(--linha);margin-top:12px;text-align:center;">Créditos adicionados em até 1 hora útil após confirmação.</p>`;
+            document.getElementById('modalPix').classList.add('active');
+        }
+
+        function copiarPix(chave) { navigator.clipboard.writeText(chave).then(()=>alert('✅ Chave PIX copiada!')); }
+        function fecharModalPix() { document.getElementById('modalPix').classList.remove('active'); }
+
+        // ===== ADMIN =====
+        async function abrirModalAdmin() {
+            const{data:profissionais}=await supabaseClient.from('profissionais').select('*').order('criado_em',{ascending:false});
+            const{data:chamados}=await supabaseClient.from('chamados').select('*').eq('status','novo');
+            const totalProf=profissionais?profissionais.length:0, totalChamados=chamados?chamados.length:0;
+            let html=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;"><div style="background:#1F2328;color:white;padding:16px;border-radius:8px;text-align:center;"><div style="font-size:32px;font-weight:700;color:#DC2626;">${totalProf}</div><div style="font-size:11px;letter-spacing:1px;">PROFISSIONAIS</div></div><div style="background:#1F2328;color:white;padding:16px;border-radius:8px;text-align:center;"><div style="font-size:32px;font-weight:700;color:#DC2626;">${totalChamados}</div><div style="font-size:11px;letter-spacing:1px;">CHAMADOS ABERTOS</div></div></div><div style="display:flex;gap:8px;margin-bottom:16px;border-bottom:2px solid #eee;"><button onclick="mostrarAbaAdmin('profissionais')" id="btnAdmProf" style="flex:1;padding:10px;background:none;border:none;font-weight:700;color:#DC2626;border-bottom:3px solid #DC2626;cursor:pointer;">PROFISSIONAIS</button><button onclick="mostrarAbaAdmin('chamados')" id="btnAdmCham" style="flex:1;padding:10px;background:none;border:none;font-weight:600;cursor:pointer;">CHAMADOS</button></div><div id="admProfissionais">`;
+            if(profissionais) profissionais.forEach(prof=>{
+                const catNome=CATEGORIAS[prof.categoria]?CATEGORIAS[prof.categoria].nome:prof.categoria||'-';
+                html+=`<div style="background:#f8f8f8;padding:16px;border-radius:8px;margin-bottom:12px;border-left:3px solid #DC2626;"><strong style="font-size:14px;">${prof.nome||'Sem nome'}</strong><br><span style="font-size:12px;color:#666;">📱 ${prof.telefone||'Não informado'}</span><br><span style="font-size:12px;color:#666;">🏷️ ${catNome}</span><br><span style="font-size:12px;color:#666;">🔧 ${prof.especialidades||'-'}</span><br><span style="font-size:12px;color:#666;">💰 ${prof.saldo_creditos||0} créditos</span><div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;"><input type="number" id="credInput_${prof.id}" placeholder="Qtd" style="width:70px;padding:8px;border:1px solid #ccc;border-radius:4px;font-size:12px;"><button onclick="adicionarCreditos('${prof.id}','${prof.nome}')" style="flex:1;background:#2E7D5B;color:white;border:none;padding:8px;border-radius:4px;font-weight:600;cursor:pointer;font-size:12px;">+ CRÉDITOS</button><button onclick="tornarAdmin('${prof.id}','${prof.nome}')" style="flex:1;background:#1F2328;color:white;border:none;padding:8px;border-radius:4px;font-weight:600;cursor:pointer;font-size:12px;">⭐ ADMIN</button><button onclick="excluirProfissional('${prof.id}','${prof.nome}')" style="background:#e74c3c;color:white;border:none;padding:8px 12px;border-radius:4px;font-weight:600;cursor:pointer;font-size:12px;">🗑️</button></div></div>`;
+            });
+            html+=`</div><div id="admChamados" style="display:none;">`;
+            if(chamados) chamados.forEach(c=>{html+=`<div style="background:#f8f8f8;padding:16px;border-radius:8px;margin-bottom:12px;border-left:3px solid #DC2626;"><strong>${c.nome_cliente}</strong><br><span style="font-size:12px;color:#666;">📱 ${c.telefone_cliente}</span><br><span style="font-size:12px;color:#666;">🔧 ${c.servico}</span><br><span style="font-size:12px;color:#666;">📍 ${c.bairro}</span><br><span style="font-size:12px;color:#666;">📝 ${c.descricao}</span></div>`;});
+            html+='</div>';
+            document.getElementById('adminContent').innerHTML=html;
+            document.getElementById('modalAdmin').classList.add('active');
+        }
+
+        function mostrarAbaAdmin(aba) {
+            document.getElementById('admProfissionais').style.display=aba==='profissionais'?'block':'none';
+            document.getElementById('admChamados').style.display=aba==='chamados'?'block':'none';
+            document.getElementById('btnAdmProf').style.color=aba==='profissionais'?'#DC2626':'#666';
+            document.getElementById('btnAdmProf').style.borderBottom=aba==='profissionais'?'3px solid #DC2626':'none';
+            document.getElementById('btnAdmCham').style.color=aba==='chamados'?'#DC2626':'#666';
+            document.getElementById('btnAdmCham').style.borderBottom=aba==='chamados'?'3px solid #DC2626':'none';
+        }
+
+        async function adicionarCreditos(profId, nome) {
+            const input=document.getElementById(`credInput_${profId}`), qtd=parseInt(input?input.value:0);
+            if(!qtd||qtd<=0){alert('Digite uma quantidade válida');return;}
+            const{data:pd}=await supabaseClient.from('profissionais').select('saldo_creditos').eq('id',profId).single();
+            const novoSaldo=(pd.saldo_creditos||0)+qtd;
+            const{error}=await supabaseClient.from('profissionais').update({saldo_creditos:novoSaldo}).eq('id',profId);
+            if(error){alert('Erro: '+error.message);return;}
+            alert(`✅ ${qtd} créditos adicionados para ${nome}!`); abrirModalAdmin();
+        }
+
+        async function tornarAdmin(profId, nome) {
+            if(!confirm(`Tornar ${nome} administrador?`)) return;
+            const{error}=await supabaseClient.from('profissionais').update({is_admin:true}).eq('id',profId);
+            if(error){alert('Erro: '+error.message);return;}
+            alert(`✅ ${nome} agora é administrador!`); abrirModalAdmin();
+        }
+
+        async function excluirProfissional(profId, nome) {
+            if(!confirm(`Excluir ${nome}? Esta ação não pode ser desfeita.`)) return;
+            const{error}=await supabaseClient.from('profissionais').delete().eq('id',profId);
+            if(error){alert('Erro: '+error.message);return;}
+            alert(`✅ ${nome} excluído!`); abrirModalAdmin();
+        }
+
+        function fecharModalAdmin() { document.getElementById('modalAdmin').classList.remove('active'); }
+        function abrirModalSobre() { document.getElementById('modalSobre').classList.add('active'); }
+        function fecharModalSobre() { document.getElementById('modalSobre').classList.remove('active'); }
+
+        // Fechar modais clicando fora
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', e => { if(e.target===modal) modal.classList.remove('active'); });
+        });
+
+        window.addEventListener('load', inicializar);
+    </script>
+</body>
+</html>
