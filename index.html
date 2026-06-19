@@ -377,7 +377,7 @@
                         <label>COMENTÁRIO</label>
                         <textarea id="comentarioAvaliacao" placeholder="Como foi o serviço?"></textarea>
                     </div>
-                    <button class="btn-primary" onclick=".insert({...})nviarAvaliacao()">ENVIAR AVALIAÇÃO</button>
+                    <button class="btn-primary" onclick="enviarAvaliacao()">ENVIAR AVALIAÇÃO</button>
                     <button class="btn-secondary" style="width:100%; margin-top:8px;" onclick="cancelarAvaliacao()">CANCELAR</button>
                 </div>
                 <h3 style="font-family: Oswald; margin-top: 24px; margin-bottom: 16px;">AVALIAÇÕES RECENTES</h3>
@@ -523,12 +523,6 @@
             'Técnico em Edificações': 2, 'Paisagista': 2, 'Instalador Elétrico': 2, 'Instalador de Gás': 2
         };
 
-        Object.keys(PRECOS_SERVICOS).length === Object.keys(PRECOS_SERVICOS).length || Object.entries(CATEGORIAS).forEach(([key, cat]) => {
-            cat.servicos.forEach(s => {
-                if (!PRECOS_SERVICOS[s]) PRECOS_SERVICOS[s] = 2;
-            });
-        });
-
         let supabaseClient = null;
         let usuarioAtual = null;
         let categoriaAtual = null;
@@ -555,12 +549,9 @@
                     supabaseClient.from('profissionais').select('telefone'),
                     supabaseClient.from('chamados').select('*', { count: 'exact', head: true }).eq('status', 'novo')
                 ]);
-
-                // Estimar cidades únicas pelo DDD do telefone
                 const ddds = new Set((profData || []).map(p => p.telefone ? p.telefone.replace(/\D/g,'').substring(0,2) : null).filter(Boolean));
-
                 const banner = document.getElementById('contadorBanner');
-                if((totalProf || 0) > 0) {
+                if(banner && (totalProf || 0) > 0) {
                     banner.style.display = 'flex';
                     animarNumero(document.getElementById('contadorProf'), totalProf || 0);
                     animarNumero(document.getElementById('contadorCidades'), ddds.size || 0);
@@ -593,7 +584,6 @@
             document.querySelectorAll('.tab').forEach(e => e.classList.remove('active'));
             document.getElementById(aba).classList.add('active');
             if(el) el.classList.add('active');
-            else if(event && event.target) event.target.classList.add('active');
             if(aba === 'buscar') preencherFiltroCategoria();
             if(aba === 'avaliacoes') carregarAvaliacoes();
             if(aba === 'cliente' && usuarioCliente) carregarPedidosCliente();
@@ -623,10 +613,7 @@
                 const { data: authData, error: authError } = await supabaseClient.auth.signUp({ email, password: senha });
                 if(authError) { alert('Erro: ' + authError.message); return; }
                 const { error: dbError } = await supabaseClient.from('clientes').insert({ id: authData.user.id, nome, telefone, cidade, email });
-                if(dbError) {
-                    // Tabela pode não existir ainda, salva só no auth
-                    console.log('Aviso tabela clientes:', dbError.message);
-                }
+                if(dbError) { console.log('Aviso tabela clientes:', dbError.message); }
                 alert('✅ Cadastro realizado! Bem-vindo(a) ' + nome);
                 voltarLoginCliente();
             } catch(err) { alert('Erro ao cadastrar'); }
@@ -649,7 +636,6 @@
             document.getElementById('clienteLoginArea').style.display = 'none';
             document.getElementById('clienteCadastroArea').style.display = 'none';
             document.getElementById('clientePainelLogado').style.display = 'block';
-            // Buscar nome do cliente
             const { data: clienteData } = await supabaseClient.from('clientes').select('nome').eq('id', usuarioCliente.id).single();
             const nome = clienteData ? clienteData.nome : usuarioCliente.email;
             document.getElementById('clienteBoasVindas').textContent = 'Olá, ' + nome + '! 👋';
@@ -761,34 +747,43 @@
             estrelasAvaliacao = 0;
         }
 
+        // ✅ CORRIGIDO: nomes das colunas alinhados com o banco
         async function enviarAvaliacao() {
             const nome = document.getElementById('nomeClienteAvaliacao').value.trim();
             const comentario = document.getElementById('comentarioAvaliacao').value.trim();
             if(!nome) { alert('Digite seu nome'); return; }
             if(!estrelasAvaliacao) { alert('Selecione uma nota'); return; }
             if(!profissionalAvaliando) return;
-            const { error } = await supabaseClient.from('avaliacoes').insert({ profissional_id: profissionalAvaliando.id, nome_cliente: nome, estrelas: estrelasAvaliacao, comentarios: comentario });
+            const { error } = await supabaseClient.from('avaliacoes').insert({
+                prof_id: profissionalAvaliando.id,
+                nota: estrelasAvaliacao,
+                comentario: comentario
+            });
             if(error) { alert('Erro: ' + error.message); return; }
             alert('✅ Avaliação enviada! Obrigado.');
             cancelarAvaliacao();
             carregarAvaliacoes();
         }
 
+        // ✅ CORRIGIDO: nomes das colunas alinhados com o banco
         async function carregarAvaliacoes() {
             const container = document.getElementById('listaAvaliacoes');
             if(!container) return;
             try {
-                const { data } = await supabaseClient.from('avaliacoes').select('*').order('created_at', { ascending: false }).limit(20);
+                const { data } = await supabaseClient.from('avaliacoes').select('*').order('criado_em', { ascending: false }).limit(20);
                 if(!data || data.length === 0) { container.innerHTML = '<p style="text-align:center; color:var(--linha);">Nenhuma avaliação ainda</p>'; return; }
                 container.innerHTML = '';
                 for(const av of data) {
                     let nomeProf = 'Profissional';
-                    const { data: profData } = await supabaseClient.from('profissionais').select('nome').eq('id', av.profissional_id).single();
+                    const { data: profData } = await supabaseClient.from('profissionais').select('nome').eq('id', av.prof_id).single();
                     if(profData) nomeProf = profData.nome;
-                    const estrelas = '⭐'.repeat(av.estrelas) + '☆'.repeat(5 - av.estrelas);
+                    const estrelas = '⭐'.repeat(av.nota) + '☆'.repeat(5 - av.nota);
                     const card = document.createElement('div');
                     card.className = 'chamado-card';
-                    card.innerHTML = `<h4>${nomeProf}</h4><div style="font-size:18px; margin:4px 0;">${estrelas}</div><div class="chamado-info">👤 ${av.nome_cliente}</div>${av.comentarios ? `<div class="chamado-info" style="font-style:italic;">"${av.comentarios}"</div>` : ''}<div class="chamado-info" style="font-size:11px;">${new Date(av.created_at).toLocaleDateString('pt-BR')}</div>`;
+                    card.innerHTML = `<h4>${nomeProf}</h4>
+                        <div style="font-size:18px; margin:4px 0;">${estrelas}</div>
+                        ${av.comentario ? `<div class="chamado-info" style="font-style:italic;">"${av.comentario}"</div>` : ''}
+                        <div class="chamado-info" style="font-size:11px;">${new Date(av.criado_em).toLocaleDateString('pt-BR')}</div>`;
                     container.appendChild(card);
                 }
             } catch(err) { container.innerHTML = '<p style="text-align:center; color:red;">Erro ao carregar</p>'; }
@@ -856,12 +851,12 @@
                 btn.className = 'categoria-btn';
                 btn.type = 'button';
                 btn.innerHTML = cat.nome;
-                btn.onclick = (e) => { e.preventDefault(); selecionarCategoriaCliente(key, cat); };
+                btn.onclick = (e) => { e.preventDefault(); selecionarCategoriaCliente(key, cat, e); };
                 container.appendChild(btn);
             });
         }
 
-        function selecionarCategoriaCliente(key, cat) {
+        function selecionarCategoriaCliente(key, cat, e) {
             categoriaAtual = key;
             document.getElementById('formPedido').style.display = 'block';
             document.getElementById('confirmacaoPedido').style.display = 'none';
@@ -874,7 +869,7 @@
                 select.appendChild(option);
             });
             document.querySelectorAll('#categoriasCliente .categoria-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            if(e && e.target) e.target.classList.add('active');
         }
 
         async function enviarPedido(e) {
@@ -884,7 +879,6 @@
             const servico = document.getElementById('servicoCliente').value;
             const bairro = document.getElementById('bairroCliente').value;
             const descricao = document.getElementById('descricaoCliente').value;
-
             try {
                 const { data, error } = await supabaseClient.from('chamados').insert({
                     nome_cliente: nome, telefone_cliente: telefone, servico: servico, bairro: bairro, descricao: descricao, status: 'novo'
@@ -918,12 +912,12 @@
                 btn.className = 'categoria-btn';
                 btn.type = 'button';
                 btn.innerHTML = cat.nome;
-                btn.onclick = (e) => { e.preventDefault(); selecionarCategoriaCadastro(key, cat); };
+                btn.onclick = (e) => { e.preventDefault(); selecionarCategoriaCadastro(key, cat, e); };
                 container.appendChild(btn);
             });
         }
 
-        function selecionarCategoriaCadastro(key, cat) {
+        function selecionarCategoriaCadastro(key, cat, e) {
             categoriaAtual = key;
             document.getElementById('especialidadesArea').style.display = 'block';
             const container = document.getElementById('especialidades');
@@ -935,14 +929,13 @@
                 container.appendChild(div);
             });
             document.querySelectorAll('#categoriasCadastro .categoria-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            if(e && e.target) e.target.classList.add('active');
         }
 
         function atualizarEspecialidades() {
             especialidadesSelecionadas = Array.from(document.querySelectorAll('#especialidades input[type="checkbox"]:checked')).map(el => el.value);
         }
 
-        // ===== SEGURANÇA: Validações =====
         function formatarTelefone(input) {
             let v = input.value.replace(/\D/g, '').slice(0, 11);
             if(v.length > 10) v = v.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
@@ -976,7 +969,7 @@
         function checarRateLimit() {
             const key = 'fc_cadastros';
             const agora = Date.now();
-            const janela = 60 * 60 * 1000; // 1 hora
+            const janela = 60 * 60 * 1000;
             let tentativas = JSON.parse(localStorage.getItem(key) || '[]');
             tentativas = tentativas.filter(t => agora - t < janela);
             if(tentativas.length >= 3) {
@@ -992,11 +985,8 @@
         async function cadastrarProf() {
             const nome = document.getElementById('nomeProf').value.trim();
             const telefone = document.getElementById('telefoneProf').value.trim();
-
             const email = document.getElementById('emailCadastro').value.trim();
             const senha = document.getElementById('senhaCadastro').value;
-
-            // Validações
             if(!nome || !telefone || !email || !senha || !categoriaAtual || especialidadesSelecionadas.length === 0) {
                 alert('Preencha todos os campos e selecione especialidades'); return;
             }
@@ -1007,30 +997,24 @@
             if(telNumeros.length < 10 || telNumeros.length > 11) {
                 alert('Telefone inválido. Use o formato (11) 9999-9999'); return;
             }
-
             if(senha.length < 8) {
                 alert('A senha deve ter pelo menos 8 caracteres'); return;
             }
             if(!checarRateLimit()) return;
-
             try {
-                // Verificar se telefone já existe
                 const { data: telExiste } = await supabaseClient.from('profissionais').select('id').eq('telefone', telefone).maybeSingle();
                 if(telExiste) { alert('Este telefone já está cadastrado.'); return; }
-
                 const { data: authData, error: authError } = await supabaseClient.auth.signUp({
                     email, password: senha,
                     options: { emailRedirectTo: window.location.href }
                 });
                 if(authError) { alert('Erro: ' + authError.message); return; }
-
                 const { error: dbError } = await supabaseClient.from('profissionais').insert({
                     id: authData.user.id, nome, telefone,
                     especialidades: especialidadesSelecionadas.join(','),
                     categoria: categoriaAtual, saldo_creditos: 10
                 });
                 if(dbError) { alert('Erro: ' + dbError.message); return; }
-
                 alert('✅ Cadastro realizado! Verifique seu e-mail para confirmar a conta.\nVocê ganhou 10 créditos grátis!');
                 voltarLogin();
             } catch(err) { alert('Erro ao cadastrar. Tente novamente.'); }
@@ -1055,108 +1039,4 @@
             } catch(err) {}
         }
 
-        async function atualizarPainelProf() {
-            if(!usuarioAtual) {
-                document.getElementById('loginArea').style.display = 'block';
-                document.getElementById('painelLogado').style.display = 'none';
-                document.getElementById('headerActions').innerHTML = '';
-                return;
-            }
-            const { data: prof } = await supabaseClient.from('profissionais').select('id, nome, saldo_creditos, is_admin').eq('id', usuarioAtual.id).single();
-            if(!prof) return;
-            document.getElementById('headerActions').innerHTML = `<span style="font-size: 12px;">Olá, ${prof.nome}</span><button class="btn-logout" onclick="logout()">SAIR</button>`;
-            document.getElementById('loginArea').style.display = 'none';
-            document.getElementById('painelLogado').style.display = 'block';
-            if(prof.is_admin === true || prof.is_admin === 1) document.getElementById('adminPanel').style.display = 'block';
-            document.getElementById('saldoCreditos').textContent = prof.saldo_creditos || 0;
-            document.getElementById('saldoCreditos2').textContent = prof.saldo_creditos || 0;
-            carregarChamados();
-        }
-
-        async function carregarChamados() {
-            try {
-                const { data: chamados } = await supabaseClient.from('chamados').select('*').eq('status', 'novo').order('criado_em', { ascending: false });
-                const container = document.getElementById('listaChamados');
-                container.innerHTML = '';
-                if(!chamados || chamados.length === 0) { container.innerHTML = '<p style="text-align:center; color: var(--linha);">Nenhum projeto disponível no momento</p>'; return; }
-                chamados.forEach(c => {
-                    const creditos = PRECOS_SERVICOS[c.servico] || 2;
-                    const card = document.createElement('div');
-                    card.className = 'chamado-card';
-                    card.innerHTML = `<h4>${c.nome_cliente}</h4><div class="chamado-info">📍 ${c.bairro}</div><div class="chamado-info">📝 ${c.descricao}</div><div class="servico-badge">${c.servico}</div><div class="contato-bloqueado">Contato bloqueado<br><small>(Custa ${creditos} crédito${creditos > 1 ? 's' : ''})</small></div><button class="btn-desbloquear" onclick="desbloquearChamado(${c.id}, ${creditos})">DESBLOQUEAR (${creditos} créditos)</button>`;
-                    container.appendChild(card);
-                });
-            } catch(err) { console.error(err); }
-        }
-
-        async function desbloquearChamado(chamadoId, custo) {
-            try {
-                const { data: profData } = await supabaseClient.from('profissionais').select('saldo_creditos').eq('id', usuarioAtual.id).single();
-                if(profData.saldo_creditos < custo) { alert('Saldo insuficiente'); return; }
-                const { error } = await supabaseClient.rpc('desbloquear_chamado', { p_chamado_id: chamadoId, p_custo: custo });
-                if(error) { alert('Erro: ' + error.message); return; }
-                const { data: chamado } = await supabaseClient.from('chamados').select('*').eq('id', chamadoId).single();
-                const msg = `Olá ${chamado.nome_cliente}, você recebeu uma proposta para seu projeto!`;
-                window.open(`https://wa.me/${chamado.telefone_cliente}?text=${encodeURIComponent(msg)}`);
-                atualizarPainelProf();
-            } catch(err) { alert('Erro'); }
-        }
-
-        async function logout() {
-            await supabaseClient.auth.signOut();
-            usuarioAtual = null;
-            atualizarPainelProf();
-        }
-
-        function carregarPacotesCredito() {
-            const container = document.getElementById('pacotesCredito');
-            const pacotes = [
-                { creditos: 10, preco: 10 },
-                { creditos: 30, preco: 25 },
-                { creditos: 100, preco: 70 }
-            ];
-            container.innerHTML = '';
-            pacotes.forEach(p => {
-                const card = document.createElement('div');
-                card.className = 'credito-card';
-                card.innerHTML = `<h4>${p.creditos} créditos</h4><p>R$ ${p.preco.toFixed(2)}</p><button class="btn-primary" onclick="abrirModalPix(${p.creditos}, ${p.preco})">COMPRAR</button>`;
-                container.appendChild(card);
-            });
-        }
-
-        function abrirModalPix(creditos, preco) {
-            if(!usuarioAtual) { alert('Você precisa estar logado'); return; }
-            const pix = 'amigosengenheirosuca@gmail.com';
-            const conteudo = `<div style="text-align: center;"><p style="font-size: 14px; margin-bottom: 16px;"><strong>${creditos} créditos</strong> por <strong>R$ ${preco.toFixed(2)}</strong></p><div class="pix-info"><p style="font-size: 12px; margin-bottom: 8px;"><strong>Chave PIX</strong></p><div class="pix-chave">${pix}</div><button class="btn-secondary" style="width: 100%; margin-top: 12px;" onclick="copiarPix('${pix}')">COPIAR CHAVE PIX</button></div><p style="font-size: 12px; margin: 16px 0; color: var(--linha);">Após transferir, envie comprovante por WhatsApp</p><a href="https://wa.me/5511000000000?text=Oi%20Foster!%20Transferi%20R$${preco}%20no%20PIX.%20Chave:%20${pix}" target="_blank" style="text-decoration: none;"><button class="btn-whatsapp">ENVIAR COMPROVANTE VIA WHATSAPP</button></a><p style="font-size: 11px; margin-top: 12px; color: var(--linha);">Seus créditos serão adicionados em poucos minutos</p></div>`;
-            document.getElementById('pixContent').innerHTML = conteudo;
-            document.getElementById('modalPix').classList.add('active');
-        }
-
-        function copiarPix(pix) {
-            navigator.clipboard.writeText(pix).then(() => alert('Chave PIX copiada!'));
-        }
-
-        function fecharModalPix() {
-            document.getElementById('modalPix').classList.remove('active');
-        }
-
-        function fecharModalAdmin() {
-            document.getElementById('modalAdmin').classList.remove('active');
-        }
-
-        function abrirModalSobre() {
-            document.getElementById('modalSobre').classList.add('active');
-        }
-
-        function fecharModalSobre() {
-            document.getElementById('modalSobre').classList.remove('active');
-        }
-
-        window.onclick = function(e) {
-            if(e.target.classList.contains('modal')) e.target.classList.remove('active');
-        }
-
-        window.addEventListener('load', inicializar);
-    </script>
-</body>
-</html>
+        async function atualizarPaine
