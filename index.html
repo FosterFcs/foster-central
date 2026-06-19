@@ -472,7 +472,7 @@
             document.getElementById('clienteLoginArea').style.display='none';
             document.getElementById('clienteCadastroArea').style.display='none';
             document.getElementById('clientePainelLogado').style.display='block';
-            const{data:cd}=await supabaseClient.from('clientes').select('nome').eq('id',usuarioCliente.id).single();
+            const{data:cd}=await supabaseClient.from('clientes').select('nome').eq('id',usuarioCliente.id).maybeSingle();
             document.getElementById('clienteBoasVindas').textContent='Olá, '+(cd?cd.nome:usuarioCliente.email)+'! 👋';
             carregarPedidosCliente();
         }
@@ -561,7 +561,7 @@
             loginArea.style.display='none'; cadastroArea.style.display='none'; painelLogado.style.display='block';
             headerActions.innerHTML=`<button class="btn-logout" onclick="logoutProf()">SAIR</button>`;
             try {
-                const{data:profData}=await supabaseClient.from('profissionais').select('*').eq('id',usuarioAtual.id).single();
+                const{data:profData}=await supabaseClient.from('profissionais').select('*').eq('id',usuarioAtual.id).maybeSingle();
                 if(profData){
                     document.getElementById('saldoCreditos').textContent=profData.saldo_creditos||0;
                     document.getElementById('saldoCreditos2').textContent=profData.saldo_creditos||0;
@@ -575,7 +575,7 @@
             const container=document.getElementById('listaChamados');
             if(!container||!usuarioAtual) return;
             try {
-                const{data:profData}=await supabaseClient.from('profissionais').select('categoria,saldo_creditos').eq('id',usuarioAtual.id).single();
+                const{data:profData}=await supabaseClient.from('profissionais').select('categoria,saldo_creditos').eq('id',usuarioAtual.id).maybeSingle();
                 const{data:chamados}=await supabaseClient.from('chamados').select('*').eq('status','novo').order('criado_em',{ascending:false});
                 if(!chamados||chamados.length===0){container.innerHTML='<p style="text-align:center;color:var(--linha);">Nenhum projeto disponível no momento</p>';return;}
                 const{data:desbloqueados}=await supabaseClient.from('desbloqueios').select('chamado_id').eq('prof_id',usuarioAtual.id);
@@ -699,7 +699,7 @@
                 container.innerHTML='';
                 for(const av of data){
                     let nomeProf='Profissional';
-                    const{data:pd}=await supabaseClient.from('profissionais').select('nome').eq('id',av.prof_id).single();
+                    const{data:pd}=await supabaseClient.from('profissionais').select('nome').eq('id',av.prof_id).maybeSingle();
                     if(pd) nomeProf=pd.nome;
                     const estrelas='⭐'.repeat(av.nota)+'☆'.repeat(5-av.nota);
                     const card=document.createElement('div'); card.className='chamado-card';
@@ -754,7 +754,7 @@
         async function adicionarCreditos(profId, nome) {
             const input=document.getElementById(`credInput_${profId}`), qtd=parseInt(input?input.value:0);
             if(!qtd||qtd<=0){alert('Digite uma quantidade válida');return;}
-            const{data:pd}=await supabaseClient.from('profissionais').select('saldo_creditos').eq('id',profId).single();
+            const{data:pd}=await supabaseClient.from('profissionais').select('saldo_creditos').eq('id',profId).maybeSingle();
             const novoSaldo=(pd.saldo_creditos||0)+qtd;
             const{error}=await supabaseClient.from('profissionais').update({saldo_creditos:novoSaldo}).eq('id',profId);
             if(error){alert('Erro: '+error.message);return;}
