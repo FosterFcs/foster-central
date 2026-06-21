@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de Obras — Foster Obras</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f4f4f4; color: #1F2328; }
+        
+        header {
+            background: #1F2328;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 3px solid #E00000;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.4);
+        }
+        
+        .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .logo-text { color: white; }
+        .logo-text h1 { font-family: 'Oswald', sans-serif; font-size: 16px; font-weight: 700; letter-spacing: 1px; }
+        .logo-text h1 span { color: #E00000; }
+        .logo-text p { font-size: 9px; color: #aaa; letter-spacing: 2px; text-transform: uppercase; margin-top: 3px; }
+        
+        .header-right { display: flex; align-items: center; gap: 10px; }
+        .btn-voltar { background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.15); padding: 6px 12px; border-radius: 4px; font-size: 11px; cursor: pointer; font-family: 'Oswald', sans-serif; letter-spacing: 0.5px; text-decoration: none; }
+        .btn-voltar:hover { background: #E00000; border-color: #E00000; }
+        
+        .container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            height: calc(100vh - 60px);
+            gap: 0;
+        }
+        
+        .sidebar {
+            background: white;
+            padding: 20px;
+            overflow-y: auto;
+            border-right: 1px solid #e0e0e0;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar h2 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 14px;
+            color: #1F2328;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid #E00000;
+            padding-bottom: 10px;
+        }
+        
+        .filtros {
+            margin-bottom: 20px;
+        }
+        
+        .filtro-grupo {
+            margin-bottom: 12px;
+        }
+        
+        .filtro-grupo label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+        
+        .filtro-grupo select {
+            width: 100%;
+            padding: 8px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            background: white;
+            color: #1F2328;
+            cursor: pointer;
+        }
+        
+        .filtro-grupo select:focus {
+            outline: none;
+            border-color: #E00000;
+            box-shadow: 0 0 0 3px rgba(224,0,0,0.1);
+        }
+        
+        .lista-obras {
+            max-height: calc(100vh - 300px);
+            overflow-y: auto;
+        }
+        
+        .obra-item {
+            background: #f9fafb;
+            border-left: 4px solid #E00000;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .obra-item:hover {
+            background: #fff0f0;
+            box-shadow: 0 2px 8px rgba(224,0,0,0.1);
+            transform: translateX(5px);
+        }
+        
+        .obra-item.pausada {
+            border-left-color: #d97706;
+        }
+        
+        .obra-item.concluida {
+            border-left-color: #16a34a;
+        }
+        
+        .obra-item h3 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: #1F2328;
+        }
+        
+        .obra-item p {
+            font-size: 11px;
+            color: #6b7280;
+            margin-bottom: 2px;
+        }
+        
+        .obra-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 9px;
+            font-weight: 700;
+            margin-top: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .obra-badge.andamento {
+            background: #E00000;
+            color: white;
+        }
+        
+        .obra-badge.pausada {
+            background: #d97706;
+            color: white;
+        }
+        
+        .obra-badge.concluida {
+            background: #16a34a;
+            color: white;
+        }
+        
+        .obra-badge.planejamento {
+            background: #ddd;
+            color: #333;
+        }
+        
+        #mapa {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .leaflet-popup-content-wrapper {
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .popup-obra {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .popup-obra h4 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: #1F2328;
+            margin-bottom: 8px;
+            border-bottom: 2px solid #E00000;
+            padding-bottom: 6px;
+        }
+        
+        .popup-obra p {
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 4px;
+        }
+        
+        .popup-obra strong {
+            color: #1F2328;
+        }
+        
+        .popup-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: 700;
+            margin-top: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .popup-badge.andamento {
+            background: #E00000;
+            color: white;
+        }
+        
+        .popup-badge.pausada {
+            background: #d97706;
+            color: white;
+        }
+        
+        .popup-badge.concluida {
+            background: #16a34a;
+            color: white;
+        }
+        
+        .popup-badge.planejamento {
+            background: #ddd;
+            color: #333;
+        }
+        
+        .legenda {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+        
+        .legenda h3 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+            color: #1F2328;
+        }
+        
+        .legenda-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            margin-bottom: 6px;
+            color: #6b7280;
+        }
+        
+        .legenda-cor {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        
+        .legenda-cor.andamento {
+            background: #E00000;
+        }
+        
+        .legenda-cor.pausada {
+            background: #d97706;
+        }
+        
+        .legenda-cor.concluida {
+            background: #16a34a;
+        }
+        
+        .legenda-cor.planejamento {
+            background: #ddd;
+            border: 1px solid #999;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+                position: absolute;
+                left: 0;
+                top: 60px;
+                width: 280px;
+                height: calc(100vh - 60px);
+                z-index: 50;
+                border-right: none;
+                border-bottom: 1px solid #e0e0e0;
+            }
+            
+            .sidebar.active {
+                display: block;
+            }
+            
+            .btn-menu {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 40px;
+                height: 40px;
+                background: #E00000;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/" class="logo">
+            <div class="logo-text">
+                <h1><span>FOSTER</span> OBRAS</h1>
+                <p>Mapa de Obras</p>
+            </div>
+        </a>
+        <div class="header-right">
+            <a href="/" class="btn-voltar">← Voltar</a>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="sidebar" id="sidebar">
+            <div class="legenda">
+                <h3>Legenda</h3>
+                <div class="legenda-item">
+                    <div class="legenda-cor andamento"></div>
+                    <span>Em Andamento</span>
+                </div>
+                <div class="legenda-item">
+                    <div class="legenda-cor pausada"></div>
+                    <span>Pausada</span>
+                </div>
+                <div class="legenda-item">
+                    <div class="legenda-cor concluida"></div>
+                    <span>Concluída</span>
+                </div>
+                <div class="legenda-item">
+                    <div class="legenda-cor planejamento"></div>
+                    <span>Planejamento</span>
+                </div>
+            </div>
+            
+            <div class="filtros">
+                <div class="filtro-grupo">
+                    <label>Filtrar por Status</label>
+                    <select id="filtroStatus" onchange="filtrarObras()">
+                        <option value="">Todas as obras</option>
+                        <option value="andamento">Em Andamento</option>
+                        <option value="pausada">Pausada</option>
+                        <option value="concluida">Concluída</option>
+                        <option value="planejamento">Planejamento</option>
+                    </select>
+                </div>
+            </div>
+            
+            <h2>Obras Cadastradas</h2>
+            <div class="lista-obras" id="listaObras"></div>
+        </div>
+        
+        <div id="mapa"></div>
+    </div>
+    
+    <script>
+        // Dados de demonstração
+        const obrasDemo = [
+            {
+                id: '1',
+                nome: 'Residência Família Santos',
+                cliente: 'Carlos Santos',
+                endereco: 'Rua das Palmeiras, 120 — Alphaville, SP',
+                lat: -23.7580,
+                lng: -46.8904,
+                status: 'andamento',
+                avanco: 42,
+                orcamento: 380000,
+                area: 220
+            },
+            {
+                id: '2',
+                nome: 'Edifício Comercial Tijuca',
+                cliente: 'Construtora JBR',
+                endereco: 'Av. Principal, 500 — Tijuca, RJ',
+                lat: -22.9068,
+                lng: -43.2332,
+                status: 'andamento',
+                avanco: 28,
+                orcamento: 2800000,
+                area: 1200
+            },
+            {
+                id: '3',
+                nome: 'Reforma Apartamento Jardins',
+                cliente: 'Maria Oliveira',
+                endereco: 'Rua Augusta, 800 — Jardins, SP',
+                lat: -23.5615,
+                lng: -46.6560,
+                status: 'concluida',
+                avanco: 100,
+                orcamento: 120000,
+                area: 95
+            }
+        ];
+        
+        let obras = [...obrasDemo];
+        let mapa;
+        let marcadores = {};
+        
+        // Inicializar mapa
+        function inicializarMapa() {
+            mapa = L.map('mapa').setView([-23.5505, -46.6333], 10);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 19
+            }).addTo(mapa);
+            
+            adicionarMarcadores();
+        }
+        
+        // Adicionar marcadores ao mapa
+        function adicionarMarcadores() {
+            // Limpar marcadores existentes
+            Object.values(marcadores).forEach(m => mapa.removeLayer(m));
+            marcadores = {};
+            
+            // Adicionar novos marcadores
+            obras.forEach(obra => {
+                const cor = obterCorStatus(obra.status);
+                
+                const html = `
+                    <div class="popup-obra">
+                        <h4>${obra.nome}</h4>
+                        <p><strong>Cliente:</strong> ${obra.cliente}</p>
+                        <p><strong>Endereço:</strong> ${obra.endereco}</p>
+                        <p><strong>Área:</strong> ${obra.area} m²</p>
+                        <p><strong>Avanço:</strong> ${obra.avanco}%</p>
+                        <p><strong>Orçamento:</strong> R$ ${Number(obra.orcamento).toLocaleString('pt-BR')}</p>
+                        <span class="popup-badge ${obra.status}">${obterLabelStatus(obra.status)}</span>
+                    </div>
+                `;
+                
+                const marcador = L.circleMarker([obra.lat, obra.lng], {
+                    radius: 12,
+                    fillColor: cor,
+                    color: '#fff',
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.8
+                }).bindPopup(html).addTo(mapa);
+                
+                marcador.on('click', function() {
+                    destacarObra(obra.id);
+                });
+                
+                marcadores[obra.id] = marcador;
+            });
+        }
+        
+        // Obter cor do status
+        function obterCorStatus(status) {
+            const cores = {
+                'andamento': '#E00000',
+                'pausada': '#d97706',
+                'concluida': '#16a34a',
+                'planejamento': '#ddd'
+            };
+            return cores[status] || '#E00000';
+        }
+        
+        // Obter label do status
+        function obterLabelStatus(status) {
+            const labels = {
+                'andamento': 'Em Andamento',
+                'pausada': 'Pausada',
+                'concluida': 'Concluída',
+                'planejamento': 'Planejamento'
+            };
+            return labels[status] || 'Desconhecido';
+        }
+        
+        // Renderizar lista de obras
+        function renderizarListaObras() {
+            const lista = document.getElementById('listaObras');
+            lista.innerHTML = '';
+            
+            obras.forEach(obra => {
+                const div = document.createElement('div');
+                div.className = `obra-item ${obra.status}`;
+                div.onclick = () => destacarObra(obra.id);
+                
+                div.innerHTML = `
+                    <h3>${obra.nome}</h3>
+                    <p>👤 ${obra.cliente}</p>
+                    <p>📍 ${obra.endereco}</p>
+                    <p>📐 ${obra.area} m² | 📈 ${obra.avanco}%</p>
+                    <span class="obra-badge ${obra.status}">${obterLabelStatus(obra.status)}</span>
+                `;
+                
+                lista.appendChild(div);
+            });
+        }
+        
+        // Destacar obra no mapa
+        function destacarObra(obraId) {
+            const obra = obras.find(o => o.id === obraId);
+            if (!obra || !marcadores[obraId]) return;
+            
+            // Centralizar no mapa
+            mapa.setView([obra.lat, obra.lng], 14);
+            
+            // Abrir popup
+            setTimeout(() => {
+                marcadores[obraId].openPopup();
+            }, 300);
+        }
+        
+        // Filtrar obras
+        function filtrarObras() {
+            const filtro = document.getElementById('filtroStatus').value;
+            
+            if (filtro === '') {
+                obras = [...obrasDemo];
+            } else {
+                obras = obrasDemo.filter(o => o.status === filtro);
+            }
+            
+            adicionarMarcadores();
+            renderizarListaObras();
+        }
+        
+        // Inicializar
+        window.addEventListener('load', () => {
+            inicializarMapa();
+            renderizarListaObras();
+        });
+    </script>
+</body>
+</html>
