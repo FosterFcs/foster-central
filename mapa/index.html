@@ -7,13 +7,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#1F2328">
     <title>Foster Obras — Diário de Obra Digital</title>
-    <link rel="manifest" href="manifest.json">
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        // Configuração Supabase — substitua pelos seus dados ao publicar
-        try { if(typeof SUPABASE_URL === 'undefined') { window.SUPABASE_URL = ''; window.SUPABASE_ANON_KEY = ''; } } catch(e) {}
-    </script>
     <style>
         :root {
             --grafite: #1F2328;
@@ -27,12 +21,6 @@
             --borda: #e0e0e0;
             --verde: #16a34a;
             --amarelo: #d97706;
-            /* aliases para compatibilidade */
-            --azul: #1F2328;
-            --azul2: #2a3240;
-            --laranja: #E00000;
-            --laranja2: #c00000;
-            --papel: #f4f4f4;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: var(--cinza-claro); color: var(--grafite); min-height: 100vh; }
@@ -40,13 +28,12 @@
         /* HEADER */
         header { background: var(--grafite); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; border-bottom: 3px solid var(--vermelho); box-shadow: 0 2px 16px rgba(0,0,0,0.4); }
         .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-        .logo-hex { flex-shrink: 0; }
         .logo-text { color: white; }
         .logo-text h1 { font-family: 'Oswald', sans-serif; font-size: 16px; font-weight: 700; letter-spacing: 1px; line-height: 1.1; }
         .logo-text h1 span { color: var(--vermelho); }
         .logo-text p { font-size: 9px; color: #aaa; letter-spacing: 2px; text-transform: uppercase; margin-top: 3px; }
         .header-right { display: flex; align-items: center; gap: 10px; }
-        .user-info { color: #aaa; font-size: 11px; text-align: right; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .user-info { color: #aaa; font-size: 11px; text-align: right; }
         .btn-sair { background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.15); padding: 6px 12px; border-radius: 4px; font-size: 11px; cursor: pointer; font-family: 'Oswald', sans-serif; letter-spacing: 0.5px; }
         .btn-sair:hover { background: var(--vermelho); border-color: var(--vermelho); }
 
@@ -61,60 +48,20 @@
 
         /* CARDS */
         .card { background: var(--branco); border-radius: 4px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid var(--borda); }
-        .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-        .card-title { font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 700; color: var(--azul); letter-spacing: 0.5px; }
+        .card-title { font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 700; color: var(--grafite); letter-spacing: 0.5px; }
 
         /* FORM */
         .form-group { margin-bottom: 14px; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
         label { display: block; font-size: 11px; font-weight: 600; color: var(--cinza); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
-        input, select, textarea { width: 100%; padding: 10px 12px; border: 1.5px solid var(--borda); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 13px; background: var(--branco); color: var(--azul); transition: border-color 0.2s; }
+        input, select, textarea { width: 100%; padding: 10px 12px; border: 1.5px solid var(--borda); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 13px; background: var(--branco); color: var(--grafite); transition: border-color 0.2s; }
         textarea { resize: vertical; min-height: 80px; }
         input:focus, select:focus, textarea:focus { outline: none; border-color: var(--vermelho); box-shadow: 0 0 0 3px rgba(224,0,0,0.1); }
 
         /* BUTTONS */
         .btn-primary { width: 100%; padding: 13px; background: var(--vermelho); color: white; border: none; border-radius: 4px; font-weight: 700; font-size: 13px; letter-spacing: 1px; cursor: pointer; font-family: 'Oswald', sans-serif; text-transform: uppercase; transition: background 0.2s; }
         .btn-primary:hover { background: var(--vermelho2); }
-        .btn-secondary { padding: 9px 16px; background: var(--grafite); color: white; border: none; border-radius: 4px; font-weight: 700; font-size: 11px; cursor: pointer; transition: background 0.2s; font-family: 'Oswald', sans-serif; letter-spacing: 0.5px; text-transform: uppercase; }
+        .btn-secondary { width: 100%; padding: 9px 16px; background: var(--grafite); color: white; border: none; border-radius: 4px; font-weight: 700; font-size: 11px; cursor: pointer; transition: background 0.2s; font-family: 'Oswald', sans-serif; letter-spacing: 0.5px; text-transform: uppercase; margin-top: 8px; }
         .btn-secondary:hover { background: #000; }
-        .btn-outline { padding: 9px 16px; background: white; color: var(--grafite); border: 1.5px solid var(--borda); border-radius: 4px; font-weight: 600; font-size: 12px; cursor: pointer; }
-        .btn-danger { background: var(--vermelho); color: white; border: none; padding: 8px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: 600; }
-        .btn-verde { background: var(--grafite); color: white; border: none; padding: 9px 16px; border-radius: 4px; font-size: 11px; cursor: pointer; font-weight: 700; font-family: 'Oswald', sans-serif; letter-spacing: 0.5px; text-transform: uppercase; }
-
-        /* STATUS BADGES */
-        .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 3px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; }
-        .badge-andamento { background: var(--vermelho); color: white; }
-        .badge-concluida { background: #1F2328; color: white; }
-        .badge-pausada { background: #555; color: white; }
-        .badge-planejamento { background: #ddd; color: #333; }
-
-        /* OBRA CARD */
-        .obra-card { background: white; border-radius: 4px; padding: 16px; margin-bottom: 10px; border: 1.5px solid var(--borda); cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
-        .obra-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--vermelho); }
-        .obra-card:hover { border-color: var(--vermelho); box-shadow: 0 4px 12px rgba(224,0,0,0.12); }
-        .obra-card.pausada::before { background: var(--amarelo); }
-        .obra-card.concluida::before { background: var(--verde); }
-        .obra-card h3 { font-family: 'Oswald', sans-serif; font-size: 15px; font-weight: 700; margin-bottom: 6px; }
-        .obra-info { font-size: 12px; color: var(--cinza); margin-bottom: 3px; display: flex; align-items: center; gap: 5px; }
-
-        /* PROGRESSO */
-        .progresso-bar { background: #f3f4f6; border-radius: 99px; height: 6px; margin: 10px 0 4px; overflow: hidden; }
-        .progresso-fill { height: 100%; border-radius: 99px; background: var(--vermelho); transition: width 0.5s; }
-        .progresso-fill.verde { background: var(--verde); }
-
-        /* RDO CARD */
-        .rdo-card { background: white; border-radius: 10px; padding: 14px; margin-bottom: 8px; border: 1px solid var(--borda); }
-        .rdo-date { font-family: 'Oswald', sans-serif; font-size: 13px; font-weight: 700; color: var(--azul); }
-        .rdo-clima { font-size: 18px; }
-        .rdo-body { font-size: 12px; color: var(--cinza); margin-top: 6px; line-height: 1.5; }
-        .rdo-equipe { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
-        .rdo-tag { background: var(--papel); border: 1px solid var(--borda); padding: 2px 8px; border-radius: 12px; font-size: 11px; color: var(--azul); }
-
-        /* CLIMA SELECTOR */
-        .clima-grid { display: flex; gap: 8px; flex-wrap: wrap; }
-        .clima-btn { padding: 8px 14px; background: var(--papel); border: 1.5px solid var(--borda); border-radius: 8px; cursor: pointer; font-size: 20px; transition: all 0.15s; }
-        .clima-btn.active { border-color: var(--vermelho); background: #fff0f0; }
-        .clima-btn span { display: block; font-size: 9px; text-align: center; margin-top: 2px; color: var(--cinza); font-weight: 600; }
 
         /* STATS */
         .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
@@ -122,56 +69,36 @@
         .stat-num { font-family: 'Oswald', sans-serif; font-size: 28px; font-weight: 700; color: var(--vermelho); line-height: 1; }
         .stat-label { font-size: 10px; color: var(--cinza); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.5px; }
 
-        /* MODAL */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; align-items: flex-end; justify-content: center; }
-        .modal.active { display: flex; }
-        .modal-box { background: white; width: 100%; max-width: 640px; max-height: 90vh; overflow-y: auto; border-radius: 8px 8px 0 0; padding: 20px; animation: slideUp 0.25s ease; border-top: 3px solid var(--vermelho); }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        .modal-handle { width: 40px; height: 4px; background: var(--borda); border-radius: 2px; margin: 0 auto 16px; }
-        .modal-title { font-family: 'Oswald', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 16px; color: var(--grafite); letter-spacing: 0.5px; }
-
         /* LOGIN */
-        .login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--azul); padding: 20px; }
+        .login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--grafite); padding: 20px; }
         .login-box { background: white; border-radius: 8px; padding: 32px 24px; width: 100%; max-width: 380px; border-top: 4px solid var(--vermelho); }
         .login-logo { text-align: center; margin-bottom: 24px; }
-        .login-logo .icon { width: 64px; height: 64px; background: var(--vermelho); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 12px; }
-        .login-logo h1 { font-family: 'Oswald', sans-serif; font-size: 22px; color: var(--grafite); }
+        .login-logo h1 { font-family: 'Oswald', sans-serif; font-size: 24px; color: var(--grafite); }
+        .login-logo h1 span { color: var(--vermelho); }
         .login-logo p { font-size: 12px; color: var(--cinza); margin-top: 4px; }
-
-        /* PLANOS */
-        .plano-card { border: 2px solid var(--borda); border-radius: 12px; padding: 20px; margin-bottom: 12px; text-align: center; cursor: pointer; transition: all 0.2s; }
-        .plano-card:hover { border-color: var(--laranja); }
-        .plano-card.destaque { border-color: var(--vermelho); background: #fff0f0; }
-        .plano-card h3 { font-family: 'Oswald', sans-serif; font-size: 18px; margin-bottom: 4px; }
-        .plano-preco { font-size: 32px; font-weight: 700; color: var(--vermelho); margin: 8px 0; }
-        .plano-preco span { font-size: 14px; color: var(--cinza); }
-        .plano-desc { font-size: 12px; color: var(--cinza); margin-bottom: 12px; }
-
-        /* EMPTY STATE */
-        .empty { text-align: center; padding: 40px 20px; color: var(--cinza); }
-        .empty .icon { font-size: 48px; margin-bottom: 12px; }
-        .empty h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; color: var(--azul); }
-        .empty p { font-size: 13px; }
-
-        /* PDF PREVIEW */
-        .pdf-preview { background: white; border: 2px solid var(--borda); border-radius: 8px; padding: 20px; font-size: 11px; line-height: 1.6; }
-        .pdf-header { border-bottom: 3px solid var(--grafite); padding-bottom: 12px; margin-bottom: 12px; }
-        .pdf-title { font-family: 'Oswald', sans-serif; font-size: 16px; font-weight: 700; color: var(--grafite); }
-        .pdf-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; font-size: 11px; }
-        .pdf-field { background: #f9fafb; padding: 6px 8px; border-radius: 4px; }
-        .pdf-field strong { display: block; font-size: 9px; color: var(--cinza); text-transform: uppercase; }
 
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* SECTION TITLE */
-        .section-title { font-family: 'Oswald', sans-serif; font-size: 13px; font-weight: 700; color: var(--grafite); text-transform: uppercase; letter-spacing: 1px; margin: 20px 0 10px; display: flex; align-items: center; gap: 8px; }
-        .section-title::after { content: ''; flex: 1; height: 1px; background: var(--borda); }
+        .empty { text-align: center; padding: 40px 20px; color: var(--cinza); }
+        .empty .icon { font-size: 48px; margin-bottom: 12px; }
+        .empty h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; color: var(--grafite); }
+        .empty p { font-size: 13px; }
 
-        .alert { padding: 12px 14px; border-radius: 8px; font-size: 12px; margin-bottom: 12px; }
-        .alert-info { background: #f0f0f0; color: var(--grafite); border: 1px solid #ccc; border-left: 3px solid var(--vermelho); }
-        .alert-success { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
-        .alert-warn { background: #fff0f0; color: var(--vermelho2); border: 1px solid #ffcccc; border-left: 3px solid var(--vermelho); }
+        .alert { padding: 12px 14px; border-radius: 8px; font-size: 12px; margin-bottom: 12px; background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+
+        a { color: var(--vermelho); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        .clima-grid { display: flex; gap: 8px; flex-wrap: wrap; }
+        .clima-btn { padding: 8px 14px; background: #f3f4f6; border: 1.5px solid var(--borda); border-radius: 8px; cursor: pointer; font-size: 20px; transition: all 0.15s; }
+        .clima-btn.active { border-color: var(--vermelho); background: #fff0f0; }
+
+        .obra-card { background: white; border-radius: 4px; padding: 16px; margin-bottom: 10px; border: 1.5px solid var(--borda); }
+        .obra-card h3 { font-family: 'Oswald', sans-serif; font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+        .obra-info { font-size: 12px; color: var(--cinza); margin-bottom: 3px; }
+        .progresso-bar { background: #f3f4f6; border-radius: 99px; height: 6px; margin: 10px 0 4px; overflow: hidden; }
+        .progresso-fill { height: 100%; background: var(--vermelho); }
     </style>
 </head>
 <body>
@@ -180,53 +107,13 @@
 <div id="loginScreen" class="login-screen">
     <div class="login-box">
         <div class="login-logo">
-            <svg viewBox="0 0 100 115" xmlns="http://www.w3.org/2000/svg" width="72" height="83" style="display:block;margin:0 auto 12px;">
-                <polygon points="50,4 94,28 94,86 50,110 6,86 6,28" fill="#E00000"/>
-                <text x="50" y="48" font-family="Oswald,sans-serif" font-size="22" font-weight="900" fill="white" text-anchor="middle" dominant-baseline="middle">FCS</text>
-                <text x="50" y="68" font-family="Oswald,sans-serif" font-size="9" font-weight="700" fill="white" text-anchor="middle" dominant-baseline="middle" letter-spacing="1">OBRAS</text>
-                <text x="50" y="84" font-family="Oswald,sans-serif" font-size="7" font-weight="400" fill="rgba(255,255,255,0.7)" text-anchor="middle" dominant-baseline="middle" letter-spacing="0.5">DIGITAL</text>
-            </svg>
-            <h1 style="font-family:'Oswald',sans-serif; font-size:24px; color:#1F2328; font-weight:700; letter-spacing:1px;">
-                <span style="color:#E00000;">FOSTER</span> OBRAS
-            </h1>
-            <p style="font-size:12px; color:#6b7280; margin-top:4px; letter-spacing:0.5px;">Diário de Obra Digital para Engenheiros e Arquitetos</p>
+            <h1><span>FOSTER</span> OBRAS</h1>
+            <p>Diário de Obra Digital</p>
         </div>
-        <div id="loginForm">
-            <div class="form-group">
-                <label>E-mail profissional</label>
-                <input type="email" id="loginEmail" placeholder="seu@email.com">
-            </div>
-            <div class="form-group">
-                <label>Senha</label>
-                <input type="password" id="loginSenha" placeholder="Sua senha">
-            </div>
-            <button class="btn-primary" onclick="fazerLogin()">ENTRAR</button>
-            <div style="text-align:center; margin-top:16px;">
-                <span style="font-size:13px; color:var(--cinza);">Não tem conta? </span>
-                <a href="#" onclick="mostrarCadastro()" style="font-size:13px; color:var(--laranja); font-weight:600;">Teste grátis por 7 dias</a>
-            </div>
+        <div class="alert">
+            ✅ Modo de Demonstração Ativo
         </div>
-        <div id="cadastroForm" style="display:none;">
-            <div class="form-group">
-                <label>Nome completo</label>
-                <input type="text" id="cadNome" placeholder="Ex: João Silva">
-            </div>
-            <div class="form-group">
-                <label>Conselho profissional</label>
-                <input type="text" id="cadCrea" placeholder="Ex: CREA-SP 123456">
-            </div>
-            <div class="form-group">
-                <label>E-mail</label>
-                <input type="email" id="cadEmail" placeholder="seu@email.com">
-            </div>
-            <div class="form-group">
-                <label>Senha</label>
-                <input type="password" id="cadSenha" placeholder="Mínimo 8 caracteres">
-            </div>
-            <button class="btn-primary" onclick="fazerCadastro()">CRIAR CONTA GRÁTIS</button>
-            <button class="btn-outline" style="width:100%; margin-top:8px;" onclick="voltarLogin()">← Voltar ao login</button>
-            <p style="font-size:11px; color:var(--cinza); text-align:center; margin-top:12px;">7 dias grátis · Sem cartão de crédito</p>
-        </div>
+        <button class="btn-primary" onclick="mostrarAppDemo()">ENTRAR EM MODO DEMO</button>
     </div>
 </div>
 
@@ -234,258 +121,118 @@
 <div id="appMain" style="display:none;">
     <header>
         <a href="#" class="logo">
-            <svg class="logo-hex" viewBox="0 0 100 115" xmlns="http://www.w3.org/2000/svg" width="52" height="60">
-                <polygon points="50,4 94,28 94,86 50,110 6,86 6,28" fill="#E00000"/>
-                <text x="50" y="52" font-family="Oswald,sans-serif" font-size="22" font-weight="900" fill="white" text-anchor="middle" dominant-baseline="middle">FCS</text>
-                <text x="50" y="72" font-family="Oswald,sans-serif" font-size="9" font-weight="700" fill="white" text-anchor="middle" dominant-baseline="middle" letter-spacing="1">OBRAS</text>
-                <text x="50" y="87" font-family="Oswald,sans-serif" font-size="7" font-weight="400" fill="rgba(255,255,255,0.7)" text-anchor="middle" dominant-baseline="middle" letter-spacing="0.5">DIGITAL</text>
-            </svg>
             <div class="logo-text">
                 <h1><span>FOSTER</span> OBRAS</h1>
-                <p>Diário de Obra Digital</p>
+                <p>Digital</p>
             </div>
         </a>
         <div class="header-right">
-            <div class="user-info" id="userInfo"></div>
+            <span class="user-info" id="userInfo">Modo Demo</span>
             <button class="btn-sair" onclick="sair()">SAIR</button>
         </div>
     </header>
 
     <div class="tabs">
-        <button class="tab active" onclick="mudarAba('obras', this)">🏗️ OBRAS</button>
+        <button class="tab active" onclick="mudarAba('dashboard', this)">📊 DASHBOARD</button>
+        <button class="tab" onclick="mudarAba('obras', this)">🏗️ OBRAS</button>
         <button class="tab" onclick="mudarAba('rdo', this)">📋 RDO</button>
-        <button class="tab" onclick="mudarAba('relatorio', this)">📄 RELATÓRIO</button>
-        <button class="tab" onclick="mudarAba('planos', this)">💳 PLANO</button>
+        <button class="tab" onclick="mudarAba('mapa-tab', this)">🗺️ MAPA</button>
     </div>
 
     <div class="container">
-
-        <!-- ABA OBRAS -->
-        <div id="obras" class="tab-content active">
-            <div class="stats-row" id="statsObras" style="margin-top:16px;">
-                <div class="stat-card"><div class="stat-num" id="statTotal">0</div><div class="stat-label">Total de Obras</div></div>
-                <div class="stat-card"><div class="stat-num" id="statAtivas">0</div><div class="stat-label">Em Andamento</div></div>
-                <div class="stat-card"><div class="stat-num" id="statRdos">0</div><div class="stat-label">RDOs Gerados</div></div>
+        <!-- DASHBOARD -->
+        <div id="dashboard" class="tab-content active">
+            <div style="margin-top:20px;">
+                <h2 class="card-title">Bem-vindo ao Foster Obras!</h2>
+                <p style="font-size:13px; color:var(--cinza); margin-top:10px;">Gerencie suas obras e registre relatórios diários de forma simples e eficiente.</p>
             </div>
-
-            <button class="btn-primary" onclick="abrirModalObra()" style="margin-bottom:16px;">+ NOVA OBRA</button>
-
-            <div class="section-title">Minhas Obras</div>
-            <div id="listaObras">
-                <div class="empty"><div class="icon">🏗️</div><h3>Nenhuma obra cadastrada</h3><p>Clique em "+ Nova Obra" para começar</p></div>
+            <div class="stats-row" style="margin-top:20px;">
+                <div class="stat-card">
+                    <div class="stat-num" id="statTotal">0</div>
+                    <div class="stat-label">Total de Obras</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-num" id="statAtivas">0</div>
+                    <div class="stat-label">Em Andamento</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-num" id="statRdos">—</div>
+                    <div class="stat-label">RDOs Registrados</div>
+                </div>
+            </div>
+            <div class="card" style="margin-top:20px;">
+                <h3 class="card-title">Funcionalidades Disponíveis</h3>
+                <ul style="margin-top:12px; padding-left:20px; font-size:13px; line-height:1.8; color:var(--cinza);">
+                    <li>✅ Cadastro de obras com detalhes completos</li>
+                    <li>✅ Registro de Relatórios Diários de Obra (RDO)</li>
+                    <li>✅ Mapa interativo com localização das obras</li>
+                    <li>✅ Envio de RDO via WhatsApp</li>
+                    <li>✅ Modo de demonstração com dados de exemplo</li>
+                </ul>
             </div>
         </div>
 
-        <!-- ABA RDO -->
+        <!-- OBRAS -->
+        <div id="obras" class="tab-content">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px; margin-bottom:16px;">
+                <h2 class="card-title">Minhas Obras</h2>
+            </div>
+            <div id="listaObras"></div>
+        </div>
+
+        <!-- RDO -->
         <div id="rdo" class="tab-content">
-            <div style="margin-top:16px;">
-                <div class="form-group">
-                    <label>Selecionar Obra</label>
-                    <select id="obraSelecionadaRdo" onchange="carregarRdosObra()">
-                        <option value="">— Selecione uma obra —</option>
-                    </select>
-                </div>
-
-                <div id="rdoArea" style="display:none;">
-                    <button class="btn-primary" onclick="abrirModalRdo()" style="margin-bottom:16px;">+ NOVO REGISTRO DO DIA</button>
-                    <div class="section-title">Registros da Obra</div>
-                    <div id="listaRdos"></div>
-                </div>
-
-                <div id="rdoVazio" class="empty" style="margin-top:30px;">
-                    <div class="icon">📋</div>
-                    <h3>Selecione uma obra</h3>
-                    <p>Escolha a obra para ver e criar registros diários</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- ABA RELATÓRIO -->
-        <div id="relatorio" class="tab-content">
-            <div style="margin-top:16px;">
-                <div class="alert alert-info">📄 Selecione a obra e o período para gerar o RDO em PDF</div>
-                <div class="form-group">
-                    <label>Obra</label>
-                    <select id="obraRelatorio">
-                        <option value="">— Selecione uma obra —</option>
-                    </select>
-                </div>
-                <div class="form-row">
-                    <div class="form-group" style="margin-bottom:0">
-                        <label>Data Início</label>
-                        <input type="date" id="relDataInicio">
+            <div style="margin-top:20px;">
+                <h2 class="card-title">Novo Relatório Diário</h2>
+                <div class="card" style="margin-top:16px;">
+                    <div class="form-group">
+                        <label>Obra *</label>
+                        <select id="obraSelecionadaRdo">
+                            <option value="">— Selecione uma obra —</option>
+                        </select>
                     </div>
-                    <div class="form-group" style="margin-bottom:0">
-                        <label>Data Fim</label>
-                        <input type="date" id="relDataFim">
+                    <div class="form-group">
+                        <label>Data</label>
+                        <input type="date" id="rdoData" value="">
                     </div>
-                </div>
-                <button class="btn-primary" onclick="gerarRelatorio()" style="margin-top:14px;">📄 GERAR RELATÓRIO PDF</button>
-
-                <div id="previewRel" style="display:none; margin-top:20px;">
-                    <div class="section-title">Pré-visualização</div>
-                    <div class="pdf-preview" id="pdfContent"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ABA PLANOS -->
-        <div id="planos" class="tab-content">
-            <div style="margin-top:16px;">
-                <div class="alert alert-warn">⚠️ Você está no período de teste gratuito. Escolha um plano para continuar após 7 dias.</div>
-
-                <div class="plano-card">
-                    <h3>📐 BÁSICO</h3>
-                    <div class="plano-preco">R$ 49<span>/mês</span></div>
-                    <div class="plano-desc">Até 3 obras ativas · RDO ilimitado · Geração de PDF</div>
-                    <button class="btn-primary" onclick="assinar('basico')">ASSINAR BÁSICO</button>
-                </div>
-
-                <div class="plano-card destaque">
-                    <div style="background:var(--vermelho); color:white; font-size:10px; font-weight:700; padding:3px 10px; border-radius:3px; display:inline-block; margin-bottom:8px; font-family:Oswald,sans-serif; letter-spacing:1px;">MAIS POPULAR</div>
-                    <h3>🏗️ PROFISSIONAL</h3>
-                    <div class="plano-preco">R$ 99<span>/mês</span></div>
-                    <div class="plano-desc">Obras ilimitadas · PDF com assinatura · Acesso do cliente · Suporte prioritário</div>
-                    <button class="btn-primary" onclick="assinar('profissional')">ASSINAR PROFISSIONAL</button>
-                </div>
-
-                <div class="plano-card">
-                    <h3>🏢 EMPRESA</h3>
-                    <div class="plano-preco">R$ 199<span>/mês</span></div>
-                    <div class="plano-desc">Múltiplos usuários · Obras ilimitadas · Relatórios gerenciais · API</div>
-                    <button class="btn-primary" onclick="assinar('empresa')">ASSINAR EMPRESA</button>
-                </div>
-
-                <div style="background:white; border-radius:10px; padding:16px; border:1px solid var(--borda); margin-top:8px; font-size:12px;">
-                    <p style="font-weight:700; margin-bottom:8px;">💳 Pagamento via PIX</p>
-                    <p style="color:var(--cinza);">Após o pagamento, envie o comprovante no WhatsApp e seu acesso será liberado em minutos.</p>
-                    <div style="background:var(--papel); padding:10px; border-radius:6px; font-family:monospace; margin-top:8px; font-size:12px;">amigosengenheirosuca@gmail.com</div>
-                    <button class="btn-primary" style="margin-top:10px;" onclick="copiarPix()">📋 COPIAR CHAVE PIX</button>
+                    <div class="form-group">
+                        <label>Clima</label>
+                        <div class="clima-grid">
+                            <button class="clima-btn active" onclick="selecionarClima('ensolarado', this)" data-clima="ensolarado">☀️ <span>Ensolarado</span></button>
+                            <button class="clima-btn" onclick="selecionarClima('nublado', this)" data-clima="nublado">☁️ <span>Nublado</span></button>
+                            <button class="clima-btn" onclick="selecionarClima('chuva', this)" data-clima="chuva">🌧️ <span>Chuva</span></button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Efetivo (Equipe)</label>
+                        <input type="text" id="rdoEquipe" placeholder="Ex: 5 pedreiros, 2 serventes">
+                    </div>
+                    <div class="form-group">
+                        <label>Atividades Realizadas</label>
+                        <textarea id="rdoAtividades" placeholder="Descreva as atividades do dia..."></textarea>
+                    </div>
+                    <button class="btn-primary" onclick="salvarRdo()">SALVAR RDO</button>
+                    <button class="btn-secondary" onclick="enviarRdoWhatsApp()">📱 ENVIAR RDO POR WHATSAPP</button>
                 </div>
             </div>
         </div>
 
-    </div>
-</div>
-
-<!-- MODAL NOVA OBRA -->
-<div id="modalObra" class="modal">
-    <div class="modal-box">
-        <div class="modal-handle"></div>
-        <div class="modal-title">🏗️ Nova Obra</div>
-        <div class="form-group"><label>Nome da Obra *</label><input type="text" id="obraNome" placeholder="Ex: Residência Silva — Fase 1"></div>
-        <div class="form-group"><label>Cliente / Contratante *</label><input type="text" id="obraCliente" placeholder="Nome do cliente"></div>
-        <div class="form-group"><label>Endereço da Obra *</label><input type="text" id="obraEndereco" placeholder="Rua, número, bairro, cidade"></div>
-        <div class="form-row">
-            <div class="form-group" style="margin-bottom:0"><label>Número da ART/RRT</label><input type="text" id="obraArt" placeholder="Ex: 0123456"></div>
-            <div class="form-group" style="margin-bottom:0"><label>Área (m²)</label><input type="number" id="obraArea" placeholder="Ex: 150"></div>
-        </div>
-        <div class="form-row" style="margin-top:14px;">
-            <div class="form-group" style="margin-bottom:0"><label>Data de Início</label><input type="date" id="obraInicio"></div>
-            <div class="form-group" style="margin-bottom:0"><label>Previsão de Término</label><input type="date" id="obraFim"></div>
-        </div>
-        <div class="form-group" style="margin-top:14px;"><label>Orçamento Total (R$)</label><input type="number" id="obraOrcamento" placeholder="Ex: 250000"></div>
-        <div class="form-group"><label>Responsável Técnico</label><input type="text" id="obraRt" placeholder="Nome e CREA/CAU"></div>
-        <div class="form-group"><label>Status</label>
-            <select id="obraStatus">
-                <option value="planejamento">📋 Planejamento</option>
-                <option value="andamento" selected>🔨 Em Andamento</option>
-                <option value="pausada">⏸️ Pausada</option>
-                <option value="concluida">✅ Concluída</option>
-            </select>
-        </div>
-        <button class="btn-primary" onclick="salvarObra()">SALVAR OBRA</button>
-        <button class="btn-outline" style="width:100%;margin-top:8px;" onclick="fecharModal('modalObra')">Cancelar</button>
-    </div>
-</div>
-
-<!-- MODAL RDO -->
-<div id="modalRdo" class="modal">
-    <div class="modal-box">
-        <div class="modal-handle"></div>
-        <div class="modal-title">📋 Registro Diário de Obra</div>
-
-        <div class="form-row">
-            <div class="form-group" style="margin-bottom:0"><label>Data *</label><input type="date" id="rdoData"></div>
-            <div class="form-group" style="margin-bottom:0"><label>Nº do Registro</label><input type="text" id="rdoNumero" placeholder="Auto" readonly style="background:#f9fafb;"></div>
-        </div>
-
-        <div class="form-group" style="margin-top:14px;"><label>Condição do Tempo *</label>
-            <div class="clima-grid" id="climaGrid">
-                <button type="button" class="clima-btn active" data-clima="☀️" onclick="selecionarClima(this)">☀️<span>Sol</span></button>
-                <button type="button" class="clima-btn" data-clima="⛅" onclick="selecionarClima(this)">⛅<span>Nublado</span></button>
-                <button type="button" class="clima-btn" data-clima="🌧️" onclick="selecionarClima(this)">🌧️<span>Chuva</span></button>
-                <button type="button" class="clima-btn" data-clima="⛈️" onclick="selecionarClima(this)">⛈️<span>Tempestade</span></button>
-                <button type="button" class="clima-btn" data-clima="🌫️" onclick="selecionarClima(this)">🌫️<span>Neblina</span></button>
+        <!-- MAPA -->
+        <div id="mapa-tab" class="tab-content">
+            <div style="margin-top:20px; text-align:center;">
+                <h2 class="card-title">Mapa de Obras</h2>
+                <p style="font-size:13px; color:var(--cinza); margin-top:10px;">Visualize todas as suas obras no mapa interativo.</p>
+                <a href="mapa.html" class="btn-primary" style="display:inline-block; width:auto; padding:10px 20px; margin-top:16px; text-decoration:none;">
+                    Abrir Mapa Interativo →
+                </a>
             </div>
         </div>
-
-        <div class="form-group">
-            <label>Efetivo no Canteiro *</label>
-            <input type="text" id="rdoEfetivo" placeholder="Ex: 2 pedreiros, 1 servente, 1 eletricista">
-        </div>
-
-        <div class="form-group">
-            <label>Atividades Executadas *</label>
-            <textarea id="rdoAtividades" placeholder="Descreva as atividades realizadas no dia..."></textarea>
-        </div>
-
-        <div class="form-group">
-            <label>Materiais Utilizados</label>
-            <textarea id="rdoMateriais" placeholder="Ex: 50 sacos de cimento, 200 blocos..." style="min-height:60px;"></textarea>
-        </div>
-
-        <div class="form-group">
-            <label>Equipamentos em Uso</label>
-            <input type="text" id="rdoEquipamentos" placeholder="Ex: Betoneira, andaime, furadeira">
-        </div>
-
-        <div class="form-group">
-            <label>Ocorrências / Observações</label>
-            <textarea id="rdoOcorrencias" placeholder="Problemas, paralisações, visitas, etc..." style="min-height:60px;"></textarea>
-        </div>
-
-        <div class="form-row">
-            <div class="form-group" style="margin-bottom:0"><label>Avanço Físico (%)</label><input type="number" id="rdoAvanco" min="0" max="100" placeholder="Ex: 35"></div>
-            <div class="form-group" style="margin-bottom:0"><label>Horas Trabalhadas</label><input type="number" id="rdoHoras" placeholder="Ex: 8"></div>
-        </div>
-
-        <button class="btn-primary" onclick="salvarRdo()" style="margin-top:14px;">SALVAR REGISTRO</button>
-        <button class="btn-outline" style="width:100%;margin-top:8px;" onclick="fecharModal('modalRdo')">Cancelar</button>
-    </div>
-</div>
-
-<!-- MODAL OBRA DETALHE -->
-<div id="modalDetalhe" class="modal">
-    <div class="modal-box">
-        <div class="modal-handle"></div>
-        <div id="detalheContent"></div>
-        <button class="btn-outline" style="width:100%;margin-top:12px;" onclick="fecharModal('modalDetalhe')">Fechar</button>
     </div>
 </div>
 
 <script>
-    let supabase = null;
-    let usuarioAtual = null;
-    let climaSelecionado = '☀️';
-    let obraEditando = null;
     let obras = [];
-
-    // ===== UTILS / STUBS =====
-    function previewRelatorio() { /* placeholder — relatório gerado ao clicar no botão */ }
-
-    // ===== INIT =====
-    async function inicializar() {
-        try {
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            const { data: { session } } = await supabase.auth.getSession();
-            if(session) { usuarioAtual = session.user; mostrarApp(); }
-            else { document.getElementById('loginScreen').style.display = 'flex'; }
-        } catch(e) {
-            // Demo mode sem Supabase
-            mostrarAppDemo();
-        }
-    }
+    let climaSelecionado = 'ensolarado';
 
     function mostrarAppDemo() {
         document.getElementById('loginScreen').style.display = 'none';
@@ -494,138 +241,38 @@
         carregarObrasDemo();
     }
 
-    function mostrarApp() {
-        document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('appMain').style.display = 'block';
-        carregarPerfil();
-        carregarObras();
-    }
-
-    async function carregarPerfil() {
-        try {
-            const { data } = await supabase.from('profissionais').select('nome,crea').eq('id', usuarioAtual.id).maybeSingle();
-            document.getElementById('userInfo').textContent = data ? data.nome : usuarioAtual.email;
-        } catch(e) { document.getElementById('userInfo').textContent = usuarioAtual.email; }
-    }
-
-    // ===== AUTH =====
-    async function fazerLogin() {
-        const email = document.getElementById('loginEmail').value.trim();
-        const senha = document.getElementById('loginSenha').value;
-        if(!email || !senha) { alert('Preencha e-mail e senha'); return; }
-        try {
-            const { data, error } = await supabase.auth.signInWithPassword({ email, password: senha });
-            if(error) { alert('Erro: ' + error.message); return; }
-            usuarioAtual = data.user; mostrarApp();
-        } catch(e) { alert('Erro ao conectar. Verifique o config.js'); }
-    }
-
-    async function fazerCadastro() {
-        const nome = document.getElementById('cadNome').value.trim();
-        const crea = document.getElementById('cadCrea').value.trim();
-        const email = document.getElementById('cadEmail').value.trim();
-        const senha = document.getElementById('cadSenha').value;
-        if(!nome || !email || !senha) { alert('Preencha todos os campos'); return; }
-        if(senha.length < 8) { alert('Senha deve ter no mínimo 8 caracteres'); return; }
-        try {
-            const { data, error } = await supabase.auth.signUp({ email, password: senha });
-            if(error) { alert('Erro: ' + error.message); return; }
-            await supabase.from('profissionais').insert({ id: data.user.id, nome, crea: crea || null, email });
-            alert('✅ Conta criada! Seus 7 dias grátis começaram.');
-            usuarioAtual = data.user; mostrarApp();
-        } catch(e) { alert('Erro ao cadastrar'); }
-    }
-
-    function mostrarCadastro() { document.getElementById('loginForm').style.display='none'; document.getElementById('cadastroForm').style.display='block'; }
-    function voltarLogin() { document.getElementById('cadastroForm').style.display='none'; document.getElementById('loginForm').style.display='block'; }
-
-    async function sair() {
-        if(supabase) await supabase.auth.signOut();
-        usuarioAtual = null;
-        document.getElementById('appMain').style.display = 'none';
-        document.getElementById('loginScreen').style.display = 'flex';
-    }
-
-    // ===== ABAS =====
-    function mudarAba(aba, el) {
-        document.querySelectorAll('.tab-content').forEach(e => e.classList.remove('active'));
-        document.querySelectorAll('.tab').forEach(e => e.classList.remove('active'));
-        document.getElementById(aba).classList.add('active');
-        if(el) el.classList.add('active');
-        if(aba === 'rdo') popularSelectObra('obraSelecionadaRdo');
-        if(aba === 'relatorio') { popularSelectObra('obraRelatorio'); definirDatasDefault(); }
-    }
-
-    function popularSelectObra(selectId) {
-        const sel = document.getElementById(selectId);
-        const val = sel.value;
-        sel.innerHTML = '<option value="">— Selecione uma obra —</option>';
-        obras.forEach(o => {
-            const opt = document.createElement('option');
-            opt.value = o.id; opt.textContent = o.nome;
-            sel.appendChild(opt);
-        });
-        if(val) sel.value = val;
-    }
-
-    function definirDatasDefault() {
-        const hoje = new Date();
-        const primeiroDia = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
-        document.getElementById('relDataInicio').value = primeiroDia.toISOString().split('T')[0];
-        document.getElementById('relDataFim').value = hoje.toISOString().split('T')[0];
-    }
-
-    // ===== OBRAS =====
-    async function carregarObras() {
-        try {
-            const { data } = await supabase.from('obras').select('*').eq('prof_id', usuarioAtual.id).order('criado_em', { ascending: false });
-            obras = data || [];
-            renderizarObras();
-            atualizarStats();
-        } catch(e) { console.log('Erro obras:', e); }
-    }
-
     function carregarObrasDemo() {
         obras = [
-            { id: '1', nome: 'Residência Família Santos', cliente: 'Carlos Santos', endereco: 'Rua das Palmeiras, 120 — Alphaville, SP', art: '0456789', area: 220, inicio: '2026-02-01', fim: '2026-08-01', orcamento: 380000, rt: 'Eng. Wilson Foster — CREA-SP 123456', status: 'andamento', avanco: 42 },
-            { id: '2', nome: 'Edifício Comercial Tijuca', cliente: 'Construtora JBR', endereco: 'Av. Principal, 500 — Tijuca, RJ', art: '0789123', area: 1200, inicio: '2025-11-01', fim: '2026-12-01', orcamento: 2800000, rt: 'Eng. Wilson Foster — CREA-SP 123456', status: 'andamento', avanco: 28 },
-            { id: '3', nome: 'Reforma Apartamento Jardins', cliente: 'Maria Oliveira', endereco: 'Rua Augusta, 800 — Jardins, SP', art: '0321654', area: 95, inicio: '2026-04-01', fim: '2026-06-01', orcamento: 120000, rt: 'Arq. Foster — CAU A123456', status: 'concluida', avanco: 100 },
+            { id: '1', nome: 'Residência Família Santos', cliente: 'Carlos Santos', endereco: 'Rua das Palmeiras, 120 — Alphaville, SP', area: 220, orcamento: 380000, status: 'andamento', avanco: 42, telefone: '5524992096103' },
+            { id: '2', nome: 'Edifício Comercial Tijuca', cliente: 'Construtora JBR', endereco: 'Av. Principal, 500 — Tijuca, RJ', area: 1200, orcamento: 2800000, status: 'andamento', avanco: 28, telefone: '5524992096103' },
+            { id: '3', nome: 'Reforma Apartamento Jardins', cliente: 'Maria Oliveira', endereco: 'Rua Augusta, 800 — Jardins, SP', area: 95, orcamento: 120000, status: 'concluida', avanco: 100, telefone: '5524992096103' },
         ];
         renderizarObras();
         atualizarStats();
+        popularSelectObra('obraSelecionadaRdo');
     }
 
     function renderizarObras() {
         const container = document.getElementById('listaObras');
         if(!obras || obras.length === 0) {
-            container.innerHTML = '<div class="empty"><div class="icon">🏗️</div><h3>Nenhuma obra cadastrada</h3><p>Clique em "+ Nova Obra" para começar</p></div>';
+            container.innerHTML = '<div class="empty"><div class="icon">🏗️</div><h3>Nenhuma obra cadastrada</h3></div>';
             return;
         }
         container.innerHTML = '';
         obras.forEach(obra => {
             const avanco = obra.avanco || 0;
-            const statusMap = { andamento: { label: 'Em Andamento', cls: 'badge-andamento' }, concluida: { label: 'Concluída', cls: 'badge-concluida' }, pausada: { label: 'Pausada', cls: 'badge-pausada' }, planejamento: { label: 'Planejamento', cls: 'badge-planejamento' } };
-            const st = statusMap[obra.status] || statusMap.andamento;
+            const statusMap = { andamento: 'Em Andamento', concluida: 'Concluída', pausada: 'Pausada' };
             const card = document.createElement('div');
-            card.className = `obra-card ${obra.status}`;
+            card.className = 'obra-card';
             card.innerHTML = `
                 <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
                     <h3>${obra.nome}</h3>
-                    <span class="badge ${st.cls}">${st.label}</span>
+                    <span style="background:var(--vermelho); color:white; padding:3px 10px; border-radius:3px; font-size:11px; font-weight:700;">${statusMap[obra.status] || 'Ativo'}</span>
                 </div>
                 <div class="obra-info">👤 ${obra.cliente || '—'}</div>
                 <div class="obra-info">📍 ${obra.endereco || '—'}</div>
-                ${obra.art ? `<div class="obra-info">📄 ART/RRT: ${obra.art}</div>` : ''}
-                ${obra.area ? `<div class="obra-info">📐 ${obra.area} m²</div>` : ''}
-                <div class="progresso-bar"><div class="progresso-fill ${avanco>=100?'verde':''}" style="width:${avanco}%"></div></div>
-                <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--cinza);">
-                    <span>Avanço físico: <strong>${avanco}%</strong></span>
-                    ${obra.orcamento ? `<span>R$ ${Number(obra.orcamento).toLocaleString('pt-BR')}</span>` : ''}
-                </div>
-                <div style="display:flex; gap:8px; margin-top:12px;">
-                    <button onclick="verDetalhe('${obra.id}')" class="btn-secondary" style="flex:1; font-size:11px;">📋 DETALHES</button>
-                    <button onclick="irParaRdo('${obra.id}')" class="btn-verde" style="flex:1; font-size:11px;">+ RDO DO DIA</button>
-                </div>`;
+                <div style="background:#f3f4f6; border-radius:99px; height:6px; margin:10px 0 4px; overflow:hidden;"><div style="height:100%; background:var(--vermelho); width:${avanco}%;"></div></div>
+                <div style="font-size:11px; color:var(--cinza);">Avanço: <strong>${avanco}%</strong></div>`;
             container.appendChild(card);
         });
     }
@@ -633,297 +280,82 @@
     function atualizarStats() {
         document.getElementById('statTotal').textContent = obras.length;
         document.getElementById('statAtivas').textContent = obras.filter(o => o.status === 'andamento').length;
-        document.getElementById('statRdos').textContent = '—';
     }
 
-    function abrirModalObra() {
-        document.getElementById('obraNome').value='';
-        document.getElementById('obraCliente').value='';
-        document.getElementById('obraEndereco').value='';
-        document.getElementById('obraArt').value='';
-        document.getElementById('obraArea').value='';
-        document.getElementById('obraInicio').value = new Date().toISOString().split('T')[0];
-        document.getElementById('obraFim').value='';
-        document.getElementById('obraOrcamento').value='';
-        document.getElementById('obraRt').value='';
-        document.getElementById('obraStatus').value='andamento';
-        document.getElementById('modalObra').classList.add('active');
+    function mudarAba(aba, el) {
+        document.querySelectorAll('.tab-content').forEach(e => e.classList.remove('active'));
+        document.querySelectorAll('.tab').forEach(e => e.classList.remove('active'));
+        document.getElementById(aba).classList.add('active');
+        if(el) el.classList.add('active');
     }
 
-    async function salvarObra() {
-        const nome = document.getElementById('obraNome').value.trim();
-        const cliente = document.getElementById('obraCliente').value.trim();
-        const endereco = document.getElementById('obraEndereco').value.trim();
-        if(!nome || !cliente || !endereco) { alert('Preencha os campos obrigatórios (*)'); return; }
-        const obra = {
-            nome, cliente, endereco,
-            art: document.getElementById('obraArt').value.trim() || null,
-            area: document.getElementById('obraArea').value || null,
-            inicio: document.getElementById('obraInicio').value || null,
-            fim: document.getElementById('obraFim').value || null,
-            orcamento: document.getElementById('obraOrcamento').value || null,
-            rt: document.getElementById('obraRt').value.trim() || null,
-            status: document.getElementById('obraStatus').value,
-            avanco: 0
-        };
-        try {
-            if(supabase && usuarioAtual) {
-                const { data, error } = await supabase.from('obras').insert({ ...obra, prof_id: usuarioAtual.id }).select();
-                if(error) { alert('Erro: ' + error.message); return; }
-                obras.unshift(data[0]);
-            } else {
-                obra.id = Date.now().toString();
-                obras.unshift(obra);
-            }
-            renderizarObras(); atualizarStats();
-            fecharModal('modalObra');
-            alert('✅ Obra cadastrada com sucesso!');
-        } catch(e) { alert('Erro ao salvar'); }
+    function popularSelectObra(selectId) {
+        const sel = document.getElementById(selectId);
+        sel.innerHTML = '<option value="">— Selecione uma obra —</option>';
+        obras.forEach(o => {
+            const opt = document.createElement('option');
+            opt.value = o.id;
+            opt.textContent = o.nome;
+            sel.appendChild(opt);
+        });
     }
 
-    function verDetalhe(obraId) {
-        const obra = obras.find(o => String(o.id) === String(obraId));
-        if(!obra) return;
-        const avanco = obra.avanco || 0;
-        document.getElementById('detalheContent').innerHTML = `
-            <div class="modal-title">🏗️ ${obra.nome}</div>
-            <div class="card">
-                <div class="obra-info">👤 Cliente: <strong>${obra.cliente}</strong></div>
-                <div class="obra-info">📍 ${obra.endereco}</div>
-                ${obra.art ? `<div class="obra-info">📄 ART/RRT: ${obra.art}</div>` : ''}
-                ${obra.area ? `<div class="obra-info">📐 Área: ${obra.area} m²</div>` : ''}
-                ${obra.inicio ? `<div class="obra-info">📅 Início: ${new Date(obra.inicio).toLocaleDateString('pt-BR')}</div>` : ''}
-                ${obra.fim ? `<div class="obra-info">🏁 Previsão: ${new Date(obra.fim).toLocaleDateString('pt-BR')}</div>` : ''}
-                ${obra.orcamento ? `<div class="obra-info">💰 Orçamento: R$ ${Number(obra.orcamento).toLocaleString('pt-BR')}</div>` : ''}
-                ${obra.rt ? `<div class="obra-info">👷 RT: ${obra.rt}</div>` : ''}
-            </div>
-            <div class="section-title">Avanço Físico</div>
-            <div class="progresso-bar" style="height:12px;"><div class="progresso-fill ${avanco>=100?'verde':''}" style="width:${avanco}%"></div></div>
-            <div style="text-align:center; font-family:Oswald; font-size:24px; font-weight:700; color:var(--vermelho); margin:8px 0;">${avanco}%</div>
-            <div style="display:flex; gap:8px; margin-top:12px;">
-                <button onclick="irParaRdo('${obra.id}'); fecharModal('modalDetalhe');" class="btn-primary" style="flex:1;">+ RDO DO DIA</button>
-            </div>`;
-        document.getElementById('modalDetalhe').classList.add('active');
-    }
-
-    // ===== RDO =====
-    function irParaRdo(obraId) {
-        mudarAba('rdo', document.querySelectorAll('.tab')[1]);
-        setTimeout(() => {
-            const sel = document.getElementById('obraSelecionadaRdo');
-            popularSelectObra('obraSelecionadaRdo');
-            sel.value = obraId;
-            carregarRdosObra();
-            setTimeout(() => abrirModalRdo(), 200);
-        }, 100);
-    }
-
-    function selecionarClima(btn) {
+    function selecionarClima(clima, el) {
         document.querySelectorAll('.clima-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        climaSelecionado = btn.dataset.clima;
+        el.classList.add('active');
+        climaSelecionado = clima;
     }
 
-    function abrirModalRdo() {
-        const obraId = document.getElementById('obraSelecionadaRdo').value;
-        if(!obraId) { alert('Selecione uma obra primeiro'); return; }
-        document.getElementById('rdoData').value = new Date().toISOString().split('T')[0];
-        document.getElementById('rdoNumero').value = 'RDO-' + String(Date.now()).slice(-4);
-        document.getElementById('rdoEfetivo').value='';
-        document.getElementById('rdoAtividades').value='';
-        document.getElementById('rdoMateriais').value='';
-        document.getElementById('rdoEquipamentos').value='';
-        document.getElementById('rdoOcorrencias').value='';
-        document.getElementById('rdoAvanco').value='';
-        document.getElementById('rdoHoras').value='8';
-        climaSelecionado = '☀️';
-        document.querySelectorAll('.clima-btn').forEach((b,i)=>{ b.classList.toggle('active', i===0); });
-        document.getElementById('modalRdo').classList.add('active');
-    }
+    function salvarRdo() {
+        const obraSelecionada = document.getElementById('obraSelecionadaRdo').value;
+        const rdoData = document.getElementById('rdoData').value;
+        const rdoAtividades = document.getElementById('rdoAtividades').value;
 
-    async function salvarRdo() {
-        const obraId = document.getElementById('obraSelecionadaRdo').value;
-        const data = document.getElementById('rdoData').value;
-        const atividades = document.getElementById('rdoAtividades').value.trim();
-        const efetivo = document.getElementById('rdoEfetivo').value.trim();
-        if(!data || !atividades || !efetivo) { alert('Preencha os campos obrigatórios (*)'); return; }
-        const rdo = {
-            obra_id: obraId,
-            data,
-            numero: document.getElementById('rdoNumero').value,
-            clima: climaSelecionado,
-            efetivo,
-            atividades,
-            materiais: document.getElementById('rdoMateriais').value.trim() || null,
-            equipamentos: document.getElementById('rdoEquipamentos').value.trim() || null,
-            ocorrencias: document.getElementById('rdoOcorrencias').value.trim() || null,
-            avanco: document.getElementById('rdoAvanco').value || null,
-            horas: document.getElementById('rdoHoras').value || 8,
-        };
-        try {
-            if(supabase && usuarioAtual) {
-                const { error } = await supabase.from('rdos').insert(rdo);
-                if(error) { alert('Erro: ' + error.message); return; }
-                // Atualizar avanço da obra
-                if(rdo.avanco) { await supabase.from('obras').update({ avanco: rdo.avanco }).eq('id', obraId); }
-            }
-            fecharModal('modalRdo');
-            carregarRdosObra();
-            alert('✅ Registro salvo com sucesso!');
-        } catch(e) { alert('Erro ao salvar RDO'); }
-    }
-
-    async function carregarRdosObra() {
-        const obraId = document.getElementById('obraSelecionadaRdo').value;
-        document.getElementById('rdoArea').style.display = obraId ? 'block' : 'none';
-        document.getElementById('rdoVazio').style.display = obraId ? 'none' : 'block';
-        if(!obraId) return;
-        const container = document.getElementById('listaRdos');
-        container.innerHTML = '<p style="text-align:center;color:var(--cinza);padding:20px;">Carregando...</p>';
-        try {
-            if(supabase && usuarioAtual) {
-                const { data } = await supabase.from('rdos').select('*').eq('obra_id', obraId).order('data', { ascending: false });
-                renderizarRdos(data || []);
-            } else {
-                renderizarRdos(getDemosRdos());
-            }
-        } catch(e) { renderizarRdos(getDemosRdos()); }
-    }
-
-    function getDemosRdos() {
-        return [
-            { id:'r1', data:'2026-06-18', numero:'RDO-0018', clima:'☀️', efetivo:'2 pedreiros, 1 servente, 1 encanador', atividades:'Execução de alvenaria do 2º pavimento (3ª fiada). Instalação de tubulação hidráulica banheiro suíte.', materiais:'80 blocos cerâmicos, 3 sacos cimento, 15m tubo PVC 50mm', equipamentos:'Betoneira 120L, andaime fachadeiro', ocorrencias:'Sem ocorrências', avanco:42, horas:8 },
-            { id:'r2', data:'2026-06-17', numero:'RDO-0017', clima:'⛅', efetivo:'2 pedreiros, 1 servente', atividades:'Continuação da alvenaria 2º pavimento. Grauteamento de pilares.', materiais:'60 blocos, 5 sacos cimento, graute', equipamentos:'Betoneira 120L', ocorrencias:'Pausa de 1h por chuva leve no período da tarde', avanco:40, horas:7 },
-        ];
-    }
-
-    function renderizarRdos(rdos) {
-        const container = document.getElementById('listaRdos');
-        if(!rdos || rdos.length === 0) {
-            container.innerHTML = '<div class="empty"><div class="icon">📋</div><h3>Nenhum registro ainda</h3><p>Clique em "+ Novo Registro do Dia" para começar</p></div>';
+        if (!obraSelecionada || !rdoData || !rdoAtividades) {
+            alert('Por favor, preencha todos os campos do RDO.');
             return;
         }
-        container.innerHTML = '';
-        rdos.forEach(r => {
-            const card = document.createElement('div');
-            card.className = 'rdo-card';
-            card.innerHTML = `
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                    <span class="rdo-date">${new Date(r.data + 'T12:00:00').toLocaleDateString('pt-BR', {weekday:'short', day:'2-digit', month:'2-digit', year:'numeric'})}</span>
-                    <div style="display:flex; align-items:center; gap:6px;">
-                        <span class="rdo-clima">${r.clima}</span>
-                        <span style="font-size:11px;color:var(--cinza);">${r.numero}</span>
-                    </div>
-                </div>
-                <div style="font-size:12px; color:var(--cinza); margin-bottom:6px;">👷 ${r.efetivo}</div>
-                <div class="rdo-body">${r.atividades}</div>
-                ${r.ocorrencias ? `<div style="font-size:11px; color:var(--amarelo); margin-top:6px;">⚠️ ${r.ocorrencias}</div>` : ''}
-                <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:11px; color:var(--cinza);">
-                    <span>${r.horas || 8}h trabalhadas</span>
-                    ${r.avanco ? `<span>📊 ${r.avanco}% concluído</span>` : ''}
-                </div>`;
-            container.appendChild(card);
-        });
+
+        alert('RDO salvo com sucesso (modo demo)!');
+        document.getElementById('rdoAtividades').value = '';
     }
 
-    // ===== RELATÓRIO =====
-    async function gerarRelatorio() {
-        const obraId = document.getElementById('obraRelatorio').value;
-        const inicio = document.getElementById('relDataInicio').value;
-        const fim = document.getElementById('relDataFim').value;
-        if(!obraId) { alert('Selecione uma obra'); return; }
-        const obra = obras.find(o => String(o.id) === String(obraId));
-        if(!obra) return;
+    function enviarRdoWhatsApp() {
+        const obraSelecionadaId = document.getElementById('obraSelecionadaRdo').value;
+        const obraSelecionadaNome = document.getElementById('obraSelecionadaRdo').options[document.getElementById('obraSelecionadaRdo').selectedIndex].text;
+        const rdoData = document.getElementById('rdoData').value;
+        const rdoAtividades = document.getElementById('rdoAtividades').value;
 
-        let rdos = [];
-        try {
-            if(supabase && usuarioAtual) {
-                const { data } = await supabase.from('rdos').select('*').eq('obra_id', obraId).gte('data', inicio).lte('data', fim).order('data');
-                rdos = data || [];
-            } else {
-                rdos = getDemosRdos();
-            }
-        } catch(e) { rdos = getDemosRdos(); }
+        if (!obraSelecionadaId || !rdoData || !rdoAtividades) {
+            alert('Por favor, preencha todos os campos do RDO antes de enviar via WhatsApp.');
+            return;
+        }
 
-        const pdfEl = document.getElementById('pdfContent');
-        const dataInicio = inicio ? new Date(inicio+'T12:00').toLocaleDateString('pt-BR') : '—';
-        const dataFim = fim ? new Date(fim+'T12:00').toLocaleDateString('pt-BR') : '—';
+        const obraAtual = obras.find(o => o.id === obraSelecionadaId);
+        const avanco = obraAtual ? obraAtual.avanco : 'N/A';
+        const numeroCliente = obraAtual ? obraAtual.telefone : '5524992096103';
+        const linkBase = 'https://fosterfcs.github.io/foster-central/mapa/';
 
-        let rdoHtml = '';
-        rdos.forEach((r, i) => {
-            rdoHtml += `<div style="border:1px solid #e5e7eb; border-radius:6px; padding:12px; margin-bottom:10px; page-break-inside:avoid;">
-                <div style="display:flex; justify-content:space-between; border-bottom:1px solid #e5e7eb; padding-bottom:6px; margin-bottom:8px;">
-                    <strong>RDO Nº ${i+1} — ${new Date(r.data+'T12:00').toLocaleDateString('pt-BR')}</strong>
-                    <span>Tempo: ${r.clima}</span>
-                </div>
-                <div><strong>Efetivo:</strong> ${r.efetivo}</div>
-                <div style="margin-top:4px;"><strong>Atividades:</strong> ${r.atividades}</div>
-                ${r.materiais ? `<div style="margin-top:4px;"><strong>Materiais:</strong> ${r.materiais}</div>` : ''}
-                ${r.equipamentos ? `<div style="margin-top:4px;"><strong>Equipamentos:</strong> ${r.equipamentos}</div>` : ''}
-                ${r.ocorrencias ? `<div style="margin-top:4px; color:#92400e;"><strong>Ocorrências:</strong> ${r.ocorrencias}</div>` : ''}
-                ${r.avanco ? `<div style="margin-top:4px;"><strong>Avanço físico:</strong> ${r.avanco}%</div>` : ''}
-            </div>`;
-        });
+        const climaEmojis = { ensolarado: '☀️', nublado: '☁️', chuva: '🌧️' };
+        const climaTextos = { ensolarado: 'Ensolarado', nublado: 'Nublado', chuva: 'Chuva' };
 
-        pdfEl.innerHTML = `
-            <div class="pdf-header">
-                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                    <div>
-                        <div class="pdf-title">RELATÓRIO DIÁRIO DE OBRA</div>
-                        <div style="font-size:11px; color:var(--cinza); margin-top:2px;">Período: ${dataInicio} a ${dataFim}</div>
-                    </div>
-                    <div style="font-size:11px; color:var(--cinza); text-align:right;">RDO Digital<br>Gerado em ${new Date().toLocaleDateString('pt-BR')}</div>
-                </div>
-            </div>
-            <div class="pdf-grid">
-                <div class="pdf-field"><strong>Obra</strong>${obra.nome}</div>
-                <div class="pdf-field"><strong>Cliente</strong>${obra.cliente || '—'}</div>
-                <div class="pdf-field"><strong>Endereço</strong>${obra.endereco || '—'}</div>
-                <div class="pdf-field"><strong>ART/RRT</strong>${obra.art || '—'}</div>
-                <div class="pdf-field"><strong>Área</strong>${obra.area ? obra.area + ' m²' : '—'}</div>
-                <div class="pdf-field"><strong>Responsável Técnico</strong>${obra.rt || '—'}</div>
-            </div>
-            <div style="margin: 12px 0; font-size:12px; font-weight:700; color:var(--azul); border-bottom:1px solid var(--borda); padding-bottom:6px;">
-                REGISTROS DO PERÍODO (${rdos.length} registro${rdos.length !== 1 ? 's' : ''})
-            </div>
-            ${rdos.length > 0 ? rdoHtml : '<p style="text-align:center; color:var(--cinza); padding:20px;">Nenhum registro no período selecionado</p>'}
-            <div style="margin-top:24px; border-top:1px solid var(--borda); padding-top:16px; display:grid; grid-template-columns:1fr 1fr; gap:20px; font-size:11px;">
-                <div style="text-align:center;">
-                    <div style="border-top:1px solid #000; margin-bottom:4px; padding-top:40px;"></div>
-                    <div>${obra.rt || 'Responsável Técnico'}</div>
-                    <div style="color:var(--cinza);">Assinatura</div>
-                </div>
-                <div style="text-align:center;">
-                    <div style="border-top:1px solid #000; margin-bottom:4px; padding-top:40px;"></div>
-                    <div>${obra.cliente || 'Contratante'}</div>
-                    <div style="color:var(--cinza);">Assinatura</div>
-                </div>
-            </div>`;
+        const mensagem = `Olá! 👋\n\nSua obra teve uma atualização hoje!\n\n📋 RDO: ${rdoData}\n🏗️ Obra: ${obraSelecionadaNome}\n📈 Avanço: ${avanco}%\n${climaEmojis[climaSelecionado]} Clima: ${climaTextos[climaSelecionado]}\n\nAtividades: ${rdoAtividades}\n\nClique aqui para ver mais detalhes:\n${linkBase}`;
 
-        document.getElementById('previewRel').style.display = 'block';
-        alert(`✅ Relatório gerado com ${rdos.length} registro(s)!\n\nUse Ctrl+P (ou compartilhar → imprimir) para salvar em PDF.`);
-        setTimeout(() => document.getElementById('previewRel').scrollIntoView({ behavior: 'smooth' }), 300);
+        const urlWhatsApp = `https://api.whatsapp.com/send?phone=${numeroCliente}&text=${encodeURIComponent(mensagem)}`;
+        window.open(urlWhatsApp, '_blank');
     }
 
-    // ===== PLANOS / PIX =====
-    function assinar(plano) {
-        const precos = { basico: 'R$ 49,00', profissional: 'R$ 99,00', empresa: 'R$ 199,00' };
-        const chave = 'amigosengenheirosuca@gmail.com';
-        alert(`Para assinar o plano ${plano.toUpperCase()} (${precos[plano]}):\n\n1. Faça o PIX para: ${chave}\n2. Envie o comprovante no WhatsApp\n3. Seu acesso será liberado em minutos!`);
+    function sair() {
+        document.getElementById('appMain').style.display = 'none';
+        document.getElementById('loginScreen').style.display = 'flex';
     }
 
-    function copiarPix() {
-        navigator.clipboard.writeText('amigosengenheirosuca@gmail.com').then(() => alert('✅ Chave PIX copiada!'));
-    }
-
-    // ===== UTILS =====
-    function fecharModal(id) { document.getElementById(id).classList.remove('active'); }
-
-    document.querySelectorAll('.modal').forEach(modal => {
-        modal.addEventListener('click', e => { if(e.target === modal) modal.classList.remove('active'); });
+    // Inicializar
+    window.addEventListener('load', () => {
+        const hoje = new Date().toISOString().split('T')[0];
+        document.getElementById('rdoData').value = hoje;
     });
-
-    window.addEventListener('load', inicializar);
 </script>
+
 </body>
 </html>

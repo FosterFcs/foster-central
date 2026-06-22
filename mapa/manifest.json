@@ -1,25 +1,18 @@
 {
   "name": "Foster Obras — Diário de Obra Digital",
   "short_name": "Foster Obras",
-  "description": "Diário de Obra Digital para Engenheiros e Arquitetos",
-  "start_url": "./index.html",
-  "scope": "./",
+  "description": "Aplicação para gerenciamento de obras e registro de relatórios diários",
+  "start_url": "./",
   "display": "standalone",
-  "background_color": "#1F2328",
+  "background_color": "#ffffff",
   "theme_color": "#1F2328",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%23E00000' width='192' height='192'/><text x='96' y='96' font-family='Oswald' font-size='80' font-weight='900' fill='white' text-anchor='middle' dominant-baseline='middle'>F</text></svg>",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/svg+xml",
+      "purpose": "any"
     }
   ]
 }
