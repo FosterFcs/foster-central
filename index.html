@@ -239,27 +239,41 @@
 
 <!-- ASSISTENTE IA -->
 <div class="tela" id="tela-ia">
+  <div class="card" style="background:linear-gradient(135deg,#1a7a4a,#0d4f2e);color:white;border:none;text-align:center;padding:28px 20px">
+    <div style="font-size:56px;margin-bottom:10px">🤖</div>
+    <div style="font-size:20px;font-weight:900;margin-bottom:4px">PREV</div>
+    <div style="font-size:12px;opacity:0.85;font-weight:600;margin-bottom:16px">Assistente de Saúde PREVITA<br>Powered by Claude AI</div>
+    <a href="https://claude.ai" target="_blank" style="display:block;background:white;color:#1a7a4a;border-radius:14px;padding:14px;font-size:15px;font-weight:900;text-decoration:none;font-family:Nunito,sans-serif;margin-bottom:10px">
+      💬 Abrir Assistente PREV
+    </a>
+    <div style="font-size:10px;opacity:0.75;font-weight:600">Abre o Claude AI gratuitamente no seu navegador</div>
+  </div>
+
   <div class="card">
-    <div class="card-titulo">🤖 PREV – Assistente de Saúde</div>
-    <div style="font-size:10px;color:var(--cinza-texto);font-weight:600;margin-bottom:9px">Tire dúvidas sobre medicamentos. Não substitui seu médico.</div>
-    <div class="ia-chat" id="iaChat">
-      <div class="msg ia">
-        <div class="msg-bubble">Olá! 👋 Sou o PREV, assistente de saúde do PREVITA. Posso ajudar com dúvidas sobre remédios contínuos, horários, efeitos colaterais e dicas de adesão ao tratamento.<br><br>Como posso te ajudar?</div>
-      </div>
-    </div>
-    <div class="ia-input-row">
-      <input class="ia-input" id="iaInput" placeholder="Ex: Pra que serve a Losartana?" onkeydown="if(event.key==='Enter')enviarIA()">
-      <button class="btn-enviar" onclick="enviarIA()">➤</button>
+    <div class="card-titulo">💡 Como usar o PREV</div>
+    <div style="font-size:12px;color:var(--cinza-texto);font-weight:600;line-height:1.8">
+      1. Clique em <strong>"Abrir Assistente PREV"</strong><br>
+      2. Crie uma conta gratuita no Claude AI<br>
+      3. Pergunte sobre seus remédios à vontade!<br>
+      4. Volte ao PREVITA para registrar suas doses ✅
     </div>
   </div>
+
   <div class="card" style="background:var(--laranja-claro);border:2px solid var(--laranja)">
-    <div style="font-size:11px;font-weight:800;color:var(--laranja);margin-bottom:7px">💡 Perguntas frequentes</div>
-    <div style="display:flex;flex-direction:column;gap:5px">
-      <button onclick="perguntaRapida('Pra que serve a Metformina?')" style="text-align:left;background:white;border:1px solid #fcd9b2;border-radius:8px;padding:7px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:Nunito,sans-serif">💊 Pra que serve a Metformina?</button>
-      <button onclick="perguntaRapida('Posso tomar Losartana com Aspirina?')" style="text-align:left;background:white;border:1px solid #fcd9b2;border-radius:8px;padding:7px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:Nunito,sans-serif">⚠️ Losartana com Aspirina?</button>
-      <button onclick="perguntaRapida('Qual o melhor horário para tomar remédio de pressão?')" style="text-align:left;background:white;border:1px solid #fcd9b2;border-radius:8px;padding:7px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:Nunito,sans-serif">⏰ Horário ideal para pressão?</button>
-      <button onclick="perguntaRapida('Esqueci de tomar meu remédio hoje, o que faço?')" style="text-align:left;background:white;border:1px solid #fcd9b2;border-radius:8px;padding:7px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:Nunito,sans-serif">❓ Esqueci o remédio, e agora?</button>
+    <div style="font-size:12px;font-weight:800;color:var(--laranja);margin-bottom:8px">💊 Sugestões de perguntas</div>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <a href="https://claude.ai" target="_blank" style="text-align:left;background:white;border:1px solid #fcd9b2;border-radius:8px;padding:8px 11px;font-size:11px;font-weight:700;cursor:pointer;font-family:Nunito,sans-serif;text-decoration:none;color:var(--texto);display:block">💊 Pra que serve a Metformina?</a>
+      <a href="https://claude.ai" target="_blank" style="text-align:left;background:white;border:1px solid #fcd9b2;border-radius:8px;padding:8px 11px;font-size:11px;font-weight:700;cursor:pointer;font-family:Nunito,sans-serif;text-decoration:none;color:var(--texto);display:block">⚠️ Losartana com Aspirina?</a>
+      <a href="https://claude.ai" target="_blank" style="text-align:left;background:white;border:1px solid #fcd9b2;border-radius:8px;padding:8px 11px;font-size:11px;font-weight:700;cursor:pointer;font-family:Nunito,sans-serif;text-decoration:none;color:var(--texto);display:block">⏰ Horário ideal para remédio de pressão?</a>
+      <a href="https://claude.ai" target="_blank" style="text-align:left;background:white;border:1px solid #fcd9b2;border-radius:8px;padding:8px 11px;font-size:11px;font-weight:700;cursor:pointer;font-family:Nunito,sans-serif;text-decoration:none;color:var(--texto);display:block">❓ Esqueci o remédio, e agora?</a>
     </div>
+  </div>
+
+  <div class="rodape">
+    ⚠️ Este app não substitui prescrição ou orientação médica.<br>
+    <strong>Desenvolvido por Wilson Foster</strong><br>
+    ACS – UBS São Pedro – Santana de Parnaíba – SP<br>
+    Foster Engenharia &amp; Desenvolvimento Digital
   </div>
 </div>
 
