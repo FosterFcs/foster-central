@@ -3,472 +3,126 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="theme-color" content="#006B3F">
+<meta name="theme-color" content="#1a7a4a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="PREVITA">
 <title>PREVITA – Prevenção + Vida</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
   :root {
-    --verde:        #006B3F;
-    --verde-medio:  #00873E;
-    --verde-claro:  #E8F8F0;
-    --verde-borda:  #B2DFCC;
-    --laranja:      #FF8C00;
-    --laranja-claro:#FFF4E0;
-    --roxo:         #5D4E6D;
-    --roxo-claro:   #EDE8F3;
-    --cinza:        #F4F6F5;
-    --cinza-texto:  #6B7280;
-    --texto:        #1A1E2B;
-    --branco:       #FFFFFF;
-    --perigo:       #DC2626;
-    --sombra:       0 2px 12px rgba(0,0,0,0.08);
-    --radius:       16px;
+    --verde:#1a7a4a;--verde-claro:#e8f5ee;--laranja:#f5821f;--laranja-claro:#fff3e8;
+    --cinza:#f2f4f6;--cinza-texto:#6b7280;--texto:#1a1e2b;--sombra:0 2px 12px rgba(0,0,0,0.10);--radius:16px;
   }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Nunito',sans-serif;background:#f0f4f2;color:var(--texto);min-height:100vh;max-width:480px;margin:0 auto;padding-bottom:80px;}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  .header{background:linear-gradient(135deg,#1a7a4a,#0d4f2e);color:white;padding:14px 14px 18px;position:sticky;top:0;z-index:100;border-radius:0 0 22px 22px;box-shadow:0 4px 20px rgba(26,122,74,0.35);}
+  .header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+  .logo-area{display:flex;align-items:center;gap:10px;}
+  .logo-box{width:46px;height:46px;background:white;border-radius:13px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.2);flex-shrink:0;}
+  .logo-text h1{font-size:21px;font-weight:900;letter-spacing:-0.5px;}
+  .logo-text p{font-size:10px;opacity:0.8;font-weight:600;}
+  .header-data{font-size:10px;opacity:0.75;text-align:right;font-weight:600;}
+  .membro-bar{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.15);border-radius:11px;padding:7px 11px;}
+  .membro-nome{font-size:12px;font-weight:800;flex:1;}
+  .membro-trocar{background:rgba(255,255,255,0.25);border:none;color:white;border-radius:7px;padding:3px 9px;font-size:10px;font-weight:800;cursor:pointer;font-family:Nunito,sans-serif;}
+  .alerta-badge{background:var(--laranja);color:white;border-radius:20px;padding:2px 8px;font-size:10px;font-weight:800;}
 
-  body {
-    font-family: 'Nunito', sans-serif;
-    background: #EDF2EF;
-    color: var(--texto);
-    min-height: 100vh;
-    max-width: 480px;
-    margin: 0 auto;
-    position: relative;
-    padding-bottom: 84px;
-  }
+  .nav-tabs{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:white;display:flex;border-top:1px solid #e5e7eb;box-shadow:0 -4px 20px rgba(0,0,0,0.08);z-index:200;}
+  .tab-btn{flex:1;padding:9px 2px 7px;border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--cinza-texto);font-family:Nunito,sans-serif;font-size:9px;font-weight:700;transition:color 0.2s;}
+  .tab-btn.ativa{color:var(--verde);}
+  .tab-btn .icon{font-size:19px;}
 
-  /* ── HEADER ── */
-  .header {
-    background: var(--verde);
-    color: white;
-    padding: 18px 20px 22px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    border-radius: 0 0 22px 22px;
-    box-shadow: 0 4px 18px rgba(0,107,63,0.28);
-  }
-  .header-top { display: flex; align-items: center; justify-content: space-between; }
-  .logo-area  { display: flex; align-items: center; gap: 10px; }
+  .tela{display:none;padding:13px;}
+  .tela.ativa{display:block;}
 
-  /* Logo SVG inline */
-  .logo-svg { width: 42px; height: 42px; flex-shrink: 0; }
+  .card{background:white;border-radius:var(--radius);padding:13px;margin-bottom:11px;box-shadow:var(--sombra);}
+  .card-titulo{font-size:13px;font-weight:800;color:var(--verde);margin-bottom:10px;display:flex;align-items:center;gap:5px;}
 
-  .logo-text h1 { font-size: 22px; font-weight: 900; letter-spacing: -0.5px; line-height: 1; }
-  .logo-text p  { font-size: 11px; opacity: 0.75; font-weight: 600; margin-top: 2px; }
-  .header-data  { font-size: 12px; opacity: 0.7; text-align: right; font-weight: 700; line-height: 1.5; }
+  .remedio-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--cinza);}
+  .remedio-item:last-child{border-bottom:none;padding-bottom:0;}
+  .remedio-cor{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;}
+  .remedio-info{flex:1;}
+  .remedio-nome{font-size:13px;font-weight:800;}
+  .remedio-dose{font-size:10px;color:var(--cinza-texto);font-weight:600;margin-top:1px;}
+  .remedio-horarios{margin-top:3px;display:flex;gap:3px;flex-wrap:wrap;}
+  .horario-badge{background:var(--verde-claro);color:var(--verde);border-radius:5px;padding:1px 6px;font-size:9px;font-weight:700;}
+  .check-btn{width:32px;height:32px;border-radius:9px;border:2px solid #d1d5db;background:none;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;}
+  .check-btn.tomado{background:var(--verde);border-color:var(--verde);color:white;}
 
-  .alerta-hoje {
-    margin-top: 12px;
-    background: rgba(255,255,255,0.13);
-    border-radius: 12px;
-    padding: 9px 13px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .alerta-hoje .label { font-size: 12px; font-weight: 700; opacity: 0.85; white-space: nowrap; }
-  .alerta-hoje .proximo { font-size: 13px; font-weight: 800; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .badge-alerta {
-    background: var(--laranja);
-    color: white;
-    border-radius: 20px;
-    padding: 3px 10px;
-    font-size: 11px;
-    font-weight: 900;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
+  .btn-verde{width:100%;padding:12px;background:var(--verde);color:white;border:none;border-radius:11px;font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;font-family:Nunito,sans-serif;transition:background 0.2s;}
+  .btn-verde:hover{background:#145c38;}
+  .btn-laranja{background:var(--laranja);color:white;border:none;border-radius:11px;padding:10px 16px;font-size:12px;font-weight:800;cursor:pointer;font-family:Nunito,sans-serif;}
+  .btn-cinza{background:var(--cinza);color:var(--cinza-texto);border:none;border-radius:11px;padding:10px 16px;font-size:12px;font-weight:800;cursor:pointer;font-family:Nunito,sans-serif;}
 
-  /* ── TABS ── */
-  .nav-tabs {
-    position: fixed;
-    bottom: 0; left: 50%;
-    transform: translateX(-50%);
-    width: 100%; max-width: 480px;
-    background: white;
-    display: flex;
-    border-top: 1px solid #E0EAE5;
-    box-shadow: 0 -3px 18px rgba(0,0,0,0.07);
-    z-index: 200;
-  }
-  .tab-btn {
-    flex: 1; padding: 10px 4px 8px;
-    border: none; background: none; cursor: pointer;
-    display: flex; flex-direction: column; align-items: center; gap: 3px;
-    color: var(--cinza-texto); font-family: 'Nunito', sans-serif;
-    font-size: 10px; font-weight: 700; transition: color 0.2s;
-    position: relative;
-  }
-  .tab-btn.ativa { color: var(--verde); }
-  .tab-btn.ativa::after {
-    content: '';
-    position: absolute;
-    top: 0; left: 20%; right: 20%;
-    height: 2.5px;
-    background: var(--verde);
-    border-radius: 0 0 4px 4px;
-  }
-  .tab-btn .icon { font-size: 21px; }
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:500;align-items:flex-end;justify-content:center;}
+  .modal-overlay.aberto{display:flex;}
+  .modal{background:white;border-radius:22px 22px 0 0;width:100%;max-width:480px;padding:20px 16px 28px;max-height:88vh;overflow-y:auto;}
+  .modal h2{font-size:16px;font-weight:900;margin-bottom:13px;color:var(--verde);}
+  .campo{margin-bottom:11px;}
+  .campo label{font-size:11px;font-weight:700;color:var(--cinza-texto);display:block;margin-bottom:4px;}
+  .campo input,.campo select,.campo textarea{width:100%;padding:10px;border:2px solid #e5e7eb;border-radius:9px;font-size:13px;font-family:Nunito,sans-serif;font-weight:600;color:var(--texto);background:white;}
+  .campo input:focus,.campo select:focus,.campo textarea:focus{outline:none;border-color:var(--verde);}
+  .horarios-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:4px;}
+  .horario-toggle{padding:7px 3px;border:2px solid #e5e7eb;border-radius:8px;background:none;font-size:10px;font-weight:700;cursor:pointer;font-family:Nunito,sans-serif;text-align:center;}
+  .horario-toggle.sel{background:var(--verde-claro);border-color:var(--verde);color:var(--verde);}
+  .modal-fechar{position:absolute;top:13px;right:14px;background:none;border:none;font-size:21px;cursor:pointer;color:var(--cinza-texto);}
 
-  /* ── TELAS ── */
-  .tela { display: none; padding: 10px 12px 0; }
-  .tela.ativa { display: block; }
+  .agenda-item{display:flex;align-items:center;gap:9px;padding:9px;background:var(--cinza);border-radius:11px;margin-bottom:6px;}
+  .agenda-hora{font-size:13px;font-weight:900;color:var(--verde);min-width:46px;text-align:center;}
+  .agenda-info{flex:1;}
+  .agenda-nome{font-size:12px;font-weight:800;}
+  .agenda-dose{font-size:10px;color:var(--cinza-texto);font-weight:600;}
+  .vazio{text-align:center;padding:26px;color:var(--cinza-texto);font-size:12px;font-weight:600;}
 
-  /* ── CARDS ── */
-  .card {
-    background: white;
-    border-radius: var(--radius);
-    padding: 12px 14px;
-    margin-bottom: 9px;
-    box-shadow: var(--sombra);
-  }
-  .card-titulo {
-    font-size: 13px; font-weight: 900; text-transform: uppercase;
-    letter-spacing: 0.4px;
-    color: var(--verde); margin-bottom: 12px;
-    display: flex; align-items: center; gap: 6px;
-  }
+  .stats-row{display:flex;gap:7px;margin-bottom:11px;}
+  .stat-box{flex:1;background:white;border-radius:13px;padding:10px;text-align:center;box-shadow:var(--sombra);}
+  .stat-num{font-size:24px;font-weight:900;color:var(--verde);}
+  .stat-label{font-size:9px;color:var(--cinza-texto);font-weight:700;}
 
-  /* ── STATS ── */
-  .stats-row { display: flex; gap: 8px; margin-bottom: 9px; }
-  .stat-box {
-    flex: 1; background: white; border-radius: 12px; padding: 10px 6px;
-    text-align: center; box-shadow: var(--sombra);
-  }
-  .stat-num { font-size: 24px; font-weight: 900; color: var(--verde); }
-  .stat-label { font-size: 10px; color: var(--cinza-texto); font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; margin-top: 1px; }
+  .progresso-bar{height:6px;background:#e5e7eb;border-radius:10px;margin:6px 0;overflow:hidden;}
+  .progresso-fill{height:100%;background:var(--verde);border-radius:10px;transition:width 0.3s;}
 
-  /* ── REMÉDIOS ── */
-  .remedio-item {
-    display: flex; align-items: center; gap: 10px;
-    padding: 9px 0;
-    border-bottom: 1px solid var(--cinza);
-  }
-  .remedio-item:last-child { border-bottom: none; padding-bottom: 0; }
-  .remedio-cor {
-    width: 44px; height: 44px; border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 21px; flex-shrink: 0;
-  }
-  .remedio-info { flex: 1; min-width: 0; }
-  .remedio-nome { font-size: 15px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .remedio-dose { font-size: 12px; color: var(--cinza-texto); font-weight: 600; margin-top: 1px; }
-  .remedio-horarios { margin-top: 5px; display: flex; gap: 4px; flex-wrap: wrap; }
-  .horario-badge {
-    background: var(--verde-claro); color: var(--verde);
-    border: 1px solid var(--verde-borda);
-    border-radius: 7px; padding: 2px 7px; font-size: 11px; font-weight: 800;
-  }
-  .check-btn {
-    width: 36px; height: 36px; border-radius: 10px; border: 2px solid #D1D5DB;
-    background: none; cursor: pointer; font-size: 17px; display: flex;
-    align-items: center; justify-content: center; transition: all 0.15s; flex-shrink: 0;
-  }
-  .check-btn.tomado { background: var(--verde); border-color: var(--verde); }
+  .ia-chat{min-height:180px;max-height:300px;overflow-y:auto;margin-bottom:9px;}
+  .msg{margin-bottom:8px;display:flex;flex-direction:column;}
+  .msg.user{align-items:flex-end;}
+  .msg.ia{align-items:flex-start;}
+  .msg-bubble{max-width:85%;padding:8px 12px;border-radius:14px;font-size:12px;font-weight:600;line-height:1.5;}
+  .msg.user .msg-bubble{background:var(--verde);color:white;border-radius:14px 14px 4px 14px;}
+  .msg.ia .msg-bubble{background:white;color:var(--texto);border-radius:14px 14px 14px 4px;box-shadow:var(--sombra);}
+  .ia-input-row{display:flex;gap:7px;}
+  .ia-input{flex:1;padding:10px 12px;border:2px solid #e5e7eb;border-radius:11px;font-size:13px;font-family:Nunito,sans-serif;font-weight:600;}
+  .ia-input:focus{outline:none;border-color:var(--verde);}
+  .btn-enviar{width:44px;height:44px;background:var(--verde);border:none;border-radius:11px;color:white;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .digitando{display:flex;gap:4px;padding:9px 12px;}
+  .dot{width:7px;height:7px;background:var(--verde);border-radius:50%;animation:bounce 1s infinite;}
+  .dot:nth-child(2){animation-delay:0.15s}.dot:nth-child(3){animation-delay:0.3s}
+  @keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
 
-  /* ── BOTÕES ── */
-  .btn-verde {
-    width: 100%; padding: 13px;
-    background: var(--verde); color: white;
-    border: none; border-radius: 12px; font-size: 15px; font-weight: 800;
-    cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
-    font-family: 'Nunito', sans-serif; transition: background 0.2s;
-  }
-  .btn-verde:hover { background: #005530; }
-  .btn-laranja {
-    background: var(--laranja); color: white;
-    border: none; border-radius: 12px; padding: 11px 16px;
-    font-size: 13px; font-weight: 800; cursor: pointer;
-    font-family: 'Nunito', sans-serif;
-  }
-  .btn-roxo {
-    background: var(--roxo); color: white;
-    border: none; border-radius: 12px; padding: 11px 16px;
-    font-size: 13px; font-weight: 800; cursor: pointer;
-    font-family: 'Nunito', sans-serif;
-  }
+  .membro-card{background:white;border-radius:13px;padding:11px 13px;margin-bottom:7px;box-shadow:var(--sombra);display:flex;align-items:center;gap:11px;cursor:pointer;border:2px solid transparent;}
+  .membro-card.ativo{border-color:var(--verde);background:var(--verde-claro);}
+  .membro-avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
 
-  /* ── MODAL ── */
-  .modal-overlay {
-    display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.55); z-index: 500;
-    align-items: flex-end; justify-content: center;
-  }
-  .modal-overlay.aberto { display: flex; }
-  .modal {
-    background: white; border-radius: 24px 24px 0 0;
-    width: 100%; max-width: 480px; padding: 24px 20px 32px;
-    max-height: 88vh; overflow-y: auto;
-  }
-  .modal h2 { font-size: 18px; font-weight: 900; margin-bottom: 16px; color: var(--verde); }
-  .campo { margin-bottom: 13px; }
-  .campo label { font-size: 12px; font-weight: 800; color: var(--cinza-texto); text-transform: uppercase; letter-spacing: 0.4px; display: block; margin-bottom: 5px; }
-  .campo input, .campo select {
-    width: 100%; padding: 12px; border: 2px solid #E5E7EB;
-    border-radius: 10px; font-size: 15px; font-family: 'Nunito', sans-serif;
-    font-weight: 600; color: var(--texto); background: white;
-    transition: border-color 0.15s;
-  }
-  .campo input:focus, .campo select:focus { outline: none; border-color: var(--verde); }
-  .horarios-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 7px; margin-top: 6px; }
-  .horario-toggle {
-    padding: 8px 4px; border: 2px solid #E5E7EB; border-radius: 10px;
-    background: none; font-size: 12px; font-weight: 700; cursor: pointer;
-    font-family: 'Nunito', sans-serif; text-align: center; transition: all 0.15s;
-  }
-  .horario-toggle.sel { background: var(--verde-claro); border-color: var(--verde); color: var(--verde); }
-  .modal-fechar {
-    position: absolute; top: 16px; right: 18px;
-    background: var(--cinza); border: none; width: 32px; height: 32px;
-    border-radius: 50%; font-size: 16px; cursor: pointer; color: var(--cinza-texto);
-    display: flex; align-items: center; justify-content: center;
-  }
+  .rodape{text-align:center;font-size:9px;color:#9ca3af;padding:10px 12px;line-height:1.8;font-weight:600;border-top:1px solid #f0f0f0;margin-top:6px;}
 
-  /* ── AGENDA ── */
-  .agenda-item {
-    display: flex; align-items: center; gap: 11px;
-    padding: 11px 12px; background: var(--cinza); border-radius: 12px; margin-bottom: 7px;
-    transition: opacity 0.2s;
-  }
-  .agenda-hora { font-size: 15px; font-weight: 900; color: var(--verde); min-width: 50px; text-align: center; }
-  .agenda-info { flex: 1; }
-  .agenda-nome { font-size: 14px; font-weight: 800; }
-  .agenda-dose { font-size: 12px; color: var(--cinza-texto); font-weight: 600; }
-  .agenda-status { font-size: 20px; cursor: pointer; }
-  .vazio { text-align: center; padding: 28px 16px; color: var(--cinza-texto); font-size: 14px; font-weight: 600; line-height: 1.6; }
-
-  /* ── PROGRESSO ── */
-  .progresso-bar { height: 8px; background: #E5E7EB; border-radius: 10px; margin: 8px 0; overflow: hidden; }
-  .progresso-fill { height: 100%; background: linear-gradient(90deg, var(--verde), var(--verde-medio)); border-radius: 10px; transition: width 0.4s; }
-
-  /* ── PACIENTES ── */
-  .paciente-card {
-    background: white; border-radius: var(--radius);
-    padding: 13px; margin-bottom: 9px; box-shadow: var(--sombra);
-    display: flex; align-items: center; gap: 12px; cursor: pointer;
-  }
-  .paciente-avatar {
-    width: 46px; height: 46px; border-radius: 50%;
-    background: var(--verde-claro); border: 2px solid var(--verde-borda);
-    display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;
-  }
-  .paciente-info { flex: 1; min-width: 0; }
-  .paciente-nome { font-size: 14px; font-weight: 800; }
-  .paciente-end  { font-size: 12px; color: var(--cinza-texto); font-weight: 600; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .paciente-meds { font-size: 11px; color: var(--verde); font-weight: 700; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .badge-micro {
-    background: var(--verde); color: white;
-    border-radius: 8px; padding: 3px 8px; font-size: 10px; font-weight: 900;
-    white-space: nowrap; text-align: center;
-  }
-  .badge-roxo {
-    background: var(--roxo); color: white;
-    border-radius: 8px; padding: 3px 8px; font-size: 10px; font-weight: 900;
-  }
-
-  /* ── IA CHAT ── */
-  .ia-chat { min-height: 220px; max-height: 340px; overflow-y: auto; margin-bottom: 12px; scroll-behavior: smooth; }
-  .msg { margin-bottom: 9px; display: flex; flex-direction: column; }
-  .msg.user { align-items: flex-end; }
-  .msg.ia   { align-items: flex-start; }
-  .msg-bubble {
-    max-width: 84%; padding: 10px 14px; border-radius: 16px;
-    font-size: 14px; font-weight: 600; line-height: 1.55;
-  }
-  .msg.user .msg-bubble { background: var(--verde); color: white; border-radius: 16px 16px 4px 16px; }
-  .msg.ia   .msg-bubble { background: var(--cinza); color: var(--texto); border-radius: 16px 16px 16px 4px; }
-  .ia-input-row { display: flex; gap: 8px; }
-  .ia-input {
-    flex: 1; padding: 12px 14px; border: 2px solid #E5E7EB;
-    border-radius: 12px; font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 600;
-    transition: border-color 0.15s;
-  }
-  .ia-input:focus { outline: none; border-color: var(--verde); }
-  .btn-enviar {
-    width: 48px; height: 48px; background: var(--verde); border: none;
-    border-radius: 12px; color: white; font-size: 20px; cursor: pointer;
-    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-  }
-  .digitando { display: flex; gap: 4px; padding: 10px 14px; }
-  .dot { width: 7px; height: 7px; background: var(--verde); border-radius: 50%; animation: bounce 1s infinite; }
-  .dot:nth-child(2) { animation-delay: 0.15s; }
-  .dot:nth-child(3) { animation-delay: 0.30s; }
-  @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
-
-  /* ── BOAS-VINDAS ── */
-  .bv-overlay {
-    display: none; position: fixed; inset: 0;
-    background: var(--verde); z-index: 9000;
-    flex-direction: column; align-items: center; justify-content: center;
-    padding: 32px 28px; text-align: center;
-  }
-  .bv-overlay.ativo { display: flex; }
-  .bv-logo { margin-bottom: 20px; }
-  .bv-titulo { font-size: 32px; font-weight: 900; color: white; letter-spacing: -1px; margin-bottom: 6px; }
-  .bv-sub { font-size: 14px; color: rgba(255,255,255,0.75); font-weight: 600; margin-bottom: 36px; }
-  .bv-form { width: 100%; max-width: 340px; }
-  .bv-label { font-size: 12px; font-weight: 900; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 0.5px; display: block; text-align: left; margin-bottom: 6px; }
-  .bv-input {
-    width: 100%; padding: 15px 16px; border: 2px solid rgba(255,255,255,0.3);
-    border-radius: 14px; font-size: 17px; font-family: 'Nunito', sans-serif;
-    font-weight: 700; color: white; background: rgba(255,255,255,0.15);
-    margin-bottom: 14px;
-  }
-  .bv-input::placeholder { color: rgba(255,255,255,0.45); }
-  .bv-input:focus { outline: none; border-color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.2); }
-  .bv-btn {
-    width: 100%; padding: 16px; background: white; color: var(--verde);
-    border: none; border-radius: 14px; font-size: 17px; font-weight: 900;
-    cursor: pointer; font-family: 'Nunito', sans-serif; transition: opacity 0.2s;
-  }
-  .bv-btn:hover { opacity: 0.92; }
-  .bv-skip { margin-top: 16px; font-size: 13px; color: rgba(255,255,255,0.55); font-weight: 600; cursor: pointer; text-decoration: underline; }
-
-  /* ── MODO CUIDADOR ── */
-  .cuidador-banner {
-    display: none; background: var(--roxo); color: white;
-    padding: 8px 16px; text-align: center;
-    font-size: 12px; font-weight: 800;
-  }
-  .cuidador-banner.ativo { display: block; }
-  .cuidador-info {
-    background: var(--roxo-claro); border: 2px solid var(--roxo);
-    border-radius: 14px; padding: 14px; margin-bottom: 12px;
-  }
-  .cuidador-titulo { font-size: 14px; font-weight: 900; color: var(--roxo); margin-bottom: 8px; }
-  .cuidador-status-item {
-    display: flex; align-items: center; gap: 10px;
-    padding: 9px 0; border-bottom: 1px solid #D9D1E8;
-  }
-  .cuidador-status-item:last-child { border-bottom: none; }
-
-  /* ── RODAPÉ ── */
-  .rodape {
-    text-align: center; font-size: 10px; color: #9CA3AF;
-    padding: 14px 16px 4px; line-height: 1.7; font-weight: 600;
-  }
-
-  /* ── HISTÓRICO DE ADESÃO ── */
-  .adesao-grid { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 4px; }
-  .adesao-dia {
-    width: 32px; height: 32px; border-radius: 8px; display: flex;
-    align-items: center; justify-content: center; font-size: 10px; font-weight: 800;
-    flex-direction: column; gap: 1px;
-  }
-  .adesao-dia .dia-num { font-size: 11px; font-weight: 900; }
-  .adesao-dia.ok      { background: var(--verde-claro); color: var(--verde); border: 1px solid var(--verde-borda); }
-  .adesao-dia.parcial { background: var(--laranja-claro); color: var(--laranja); border: 1px solid #FFDBA0; }
-  .adesao-dia.faltou  { background: #FEE2E2; color: var(--perigo); border: 1px solid #FECACA; }
-  .adesao-dia.futuro  { background: var(--cinza); color: #D1D5DB; border: 1px solid #E5E7EB; }
-  .adesao-dia.hoje    { border-width: 2px; }
-
-  /* ── MODAL ALERTA SONORO ── */
-  @keyframes pulse-emoji { from{transform:scale(1)} to{transform:scale(1.12)} }
-  @keyframes entrada { from{transform:translateY(30px);opacity:0} to{transform:translateY(0);opacity:1} }
-
-  /* ── BANNER MODO ALTO CONTRASTE ── */
-  .toggle-row {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 8px 0; border-bottom: 1px solid var(--cinza);
-  }
-  .toggle-row:last-child { border-bottom: none; }
-  .toggle-label { font-size: 13px; font-weight: 700; }
-  .toggle-sub   { font-size: 11px; color: var(--cinza-texto); font-weight: 600; }
-  .switch { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
-  .switch input { opacity: 0; width: 0; height: 0; }
-  .slider {
-    position: absolute; cursor: pointer; inset: 0;
-    background: #D1D5DB; border-radius: 24px; transition: background 0.2s;
-  }
-  .slider::before {
-    content: ''; position: absolute;
-    width: 18px; height: 18px; left: 3px; bottom: 3px;
-    background: white; border-radius: 50%; transition: transform 0.2s;
-  }
-  input:checked + .slider { background: var(--verde); }
-  input:checked + .slider::before { transform: translateX(20px); }
-
-  /* ── ALTO CONTRASTE ── */
-  body.alto-contraste {
-    --verde:        #004D2B;
-    --verde-medio:  #006B3F;
-    --cinza:        #E8E8E8;
-    --texto:        #000000;
-    background: #FFFFFF;
-    font-size: 17px;
-  }
-  body.alto-contraste .card { border: 2px solid #004D2B; }
-  body.alto-contraste .remedio-nome,
-  body.alto-contraste .agenda-nome,
-  body.alto-contraste .paciente-nome { font-size: 17px; }
-  body.alto-contraste .btn-verde { font-size: 17px; padding: 16px; }
-  body.alto-contraste .tab-btn   { font-size: 12px; }
-  body.alto-contraste .tab-btn .icon { font-size: 25px; }
-
-  /* ── SECAO CONFIGURAÇÕES ── */
-  .secao-titulo {
-    font-size: 11px; font-weight: 900; color: var(--cinza-texto);
-    text-transform: uppercase; letter-spacing: 0.5px;
-    margin: 16px 0 6px;
-  }
+  #fotoPreview{width:100%;border-radius:10px;margin-top:8px;display:none;}
+  @keyframes pulse{from{transform:scale(1)}to{transform:scale(1.15)}}
 </style>
 </head>
 <body>
 
-<!-- ═══════════════ BOAS-VINDAS ═══════════════ -->
-<div class="bv-overlay" id="boasVindas">
-  <div class="bv-logo">
-    <svg width="72" height="72" viewBox="0 0 42 42" fill="none">
-      <rect width="42" height="42" rx="13" fill="rgba(255,255,255,0.18)"/>
-      <path d="M21 7 L33 12.5 L33 22 Q33 31 21 36 Q9 31 9 22 L9 12.5 Z" fill="rgba(255,255,255,0.95)"/>
-      <rect x="18.5" y="16" width="5" height="14" rx="1.5" fill="#006B3F"/>
-      <rect x="14" y="20.5" width="14" height="5" rx="1.5" fill="#006B3F"/>
-    </svg>
-  </div>
-  <div class="bv-titulo">PREVITA</div>
-  <div class="bv-sub">Prevenção + Vida — seu companheiro de saúde diário</div>
-  <div class="bv-form">
-    <label class="bv-label">Como posso te chamar?</label>
-    <input class="bv-input" id="bvNome" type="text" placeholder="Seu nome..." maxlength="30"
-      onkeydown="if(event.key==='Enter')salvarBoasVindas()">
-    <label class="bv-label" style="margin-top:4px">Você é…</label>
-    <select class="bv-input" id="bvPerfil" style="cursor:pointer">
-      <option value="paciente">👤 Paciente — gerenciar meus remédios</option>
-      <option value="cuidador">🤝 Cuidador — acompanhar um familiar</option>
-      <option value="acs">🏥 ACS / Profissional de saúde</option>
-    </select>
-    <button class="bv-btn" onclick="salvarBoasVindas()">Começar ➜</button>
-    <div class="bv-skip" onclick="salvarBoasVindas()">Pular esta etapa</div>
-  </div>
-</div>
-
-<!-- ═══════════════ BANNER CUIDADOR ═══════════════ -->
-<div class="cuidador-banner" id="cuidadorBanner">
-  🤝 Modo Cuidador ativo — acompanhando remédios do familiar
-</div>
-
-<!-- ═══════════════ HEADER ═══════════════ -->
 <div class="header">
   <div class="header-top">
     <div class="logo-area">
-      <!-- Logo vetorial inline -->
-      <svg class="logo-svg" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="PREVITA logo">
-        <rect width="44" height="44" rx="12" fill="white" fill-opacity="0.22"/>
-        <rect x="1" y="1" width="42" height="42" rx="11" stroke="white" stroke-opacity="0.3" stroke-width="1"/>
-        <!-- Escudo com sombra suave -->
-        <path d="M22 8 L34 13.5 L34 24 Q34 33.5 22 38 Q10 33.5 10 24 L10 13.5 Z" fill="white" fill-opacity="0.15"/>
-        <path d="M22 9 L33 14 L33 24 Q33 33 22 37 Q11 33 11 24 L11 14 Z" fill="white"/>
-        <!-- Cruz verde no escudo -->
-        <rect x="19.5" y="17.5" width="5" height="13" rx="2" fill="#006B3F"/>
-        <rect x="15" y="22" width="14" height="5" rx="2" fill="#006B3F"/>
-        <!-- Ponto brilho no topo do escudo -->
-        <circle cx="22" cy="11" r="1.5" fill="white" fill-opacity="0.5"/>
-      </svg>
+      <div class="logo-box">
+        <!-- LOGO PREVITA SVG -->
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="36" height="36" rx="9" fill="#e8f5ee"/>
+          <path d="M18 3L5 9.5V18c0 7.5 5.5 14 13 15.5C25.5 32 31 25.5 31 18V9.5L18 3z" fill="#1a7a4a"/>
+          <rect x="15.5" y="11" width="5" height="11" rx="2.5" fill="white"/>
+          <rect x="11" y="15.5" width="14" height="5" rx="2.5" fill="white"/>
+        </svg>
+      </div>
       <div class="logo-text">
         <h1>PREVITA</h1>
         <p>Prevenção + Vida</p>
@@ -476,166 +130,121 @@
     </div>
     <div class="header-data" id="headerData"></div>
   </div>
-  <div class="alerta-hoje">
-    <span id="saudacaoNome" style="font-size:12px;font-weight:800;opacity:0.9"></span>
-    <span class="label" id="labelProximo">⏰ Próximo</span>
-    <span class="proximo" id="proximoLembrete">Carregando...</span>
-    <div class="badge-alerta" id="badgeHoje">0</div>
+  <div class="membro-bar">
+    <span style="font-size:15px" id="membroIconeHeader">👤</span>
+    <span class="membro-nome" id="membroNomeHeader">Selecione um membro</span>
+    <div class="alerta-badge" id="badgeHoje">✅</div>
+    <button class="membro-trocar" onclick="irPara('membros',document.querySelectorAll('.tab-btn')[4])">Trocar</button>
   </div>
 </div>
 
-<!-- ═══════════════ TELA: REMÉDIOS ═══════════════ -->
+<!-- REMÉDIOS -->
 <div class="tela ativa" id="tela-remedios">
   <div class="stats-row">
-    <div class="stat-box">
-      <div class="stat-num" id="statTotal">0</div>
-      <div class="stat-label">Remédios</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-num" id="statTomados" style="color:var(--laranja)">0</div>
-      <div class="stat-label">Tomados</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-num" id="statPendentes" style="color:var(--perigo)">0</div>
-      <div class="stat-label">Pendentes</div>
-    </div>
+    <div class="stat-box"><div class="stat-num" id="statTotal">0</div><div class="stat-label">Remédios</div></div>
+    <div class="stat-box"><div class="stat-num" id="statTomados" style="color:var(--laranja)">0</div><div class="stat-label">Tomados</div></div>
+    <div class="stat-box"><div class="stat-num" id="statPendentes" style="color:#ef4444">0</div><div class="stat-label">Pendentes</div></div>
   </div>
-
   <div class="card">
-    <div class="card-titulo">💊 Meus Remédios</div>
-    <div id="listaRemedios">
-      <div class="vazio">Nenhum remédio cadastrado ainda.<br>Adicione seu primeiro remédio abaixo! 👇</div>
-    </div>
+    <div class="card-titulo">💊 Remédios Contínuos</div>
+    <div id="listaRemedios"><div class="vazio">Nenhum remédio.<br>Adicione abaixo! 👇</div></div>
   </div>
-
   <button class="btn-verde" onclick="abrirModal()">➕ Adicionar Remédio</button>
-
-  <!-- Painel cuidador -->
-  <div id="painelCuidador" style="display:none">
-    <div class="cuidador-info">
-      <div class="cuidador-titulo">🤝 Painel do Cuidador</div>
-      <div style="font-size:12px;color:var(--cinza-texto);font-weight:600;margin-bottom:10px">
-        Acompanhe a adesão do familiar em tempo real.
-      </div>
-      <div id="cuidadorStatus">
-        <div class="vazio" style="padding:12px">Cadastre remédios para monitorar.</div>
-      </div>
-    </div>
-    <div style="font-size:11px;color:var(--cinza-texto);font-weight:600;text-align:center;margin-bottom:12px">
-      💡 Dados ficam apenas neste aparelho (LGPD)
-    </div>
-  </div>
-
-  <div style="text-align:center;font-size:10px;color:#B0B8C1;padding:10px 0 2px;font-weight:600">
-    ⚠️ Não substitui orientação médica
+  <div class="rodape">
+    ⚠️ Este app não substitui prescrição ou orientação médica.<br>
+    <strong>Desenvolvido por Wilson Foster</strong><br>
+    ACS – UBS São Pedro – Santana de Parnaíba – SP<br>
+    Foster Engenharia &amp; Desenvolvimento Digital
   </div>
 </div>
 
-<!-- ═══════════════ TELA: AGENDA ═══════════════ -->
+<!-- AGENDA -->
 <div class="tela" id="tela-agenda">
   <div class="card">
     <div class="card-titulo">📅 Agenda de Hoje</div>
-    <div id="agendaHoje">
-      <div class="vazio">Sem remédios agendados.<br>Cadastre seus remédios na aba 💊</div>
-    </div>
+    <div id="agendaHoje"><div class="vazio">Sem remédios agendados.</div></div>
   </div>
-
   <div class="card">
-    <div class="card-titulo">📊 Progresso do Dia</div>
-    <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700;color:var(--cinza-texto)">
-      <span>Doses tomadas</span>
-      <span id="progrTexto" style="color:var(--verde);font-weight:900">0 / 0</span>
+    <div class="card-titulo">📊 Progresso</div>
+    <div style="display:flex;justify-content:space-between;font-size:11px;font-weight:700;color:var(--cinza-texto)">
+      <span>Doses tomadas</span><span id="progrTexto">0 / 0</span>
     </div>
     <div class="progresso-bar"><div class="progresso-fill" id="progrBar" style="width:0%"></div></div>
-    <div style="font-size:12px;color:var(--cinza-texto);font-weight:700;text-align:center" id="progrMsg">Cadastre seus remédios para começar!</div>
+    <div style="font-size:10px;color:var(--cinza-texto);font-weight:600;text-align:center" id="progrMsg">Cadastre seus remédios!</div>
   </div>
-
-  <div class="card">
-    <div class="card-titulo">📆 Adesão — Últimos 14 dias</div>
-    <div class="adesao-grid" id="adesaoGrid"></div>
-    <div style="display:flex;gap:12px;margin-top:10px;font-size:11px;font-weight:700">
-      <span style="color:var(--verde)">✅ Completo</span>
-      <span style="color:var(--laranja)">⚠️ Parcial</span>
-      <span style="color:var(--perigo)">❌ Faltou</span>
-    </div>
-  </div>
-
-  <div class="card" style="background:var(--verde-claro);border:2px solid var(--verde-borda)">
-    <div style="font-size:13px;font-weight:900;color:var(--verde);margin-bottom:7px">🔔 Alertas Sonoros</div>
-    <div style="font-size:12px;color:var(--cinza-texto);font-weight:600;margin-bottom:10px">
-      O app toca uma melodia e vibra na hora do remédio. <strong>Mantenha o app aberto</strong> ou instale na tela inicial.
-    </div>
-    <div style="display:flex;gap:8px">
-      <button class="btn-laranja" onclick="testarSom()" style="flex:1">🔔 Testar Som</button>
-      <button class="btn-roxo"   onclick="instalarPWA()" style="flex:1">📲 Instalar App</button>
+  <div class="card" style="background:var(--verde-claro);border:2px solid var(--verde)">
+    <div style="font-size:12px;font-weight:800;color:var(--verde);margin-bottom:7px">🔔 Alertas Sonoros</div>
+    <div style="font-size:10px;color:var(--cinza-texto);font-weight:600;margin-bottom:9px">Mantenha o app aberto para receber alertas com som e vibração.</div>
+    <div style="display:flex;gap:7px">
+      <button class="btn-laranja" onclick="testarSom()" style="flex:1;border-radius:9px;padding:9px">🔔 Testar Som</button>
+      <button class="btn-verde" onclick="instalarPWA()" style="flex:1">📲 Instalar</button>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════ TELA: PACIENTES (ACS) ═══════════════ -->
-<div class="tela" id="tela-pacientes">
-  <div class="card" style="background:var(--verde);color:white;border:none">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-      <svg width="36" height="36" viewBox="0 0 42 42" fill="none">
-        <rect width="42" height="42" rx="11" fill="rgba(255,255,255,0.18)"/>
-        <path d="M21 7 L33 12.5 L33 22 Q33 31 21 36 Q9 31 9 22 L9 12.5 Z" fill="rgba(255,255,255,0.9)"/>
-        <rect x="18.5" y="16" width="5" height="14" rx="1.5" fill="#006B3F"/>
-        <rect x="14" y="20.5" width="14" height="5" rx="1.5" fill="#006B3F"/>
-      </svg>
+<!-- RECEITA -->
+<div class="tela" id="tela-receita">
+  <div class="card" style="background:linear-gradient(135deg,#1565c0,#0d47a1);color:white;border:none">
+    <div style="display:flex;align-items:center;gap:9px;margin-bottom:5px">
+      <div style="font-size:26px">🏥</div>
       <div>
-        <div style="font-size:14px;font-weight:900">👤 Wilson Foster — ACS</div>
-        <div style="font-size:11px;opacity:0.75;font-weight:600">Microárea 09 | UBS São Pedro | Santana de Parnaíba</div>
+        <div style="font-size:13px;font-weight:900">Importar Receita</div>
+        <div style="font-size:9px;opacity:0.8;font-weight:600">UBS São Pedro – Santana de Parnaíba – SP</div>
       </div>
     </div>
-    <div style="display:flex;gap:20px">
-      <div style="text-align:center">
-        <div style="font-size:24px;font-weight:900" id="totalPacientes">3</div>
-        <div style="font-size:10px;opacity:0.8;font-weight:700;text-transform:uppercase">Pacientes</div>
-      </div>
-      <div style="text-align:center">
-        <div style="font-size:24px;font-weight:900" id="totalVisitas">2</div>
-        <div style="font-size:10px;opacity:0.8;font-weight:700;text-transform:uppercase">Visitas/mês</div>
-      </div>
+    <div style="font-size:10px;opacity:0.85;font-weight:600">Tire foto da receita física ou cole os nomes. A IA configura os horários automaticamente!</div>
+  </div>
+
+  <!-- FOTO DA RECEITA -->
+  <div class="card">
+    <div class="card-titulo">📷 Fotografar Receita Física</div>
+    <div style="font-size:11px;color:var(--cinza-texto);font-weight:600;margin-bottom:9px">Tire uma foto da sua receita médica e a IA vai ler os remédios automaticamente.</div>
+    <input type="file" id="fotoInput" accept="image/*" capture="environment" style="display:none" onchange="processarFoto(this)">
+    <button class="btn-verde" onclick="document.getElementById('fotoInput').click()" style="margin-bottom:8px">
+      📷 Abrir Câmera / Galeria
+    </button>
+    <img id="fotoPreview" alt="Foto da receita">
+    <div id="fotoStatus" style="display:none;text-align:center;padding:9px;font-size:12px;font-weight:700;color:var(--verde)">⏳ Lendo receita com IA...</div>
+  </div>
+
+  <!-- DIGITAR RECEITA -->
+  <div class="card">
+    <div class="card-titulo">⌨️ Ou Digite / Cole os Remédios</div>
+    <div class="campo">
+      <textarea id="receitaTexto" rows="4" placeholder="Losartana Potássica 50mg&#10;Sinvastatina 20mg&#10;Metoprolol 50mg&#10;Hidroclorotiazida 25mg"></textarea>
+    </div>
+    <button class="btn-verde" onclick="processarReceita()" id="btnProcessar">🤖 Processar e Criar Alertas</button>
+    <div id="receitaStatus" style="display:none;text-align:center;padding:9px;font-size:12px;font-weight:700;color:var(--verde)">⏳ Processando com IA...</div>
+  </div>
+
+  <div class="card" id="receitaResultado" style="display:none">
+    <div class="card-titulo">✅ Remédios Identificados</div>
+    <div id="receitaLista"></div>
+    <div style="display:flex;gap:7px;margin-top:11px">
+      <button class="btn-verde" onclick="importarSelecionados()" style="flex:2">➕ Adicionar aos Remédios</button>
+      <button class="btn-cinza" onclick="limparReceita()" style="flex:1">🗑️</button>
     </div>
   </div>
 
-  <div id="listaPacientes"></div>
-
-  <button class="btn-verde" onclick="abrirModalPaciente()">➕ Cadastrar Paciente</button>
-
-  <div class="rodape">
-    Dados armazenados apenas neste dispositivo.<br>
-    Protegido pela LGPD – Lei 13.709/2018
+  <div class="card" style="background:var(--verde-claro);border:2px solid var(--verde)">
+    <div style="font-size:11px;font-weight:800;color:var(--verde);margin-bottom:4px">💡 Como usar</div>
+    <div style="font-size:10px;color:var(--cinza-texto);font-weight:600;line-height:1.7">
+      1. Tire foto da receita médica físicab<strong>OU</strong> cole os nomes<br>
+      2. Clique em Processar<br>
+      3. A IA identifica e define horários ideais<br>
+      4. Confirme e os alertas são criados! 🔔
+    </div>
   </div>
 </div>
 
-<!-- ═══════════════ TELA: ASSISTENTE IA ═══════════════ -->
+<!-- ASSISTENTE IA -->
 <div class="tela" id="tela-ia">
-
-  <!-- Banner chave API ausente -->
-  <div id="bannerApiKey" style="display:none;background:#FFF4E0;border:2px solid #FFDBA0;border-radius:14px;padding:14px;margin-bottom:10px">
-    <div style="font-size:13px;font-weight:900;color:var(--laranja);margin-bottom:6px">🔑 Configure sua chave API</div>
-    <div style="font-size:12px;color:var(--cinza-texto);font-weight:600;margin-bottom:10px;line-height:1.6">
-      Para usar o assistente, cole sua chave Anthropic abaixo.<br>
-      Obtenha grátis em <strong>console.anthropic.com</strong> → API Keys.
-    </div>
-    <input type="password" id="apiKeyBanner" placeholder="sk-ant-api03-..."
-      style="width:100%;padding:11px 12px;border:2px solid #FFDBA0;border-radius:10px;font-size:14px;font-family:Nunito,sans-serif;font-weight:600;margin-bottom:8px;background:white">
-    <button onclick="salvarApiKeyBanner()" style="width:100%;padding:12px;background:var(--laranja);color:white;border:none;border-radius:10px;font-size:14px;font-weight:900;cursor:pointer;font-family:Nunito,sans-serif">
-      Salvar e ativar ➜
-    </button>
-  </div>
-
   <div class="card">
-    <div class="card-titulo">🤖 Assistente de Saúde</div>
-    <div style="font-size:12px;color:var(--cinza-texto);font-weight:600;margin-bottom:12px">
-      Tire dúvidas sobre medicamentos, horários e efeitos colaterais. Não substitui seu médico.
-    </div>
+    <div class="card-titulo">🤖 PREV – Assistente de Saúde</div>
+    <div style="font-size:10px;color:var(--cinza-texto);font-weight:600;margin-bottom:9px">Tire dúvidas sobre medicamentos. Não substitui seu médico.</div>
     <div class="ia-chat" id="iaChat">
       <div class="msg ia">
-        <div class="msg-bubble">
-          Olá! 👋 Sou o assistente do PREVITA. Posso ajudar com dúvidas sobre remédios contínuos — horários ideais, para que serve cada medicamento, efeitos colaterais e dicas de adesão.<br><br>Como posso te ajudar hoje?
-        </div>
+        <div class="msg-bubble">Olá! 👋 Sou o PREV, assistente de saúde do PREVITA. Posso ajudar com dúvidas sobre remédios contínuos, horários, efeitos colaterais e dicas de adesão ao tratamento.<br><br>Como posso te ajudar?</div>
       </div>
     </div>
     <div class="ia-input-row">
@@ -643,1000 +252,480 @@
       <button class="btn-enviar" onclick="enviarIA()">➤</button>
     </div>
   </div>
-
-  <div class="card" style="background:var(--laranja-claro);border:2px solid #FFDBA0">
-    <div style="font-size:12px;font-weight:900;color:var(--laranja);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.4px">💡 Perguntas frequentes</div>
-    <div style="display:flex;flex-direction:column;gap:6px">
-      <button onclick="perguntaRapida('Pra que serve a Metformina?')" style="text-align:left;background:white;border:1px solid #FFDBA0;border-radius:10px;padding:9px 12px;font-size:13px;font-weight:700;cursor:pointer;font-family:Nunito,sans-serif;color:var(--texto)">💊 Pra que serve a Metformina?</button>
-      <button onclick="perguntaRapida('Posso tomar Losartana com Aspirina?')" style="text-align:left;background:white;border:1px solid #FFDBA0;border-radius:10px;padding:9px 12px;font-size:13px;font-weight:700;cursor:pointer;font-family:Nunito,sans-serif;color:var(--texto)">⚠️ Losartana com Aspirina?</button>
-      <button onclick="perguntaRapida('Qual o melhor horário para tomar remédio de pressão?')" style="text-align:left;background:white;border:1px solid #FFDBA0;border-radius:10px;padding:9px 12px;font-size:13px;font-weight:700;cursor:pointer;font-family:Nunito,sans-serif;color:var(--texto)">⏰ Horário ideal para pressão?</button>
-      <button onclick="perguntaRapida('Esqueci de tomar meu remédio hoje, o que faço?')" style="text-align:left;background:white;border:1px solid #FFDBA0;border-radius:10px;padding:9px 12px;font-size:13px;font-weight:700;cursor:pointer;font-family:Nunito,sans-serif;color:var(--texto)">❓ Esqueci o remédio, e agora?</button>
+  <div class="card" style="background:var(--laranja-claro);border:2px solid var(--laranja)">
+    <div style="font-size:11px;font-weight:800;color:var(--laranja);margin-bottom:7px">💡 Perguntas frequentes</div>
+    <div style="display:flex;flex-direction:column;gap:5px">
+      <button onclick="perguntaRapida('Pra que serve a Metformina?')" style="text-align:left;background:white;border:1px solid #fcd9b2;border-radius:8px;padding:7px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:Nunito,sans-serif">💊 Pra que serve a Metformina?</button>
+      <button onclick="perguntaRapida('Posso tomar Losartana com Aspirina?')" style="text-align:left;background:white;border:1px solid #fcd9b2;border-radius:8px;padding:7px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:Nunito,sans-serif">⚠️ Losartana com Aspirina?</button>
+      <button onclick="perguntaRapida('Qual o melhor horário para tomar remédio de pressão?')" style="text-align:left;background:white;border:1px solid #fcd9b2;border-radius:8px;padding:7px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:Nunito,sans-serif">⏰ Horário ideal para pressão?</button>
+      <button onclick="perguntaRapida('Esqueci de tomar meu remédio hoje, o que faço?')" style="text-align:left;background:white;border:1px solid #fcd9b2;border-radius:8px;padding:7px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:Nunito,sans-serif">❓ Esqueci o remédio, e agora?</button>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════ TELA: RECEITA ═══════════════ -->
-<div class="tela" id="tela-receita">
-  <div class="card">
-    <div class="card-titulo">📷 Ler Receita Médica</div>
-    <div style="font-size:12px;color:var(--cinza-texto);font-weight:600;margin-bottom:14px">
-      Tire foto da receita ou galeria — a IA identifica os medicamentos automaticamente.
-    </div>
-
-    <!-- Área de foto -->
-    <div id="receitaPreview" style="display:none;margin-bottom:12px">
-      <img id="receitaImg" style="width:100%;border-radius:12px;max-height:220px;object-fit:cover" alt="Receita">
-    </div>
-
-    <div style="display:flex;gap:8px;margin-bottom:12px">
-      <label style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:13px;background:var(--verde);color:white;border-radius:12px;font-size:14px;font-weight:800;cursor:pointer;font-family:Nunito,sans-serif">
-        📷 Câmera
-        <input type="file" accept="image/*" capture="environment" id="inputCamera" style="display:none" onchange="processarReceita(event)">
-      </label>
-      <label style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:13px;background:var(--roxo);color:white;border-radius:12px;font-size:14px;font-weight:800;cursor:pointer;font-family:Nunito,sans-serif">
-        🖼️ Galeria
-        <input type="file" accept="image/*" id="inputGaleria" style="display:none" onchange="processarReceita(event)">
-      </label>
-    </div>
-
-    <!-- Resultado -->
-    <div id="receitaResultado" style="display:none">
-      <div style="font-size:13px;font-weight:900;color:var(--verde);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.4px">📋 Medicamentos identificados</div>
-      <div id="receitaLista" style="margin-bottom:12px"></div>
-      <button class="btn-verde" onclick="adicionarDaReceita()">➕ Adicionar todos à lista</button>
-    </div>
-
-    <div id="receitaLoading" style="display:none;text-align:center;padding:20px">
-      <div style="font-size:28px;margin-bottom:8px">🔍</div>
-      <div style="font-size:13px;font-weight:700;color:var(--cinza-texto)">Analisando receita com IA...</div>
-      <div class="digitando" style="justify-content:center;margin-top:8px"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-    </div>
+<!-- FAMÍLIA -->
+<div class="tela" id="tela-membros">
+  <div class="card" style="background:linear-gradient(135deg,var(--verde),#145c38);color:white;border:none">
+    <div style="font-size:14px;font-weight:900;margin-bottom:3px">👨‍👩‍👧‍👦 Membros da Família</div>
+    <div style="font-size:10px;opacity:0.8;font-weight:600">Cada membro tem seus próprios remédios e alertas independentes.</div>
   </div>
-
-  <div class="card" style="background:var(--verde-claro);border:1px solid var(--verde-borda)">
-    <div style="font-size:12px;font-weight:800;color:var(--verde);margin-bottom:4px">💡 Dica</div>
-    <div style="font-size:12px;color:var(--cinza-texto);font-weight:600;line-height:1.6">
-      Segure a receita em uma superfície plana com boa iluminação. A IA lê o nome do medicamento, dosagem e instruções de uso.
-    </div>
+  <div id="listaMembros"></div>
+  <button class="btn-verde" onclick="abrirModalMembro()">➕ Adicionar Membro</button>
+  <div class="rodape">
+    Dados armazenados apenas neste dispositivo. LGPD – Lei 13.709/2018<br>
+    <strong>Desenvolvido por Wilson Foster</strong><br>
+    ACS – UBS São Pedro – Santana de Parnaíba – SP<br>
+    Foster Engenharia &amp; Desenvolvimento Digital
   </div>
 </div>
 
-<!-- ═══════════════ TELA: CONFIGURAÇÕES ═══════════════ -->
-<div class="tela" id="tela-config">
-  <div class="card">
-    <div class="card-titulo">♿ Acessibilidade</div>
-    <div class="toggle-row">
-      <div>
-        <div class="toggle-label">Modo alto contraste</div>
-        <div class="toggle-sub">Fonte maior, cores mais fortes</div>
-      </div>
-      <label class="switch">
-        <input type="checkbox" id="toggleContraste" onchange="toggleAltoContraste()">
-        <span class="slider"></span>
-      </label>
-    </div>
-    <div class="toggle-row">
-      <div>
-        <div class="toggle-label">Alertas sonoros</div>
-        <div class="toggle-sub">Melodia na hora do remédio</div>
-      </div>
-      <label class="switch">
-        <input type="checkbox" id="toggleSom" checked>
-        <span class="slider"></span>
-      </label>
-    </div>
-    <div class="toggle-row">
-      <div>
-        <div class="toggle-label">Vibração</div>
-        <div class="toggle-sub">Vibra junto com o alerta</div>
-      </div>
-      <label class="switch">
-        <input type="checkbox" id="toggleVibra" checked>
-        <span class="slider"></span>
-      </label>
-    </div>
-    <div class="toggle-row">
-      <div>
-        <div class="toggle-label">Perfil: <span id="perfilLabel" style="color:var(--verde)"></span></div>
-        <div class="toggle-sub">Nome e tipo de usuário</div>
-      </div>
-      <button onclick="resetarPerfil()" style="background:var(--cinza);border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:800;cursor:pointer;font-family:Nunito,sans-serif;color:var(--cinza-texto)">Alterar</button>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-titulo">🔑 Chave API (Assistente IA)</div>
-    <div style="font-size:12px;color:var(--cinza-texto);font-weight:600;margin-bottom:10px">
-      Necessária para o Assistente e leitura de receitas. Obtenha em <strong>console.anthropic.com</strong>
-    </div>
-    <div class="campo" style="margin-bottom:8px">
-      <input type="password" id="apiKeyInput" placeholder="sk-ant-..." style="font-size:13px"
-        value="" oninput="_persistApiKey(this.value.trim())">
-    </div>
-    <div id="apiKeyStatus" style="font-size:11px;font-weight:700;color:var(--cinza-texto)">
-      Nenhuma chave configurada
-    </div>
-  </div>
-
-  <div class="card">
-    <button class="btn-verde" onclick="exportarPDF()" style="margin-bottom:10px">
-      📄 Exportar Relatório PDF
-    </button>
-    <button onclick="limparDados()" style="width:100%;padding:12px;background:none;border:2px solid var(--perigo);border-radius:12px;font-size:14px;font-weight:800;color:var(--perigo);cursor:pointer;font-family:Nunito,sans-serif">
-      🗑️ Apagar todos os dados
-    </button>
-  </div>
-
-  <div class="card">
-    <div class="card-titulo">📲 Instalar App</div>
-    <div style="font-size:13px;color:var(--cinza-texto);font-weight:600;margin-bottom:12px">
-      Instale o PREVITA na sua tela inicial para receber alertas mesmo com a tela travada.
-    </div>
-    <button class="btn-verde" onclick="instalarPWA()">📲 Adicionar à Tela Inicial</button>
-  </div>
-
-  <div class="card" style="background:var(--verde-claro);border:1px solid var(--verde-borda)">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-      <svg width="32" height="32" viewBox="0 0 42 42" fill="none">
-        <rect width="42" height="42" rx="10" fill="#006B3F"/>
-        <path d="M21 7 L33 12.5 L33 22 Q33 31 21 36 Q9 31 9 22 L9 12.5 Z" fill="white"/>
-        <rect x="18.5" y="16" width="5" height="14" rx="1.5" fill="#006B3F"/>
-        <rect x="14" y="20.5" width="14" height="5" rx="1.5" fill="#006B3F"/>
-      </svg>
-      <div>
-        <div style="font-size:14px;font-weight:900;color:var(--verde)">PREVITA v2.0</div>
-        <div style="font-size:11px;color:var(--cinza-texto);font-weight:600">Prevenção + Vida</div>
-      </div>
-    </div>
-    <div style="font-size:11px;color:var(--cinza-texto);font-weight:600;line-height:1.7">
-      Desenvolvido por <strong style="color:var(--verde)">Wilson Foster</strong><br>
-      ACS Microárea 09 | UBS São Pedro<br>
-      Foster Engenharia & Construção<br>
-      Santana de Parnaíba – SP
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════ TABS ═══════════════ -->
+<!-- TABS -->
 <nav class="nav-tabs">
-  <button class="tab-btn ativa" onclick="irPara('remedios',this)">
-    <span class="icon">💊</span>Remédios
-  </button>
-  <button class="tab-btn" onclick="irPara('agenda',this)">
-    <span class="icon">📅</span>Agenda
-  </button>
-  <button class="tab-btn" onclick="irPara('ia',this)">
-    <span class="icon">🤖</span>Assistente
-  </button>
-  <button class="tab-btn" onclick="irPara('receita',this)">
-    <span class="icon">📷</span>Receita
-  </button>
-  <button class="tab-btn" onclick="irPara('config',this)">
-    <span class="icon">⚙️</span>Config
-  </button>
+  <button class="tab-btn ativa" onclick="irPara('remedios',this)"><span class="icon">💊</span>Remédios</button>
+  <button class="tab-btn" onclick="irPara('agenda',this)"><span class="icon">📅</span>Agenda</button>
+  <button class="tab-btn" onclick="irPara('receita',this)"><span class="icon">📋</span>Receita</button>
+  <button class="tab-btn" onclick="irPara('ia',this)"><span class="icon">🤖</span>PREV</button>
+  <button class="tab-btn" onclick="irPara('membros',this)"><span class="icon">👨‍👩‍👧</span>Família</button>
 </nav>
 
-<!-- ═══════════════ MODAL REMÉDIO ═══════════════ -->
+<!-- MODAL REMÉDIO -->
 <div class="modal-overlay" id="modalRemedio">
   <div class="modal" style="position:relative">
     <button class="modal-fechar" onclick="fecharModal()">✕</button>
     <h2>➕ Novo Remédio</h2>
-    <div class="campo">
-      <label>Nome do remédio *</label>
-      <input type="text" id="mNome" placeholder="Ex: Losartana 50mg">
-    </div>
-    <div class="campo">
-      <label>Dosagem</label>
-      <input type="text" id="mDose" placeholder="Ex: 1 comprimido">
-    </div>
-    <div class="campo">
-      <label>Horários de tomar</label>
-      <div class="horarios-grid" id="horariosGrid"></div>
-    </div>
-    <div class="campo">
-      <label>Observação (opcional)</label>
-      <input type="text" id="mObs" placeholder="Ex: Tomar com água, antes do café">
-    </div>
-    <button class="btn-verde" onclick="salvarRemedio()" style="margin-top:8px">💾 Salvar Remédio</button>
+    <div class="campo"><label>Nome *</label><input type="text" id="mNome" placeholder="Ex: Losartana 50mg"></div>
+    <div class="campo"><label>Dosagem</label><input type="text" id="mDose" placeholder="Ex: 1 comprimido"></div>
+    <div class="campo"><label>Horários</label><div class="horarios-grid" id="horariosGrid"></div></div>
+    <div class="campo"><label>Observação</label><input type="text" id="mObs" placeholder="Ex: Tomar com água"></div>
+    <button class="btn-verde" onclick="salvarRemedio()" style="margin-top:7px">💾 Salvar</button>
   </div>
 </div>
 
-<!-- ═══════════════ MODAL PACIENTE ═══════════════ -->
-<div class="modal-overlay" id="modalPaciente">
+<!-- MODAL MEMBRO -->
+<div class="modal-overlay" id="modalMembro">
   <div class="modal" style="position:relative">
-    <button class="modal-fechar" onclick="fecharModalPaciente()">✕</button>
-    <h2>👤 Novo Paciente</h2>
+    <button class="modal-fechar" onclick="fecharModalMembro()">✕</button>
+    <h2>👤 Novo Membro</h2>
+    <div class="campo"><label>Nome *</label><input type="text" id="mmNome" placeholder="Ex: Vovó Maria"></div>
     <div class="campo">
-      <label>Nome completo *</label>
-      <input type="text" id="pNome" placeholder="Ex: Maria das Graças">
+      <label>Ícone</label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:5px" id="iconeGrid"></div>
     </div>
-    <div class="campo">
-      <label>Endereço</label>
-      <input type="text" id="pEnd" placeholder="Ex: Rua das Flores, 42">
-    </div>
-    <div class="campo">
-      <label>Telefone</label>
-      <input type="text" id="pTel" placeholder="(11) 9 9999-9999">
-    </div>
-    <div class="campo">
-      <label>Condição de saúde principal</label>
-      <select id="pCondicao">
-        <option value="">Selecionar...</option>
-        <option>Hipertensão</option>
-        <option>Diabetes Tipo 2</option>
-        <option>Diabetes + Hipertensão</option>
-        <option>Hipotireoidismo</option>
-        <option>Doença Cardíaca</option>
-        <option>DPOC / Asma</option>
-        <option>Outra</option>
-      </select>
-    </div>
-    <div class="campo">
-      <label>Medicamentos em uso</label>
-      <input type="text" id="pMeds" placeholder="Ex: Losartana, Metformina">
-    </div>
-    <button class="btn-verde" onclick="salvarPaciente()" style="margin-top:8px">💾 Salvar Paciente</button>
+    <button class="btn-verde" onclick="salvarMembro()" style="margin-top:7px">💾 Salvar</button>
   </div>
 </div>
 
 <script>
-// ═══════════ BOAS-VINDAS ═══════════
-let nomeUsuario  = localStorage.getItem('pv_nome')   || '';
-let perfilUsuario = localStorage.getItem('pv_perfil') || '';
+const HORARIOS=['06:00','07:00','08:00','09:00','12:00','14:00','18:00','20:00','21:00','22:00'];
+const EMOJIS=['💊','🔵','🔴','🟡','🟢','🟠','⚪','🟣'];
+const CORES=['#e8f5ee','#e8f0ff','#ffe8e8','#fff8e1','#e8fff4','#fff3e8','#f5f5f5','#f3e8ff'];
+const API_URL='https://api.anthropic.com/v1/messages';
+const API_HEADERS={'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true'};
 
-function iniciarBoasVindas() {
-  if (!nomeUsuario) {
-    document.getElementById('boasVindas').classList.add('ativo');
-    setTimeout(() => document.getElementById('bvNome').focus(), 300);
-  } else {
-    aplicarPerfil();
-  }
+let membros=JSON.parse(localStorage.getItem('pv_membros')||'null');
+if(!membros){membros=[{id:1,nome:'Eu',icone:'👤'}];localStorage.setItem('pv_membros',JSON.stringify(membros));}
+
+let membroAtualId=parseInt(localStorage.getItem('pv_membro_atual')||membros[0].id);
+let membroAtual=membros.find(m=>m.id===membroAtualId)||membros[0];
+
+function chaveM(s){return 'pv_'+s+'_'+membroAtual.id;}
+function hoje(){return new Date().toISOString().split('T')[0];}
+
+let remedios=JSON.parse(localStorage.getItem(chaveM('remedios'))||'[]');
+let tomadosHoje=JSON.parse(localStorage.getItem(chaveM('tomados')+'_'+hoje())||'{}');
+let ultimosAlertas=JSON.parse(localStorage.getItem(chaveM('alertas')+'_'+hoje())||'{}');
+let receitaProcessada=[];
+let horasSel=[];
+let iconeSelMembro='👴';
+let deferredPrompt=null;
+let audioCtx=null;
+
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;});
+
+function trocarMembro(id){
+  membroAtualId=id;membroAtual=membros.find(m=>m.id===id);
+  localStorage.setItem('pv_membro_atual',id);
+  remedios=JSON.parse(localStorage.getItem(chaveM('remedios'))||'[]');
+  tomadosHoje=JSON.parse(localStorage.getItem(chaveM('tomados')+'_'+hoje())||'{}');
+  ultimosAlertas=JSON.parse(localStorage.getItem(chaveM('alertas')+'_'+hoje())||'{}');
+  atualizarHeader();renderRemedios();renderMembros();
+  mostrarToast('👤 '+membroAtual.nome+' selecionado!');
 }
 
-function salvarBoasVindas() {
-  const nome   = document.getElementById('bvNome').value.trim();
-  const perfil = document.getElementById('bvPerfil').value;
-  nomeUsuario  = nome || 'você';
-  perfilUsuario = perfil;
-  localStorage.setItem('pv_nome',   nomeUsuario);
-  localStorage.setItem('pv_perfil', perfilUsuario);
-  document.getElementById('boasVindas').classList.remove('ativo');
-  aplicarPerfil();
-  mostrarToast(`Olá, ${nomeUsuario}! 👋 Bem-vindo ao PREVITA`);
-}
-
-function resetarPerfil() {
-  localStorage.removeItem('pv_nome');
-  localStorage.removeItem('pv_perfil');
-  nomeUsuario = ''; perfilUsuario = '';
-  document.getElementById('boasVindas').classList.add('ativo');
-  document.getElementById('bvNome').value = '';
-  setTimeout(() => document.getElementById('bvNome').focus(), 300);
-}
-
-function aplicarPerfil() {
-  // Saudação personalizada no header
-  const saudacaoEl = document.getElementById('saudacaoNome');
-  if (saudacaoEl && nomeUsuario) saudacaoEl.textContent = `Olá, ${nomeUsuario.split(' ')[0]}! 👋`;
-
-  // Label perfil em Config
-  const perfilMap = { paciente: '👤 Paciente', cuidador: '🤝 Cuidador', acs: '🏥 ACS' };
-  const pl = document.getElementById('perfilLabel');
-  if (pl) pl.textContent = (perfilMap[perfilUsuario] || '—') + (nomeUsuario ? ` · ${nomeUsuario}` : '');
-
-  // Banner e painel cuidador
-  const ehCuidador = perfilUsuario === 'cuidador';
-  document.getElementById('cuidadorBanner').classList.toggle('ativo', ehCuidador);
-  document.getElementById('painelCuidador').style.display = ehCuidador ? 'block' : 'none';
-  if (ehCuidador) renderCuidador();
-}
-
-function renderCuidador() {
-  const div = document.getElementById('cuidadorStatus');
-  if (!remedios.length) {
-    div.innerHTML = '<div class="vazio" style="padding:12px">Cadastre remédios para monitorar.</div>';
-    return;
-  }
-  const now = new Date();
-  const agoraStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-  div.innerHTML = remedios.map(r => {
-    const tomados  = r.horarios.filter(h => tomadosHoje[r.id+'_'+h]).length;
-    const total    = r.horarios.length;
-    const pendente = r.horarios.find(h => h <= agoraStr && !tomadosHoje[r.id+'_'+h]);
-    const icon = tomados === total ? '✅' : pendente ? '⚠️' : '⏳';
-    const cor  = tomados === total ? 'var(--verde)' : pendente ? 'var(--laranja)' : 'var(--cinza-texto)';
-    return `<div class="cuidador-status-item">
-      <div style="font-size:22px">${icon}</div>
-      <div style="flex:1">
-        <div style="font-size:13px;font-weight:800">${r.nome}</div>
-        <div style="font-size:11px;color:var(--cinza-texto);font-weight:600">${tomados}/${total} dose${total>1?'s':''} tomada${total>1?'s':''}</div>
-      </div>
-      <div style="font-size:12px;font-weight:800;color:${cor}">${tomados}/${total}</div>
-    </div>`;
-  }).join('');
-}
-
-// ═══════════ DADOS ═══════════
-let remedios    = JSON.parse(localStorage.getItem('pv_remedios')  || '[]');
-let tomadosHoje = JSON.parse(localStorage.getItem('pv_tomados_'   + hoje()) || '{}');
-let pacientes   = JSON.parse(localStorage.getItem('pv_pacientes') || 'null');
-let ultimosAlertas = JSON.parse(localStorage.getItem('pv_alertas_' + hoje()) || '{}');
-let audioCtx    = null;
-let deferredPrompt = null;
-
-if (!pacientes) {
-  pacientes = [
-    { id:1, nome:'Dona Maria das Graças', end:'Rua Ipê Amarelo, 14', tel:'(11) 9 8765-4321', condicao:'Diabetes + Hipertensão', meds:'Losartana, Metformina, AAS' },
-    { id:2, nome:'Sr. José Antônio',       end:'Av. São Pedro, 78',   tel:'(11) 9 7654-3210', condicao:'Hipertensão',            meds:'Enalapril, Hidroclorotiazida' },
-    { id:3, nome:'Dona Conceição Lima',    end:'Rua das Palmeiras, 3',tel:'(11) 9 6543-2109', condicao:'Hipotireoidismo',        meds:'Levotiroxina' },
-  ];
-  localStorage.setItem('pv_pacientes', JSON.stringify(pacientes));
-}
-
-const HORARIOS = ['05:00','06:00','07:00','08:00','09:00','10:00','12:00','14:00','16:00','18:00','19:00','20:00','21:00','22:00'];
-const EMOJIS   = ['💊','🔵','🔴','🟡','🟢','🟠','⚪','🟣','🩵','🩶'];
-const CORES    = ['#E8F8F0','#E8F0FF','#FFE8E8','#FFF8E1','#E8FFF4','#FFF3E8','#F5F5F5','#F3E8FF','#E0F7FA','#F3F4F6'];
-
-window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt = e; });
-
-// preferências salvas
-if (localStorage.getItem('pv_alto_contraste') === '1') {
-  document.body.classList.add('alto-contraste');
-  document.getElementById('toggleContraste').checked = true;
-}
-
-function hoje() { return new Date().toISOString().split('T')[0]; }
-
-// ═══════════ NAVEGAÇÃO ═══════════
-function irPara(tela, btn) {
-  document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('ativa'));
-  document.getElementById('tela-' + tela).classList.add('ativa');
+function irPara(tela,btn){
+  document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('ativa'));
+  document.getElementById('tela-'+tela).classList.add('ativa');
   btn.classList.add('ativa');
-  if (tela === 'agenda') { renderAgenda(); renderAdesao(); }
-  if (tela === 'ia') verificarBannerApiKey();
+  if(tela==='agenda')renderAgenda();
+  if(tela==='membros')renderMembros();
 }
 
-// ═══════════ HEADER ═══════════
-function atualizarHeader() {
-  const now = new Date();
-  const dias   = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-  const meses  = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-  document.getElementById('headerData').innerHTML =
-    `${dias[now.getDay()]}, ${now.getDate()} ${meses[now.getMonth()]}<br>${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-
-  const agora = now.getHours() * 60 + now.getMinutes();
-  let proximos = [];
-  remedios.forEach(r => {
-    r.horarios.forEach(h => {
-      const [hh,mm] = h.split(':').map(Number);
-      if (hh * 60 + mm > agora) proximos.push({ label: h, rem: r.nome });
-    });
-  });
-  proximos.sort((a, b) => {
-    const [ah,am] = a.label.split(':').map(Number);
-    const [bh,bm] = b.label.split(':').map(Number);
-    return (ah*60+am) - (bh*60+bm);
-  });
-  document.getElementById('proximoLembrete').textContent =
-    proximos.length ? `${proximos[0].label} – ${proximos[0].rem}` : 'Tudo em dia! ✅';
-
-  const agoraStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-  let pendentes = 0;
-  remedios.forEach(r => {
-    r.horarios.forEach(h => {
-      if (h <= agoraStr && !tomadosHoje[r.id + '_' + h]) pendentes++;
-    });
-  });
-  document.getElementById('badgeHoje').textContent =
-    pendentes > 0 ? `${pendentes} pendente${pendentes > 1 ? 's' : ''}` : '✅ Em dia';
+function atualizarHeader(){
+  const now=new Date();
+  const dias=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  const meses=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  document.getElementById('headerData').innerHTML=`${dias[now.getDay()]}, ${now.getDate()} ${meses[now.getMonth()]}<br>${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+  document.getElementById('membroIconeHeader').textContent=membroAtual.icone||'👤';
+  document.getElementById('membroNomeHeader').textContent=membroAtual.nome;
+  let pendentes=0;
+  const agoraStr=`${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+  remedios.forEach(r=>r.horarios.forEach(h=>{if(h<=agoraStr&&!tomadosHoje[r.id+'_'+h])pendentes++;}));
+  document.getElementById('badgeHoje').textContent=pendentes>0?pendentes+'⚠️':'✅';
 }
 
-// ═══════════ REMÉDIOS ═══════════
-function renderRemedios() {
-  const lista = document.getElementById('listaRemedios');
-  if (!remedios.length) {
-    lista.innerHTML = '<div class="vazio">Nenhum remédio cadastrado ainda.<br>Adicione seu primeiro remédio abaixo! 👇</div>';
-  } else {
-    lista.innerHTML = remedios.map((r, i) => {
-      const tomadoAgora = r.horarios.filter(h => tomadosHoje[r.id + '_' + h]).length;
-      const tudo = tomadoAgora === r.horarios.length && r.horarios.length > 0;
-      return `
-      <div class="remedio-item">
-        <div class="remedio-cor" style="background:${CORES[i % CORES.length]}">${EMOJIS[i % EMOJIS.length]}</div>
+function renderRemedios(){
+  const lista=document.getElementById('listaRemedios');
+  if(!remedios.length){lista.innerHTML='<div class="vazio">Nenhum remédio cadastrado.<br>Adicione abaixo! 👇</div>';}
+  else{
+    lista.innerHTML=remedios.map((r,i)=>{
+      const tom=r.horarios.filter(h=>tomadosHoje[r.id+'_'+h]).length,total=r.horarios.length;
+      return `<div class="remedio-item">
+        <div class="remedio-cor" style="background:${CORES[i%CORES.length]}">${EMOJIS[i%EMOJIS.length]}</div>
         <div class="remedio-info">
           <div class="remedio-nome">${r.nome}</div>
-          <div class="remedio-dose">${r.dose || 'Sem dose definida'}${r.obs ? ' · ' + r.obs : ''}</div>
-          <div class="remedio-horarios">${r.horarios.map(h => `<span class="horario-badge">${h}</span>`).join('')}</div>
-          ${tomadoAgora > 0 ? `<div style="font-size:11px;color:var(--verde);font-weight:800;margin-top:4px">✅ ${tomadoAgora}/${r.horarios.length} tomado hoje</div>` : ''}
+          <div class="remedio-dose">${r.dose||'1 unidade'}${r.obs?' · '+r.obs:''}</div>
+          <div class="remedio-horarios">${r.horarios.map(h=>`<span class="horario-badge">${h}</span>`).join('')}</div>
+          ${tom>0?`<div style="font-size:9px;color:var(--verde);font-weight:700;margin-top:2px">✅ ${tom}/${total} hoje</div>`:''}
         </div>
-        <button class="check-btn ${tudo ? 'tomado' : ''}" onclick="marcarTodos(${r.id})" title="Marcar como tomado">
-          ${tudo ? '✓' : '○'}
-        </button>
+        <button class="check-btn ${tom===total&&total>0?'tomado':''}" onclick="marcarTodos(${r.id})">${tom===total&&total>0?'✓':'○'}</button>
       </div>`;
     }).join('');
   }
   atualizarStats();
-  if (perfilUsuario === 'cuidador') renderCuidador();
 }
 
-function marcarTodos(id) {
-  const r = remedios.find(x => x.id === id);
-  if (!r) return;
-  const todos = r.horarios.every(h => tomadosHoje[id + '_' + h]);
-  r.horarios.forEach(h => {
-    if (todos) delete tomadosHoje[id + '_' + h];
-    else tomadosHoje[id + '_' + h] = true;
-  });
-  localStorage.setItem('pv_tomados_' + hoje(), JSON.stringify(tomadosHoje));
-  renderRemedios();
-  atualizarHeader();
+function marcarTodos(id){
+  const r=remedios.find(x=>x.id===id);if(!r)return;
+  const todos=r.horarios.every(h=>tomadosHoje[id+'_'+h]);
+  r.horarios.forEach(h=>{if(todos)delete tomadosHoje[id+'_'+h];else tomadosHoje[id+'_'+h]=true;});
+  localStorage.setItem(chaveM('tomados')+'_'+hoje(),JSON.stringify(tomadosHoje));
+  renderRemedios();atualizarHeader();
 }
 
-function atualizarStats() {
-  let total = remedios.length, tomados = 0, pendentes = 0;
-  remedios.forEach(r => {
-    r.horarios.forEach(h => {
-      tomadosHoje[r.id + '_' + h] ? tomados++ : pendentes++;
-    });
-  });
-  document.getElementById('statTotal').textContent    = total;
-  document.getElementById('statTomados').textContent  = tomados;
-  document.getElementById('statPendentes').textContent = pendentes;
+function atualizarStats(){
+  let tom=0,pend=0;
+  remedios.forEach(r=>r.horarios.forEach(h=>{if(tomadosHoje[r.id+'_'+h])tom++;else pend++;}));
+  document.getElementById('statTotal').textContent=remedios.length;
+  document.getElementById('statTomados').textContent=tom;
+  document.getElementById('statPendentes').textContent=pend;
 }
 
-// ═══════════ MODAL REMÉDIO ═══════════
-let horasSel = [];
-function abrirModal() {
-  horasSel = [];
-  ['mNome','mDose','mObs'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('horariosGrid').innerHTML = HORARIOS.map(h =>
-    `<button class="horario-toggle" onclick="toggleHorario(this,'${h}')">${h}</button>`
-  ).join('');
+function abrirModal(){
+  horasSel=[];['mNome','mDose','mObs'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('horariosGrid').innerHTML=HORARIOS.map(h=>`<button class="horario-toggle" onclick="toggleHorario(this,'${h}')">${h}</button>`).join('');
   document.getElementById('modalRemedio').classList.add('aberto');
 }
-function fecharModal() { document.getElementById('modalRemedio').classList.remove('aberto'); }
-function toggleHorario(btn, h) {
-  if (horasSel.includes(h)) { horasSel = horasSel.filter(x => x !== h); btn.classList.remove('sel'); }
-  else { horasSel.push(h); btn.classList.add('sel'); }
+function fecharModal(){document.getElementById('modalRemedio').classList.remove('aberto');}
+function toggleHorario(btn,h){
+  if(horasSel.includes(h)){horasSel=horasSel.filter(x=>x!==h);btn.classList.remove('sel');}
+  else{horasSel.push(h);btn.classList.add('sel');}
 }
-function salvarRemedio() {
-  const nome = document.getElementById('mNome').value.trim();
-  if (!nome) { alert('Digite o nome do remédio!'); return; }
-  if (!horasSel.length) { alert('Selecione pelo menos um horário!'); return; }
-  remedios.push({
-    id: Date.now(), nome,
-    dose: document.getElementById('mDose').value.trim(),
-    horarios: horasSel.sort(),
-    obs: document.getElementById('mObs').value.trim(),
-  });
-  localStorage.setItem('pv_remedios', JSON.stringify(remedios));
-  fecharModal();
-  renderRemedios();
-  atualizarHeader();
-  mostrarToast('✅ Remédio cadastrado com sucesso!');
+function salvarRemedio(){
+  const nome=document.getElementById('mNome').value.trim();
+  if(!nome){alert('Digite o nome!');return;}
+  if(!horasSel.length){alert('Selecione um horário!');return;}
+  remedios.push({id:Date.now(),nome,dose:document.getElementById('mDose').value.trim(),horarios:horasSel.sort(),obs:document.getElementById('mObs').value.trim()});
+  localStorage.setItem(chaveM('remedios'),JSON.stringify(remedios));
+  fecharModal();renderRemedios();atualizarHeader();mostrarToast('✅ Remédio adicionado!');
 }
 
-// ═══════════ AGENDA ═══════════
-function renderAgenda() {
-  const now = new Date();
-  const agoraStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-  let itens = [];
-  remedios.forEach(r => {
-    r.horarios.forEach(h => itens.push({ hora: h, nome: r.nome, dose: r.dose, id: r.id, key: r.id + '_' + h }));
-  });
-  itens.sort((a, b) => a.hora.localeCompare(b.hora));
-
-  const div = document.getElementById('agendaHoje');
-  if (!itens.length) {
-    div.innerHTML = '<div class="vazio">Sem remédios agendados.<br>Cadastre na aba 💊</div>';
-  } else {
-    div.innerHTML = itens.map(it => {
-      const tomado  = tomadosHoje[it.key];
-      const passado = it.hora <= agoraStr;
-      return `
-      <div class="agenda-item" style="${tomado ? 'opacity:0.55' : ''}">
-        <div class="agenda-hora" style="${passado && !tomado ? 'color:var(--perigo)' : ''}">${it.hora}</div>
-        <div class="agenda-info">
-          <div class="agenda-nome">${it.nome}</div>
-          <div class="agenda-dose">${it.dose || '1 unidade'}</div>
-        </div>
-        <div class="agenda-status" onclick="marcarItem('${it.key}')">
-          ${tomado ? '✅' : passado ? '❌' : '⏳'}
-        </div>
-      </div>`;
-    }).join('');
-  }
-
-  const total = itens.length;
-  const tom   = itens.filter(i => tomadosHoje[i.key]).length;
-  document.getElementById('progrTexto').textContent = `${tom} / ${total}`;
-  document.getElementById('progrBar').style.width   = total ? `${Math.round(tom/total*100)}%` : '0%';
-  document.getElementById('progrMsg').textContent   =
-    total === 0 ? 'Cadastre seus remédios!' :
-    tom === total ? '🎉 Todos os remédios tomados hoje!' :
-    tom === 0 ? '💪 Vamos começar o dia!' :
-    `Faltam ${total - tom} dose${total - tom > 1 ? 's' : ''} para completar`;
-}
-
-function marcarItem(key) {
-  tomadosHoje[key] ? delete tomadosHoje[key] : (tomadosHoje[key] = true);
-  localStorage.setItem('pv_tomados_' + hoje(), JSON.stringify(tomadosHoje));
-  renderAgenda();
-  renderRemedios();
-  atualizarHeader();
-}
-
-// ═══════════ ADESÃO 14 DIAS ═══════════
-function renderAdesao() {
-  const grid  = document.getElementById('adesaoGrid');
-  const hoje_ = new Date();
-  let html = '';
-  for (let i = 13; i >= 0; i--) {
-    const d = new Date(hoje_);
-    d.setDate(d.getDate() - i);
-    const key = d.toISOString().split('T')[0];
-    const num = d.getDate();
-    const futuro = i < 0;
-    let cls = 'futuro';
-    if (i === 0) {
-      // hoje
-      const tom_h = JSON.parse(localStorage.getItem('pv_tomados_' + key) || '{}');
-      let total = 0, tom = 0;
-      remedios.forEach(r => r.horarios.forEach(h => { total++; if (tom_h[r.id+'_'+h]) tom++; }));
-      cls = total === 0 ? 'futuro' : tom === total ? 'ok' : tom > 0 ? 'parcial' : 'faltou';
-      cls += ' hoje';
-    } else if (i > 0) {
-      const tom_h = JSON.parse(localStorage.getItem('pv_tomados_' + key) || '{}');
-      let total = 0, tom = 0;
-      remedios.forEach(r => r.horarios.forEach(h => { total++; if (tom_h[r.id+'_'+h]) tom++; }));
-      cls = total === 0 ? 'futuro' : tom === total ? 'ok' : tom > 0 ? 'parcial' : 'faltou';
-    }
-    const icon = cls.includes('ok') ? '✓' : cls.includes('parcial') ? '~' : cls.includes('faltou') ? '✗' : '';
-    html += `<div class="adesao-dia ${cls}"><div class="dia-num">${num}</div><div>${icon}</div></div>`;
-  }
-  grid.innerHTML = html;
-}
-
-// ═══════════ PACIENTES ═══════════
-function renderPacientes() {
-  const div = document.getElementById('listaPacientes');
-  div.innerHTML = pacientes.map(p => {
-    const cond = p.condicao || 'Geral';
-    const isComplexo = cond.includes('+');
-    return `
-    <div class="paciente-card">
-      <div class="paciente-avatar">👤</div>
-      <div class="paciente-info">
-        <div class="paciente-nome">${p.nome}</div>
-        <div class="paciente-end">📍 ${p.end || 'Endereço não informado'}</div>
-        <div class="paciente-meds">💊 ${p.meds || 'Sem medicamentos cadastrados'}</div>
-      </div>
-      <div>
-        <div class="${isComplexo ? 'badge-roxo' : 'badge-micro'}">${cond.split(' ')[0]}</div>
-      </div>
+function renderAgenda(){
+  const now=new Date();
+  const agoraStr=`${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+  let itens=[];
+  remedios.forEach(r=>r.horarios.forEach(h=>itens.push({hora:h,nome:r.nome,dose:r.dose,id:r.id,key:r.id+'_'+h})));
+  itens.sort((a,b)=>a.hora.localeCompare(b.hora));
+  const div=document.getElementById('agendaHoje');
+  div.innerHTML=itens.length?itens.map(it=>{
+    const tomado=tomadosHoje[it.key],passado=it.hora<=agoraStr;
+    return `<div class="agenda-item" style="${tomado?'opacity:0.55':''}">
+      <div class="agenda-hora" style="${passado&&!tomado?'color:#ef4444':''}">${it.hora}</div>
+      <div class="agenda-info"><div class="agenda-nome">${it.nome}</div><div class="agenda-dose">${it.dose||'1 unidade'}</div></div>
+      <div style="font-size:19px;cursor:pointer" onclick="marcarItem('${it.key}')">${tomado?'✅':passado?'❌':'⏳'}</div>
     </div>`;
-  }).join('');
-  document.getElementById('totalPacientes').textContent = pacientes.length;
+  }).join(''):'<div class="vazio">Sem remédios agendados.</div>';
+  const total=itens.length,tom=itens.filter(i=>tomadosHoje[i.key]).length;
+  document.getElementById('progrTexto').textContent=`${tom} / ${total}`;
+  document.getElementById('progrBar').style.width=total?`${Math.round(tom/total*100)}%`:'0%';
+  document.getElementById('progrMsg').textContent=total===0?'Cadastre seus remédios!':tom===total?'🎉 Todos os remédios tomados!':tom===0?'💪 Vamos começar!':'Faltam '+(total-tom)+' dose'+(total-tom>1?'s':'');
 }
 
-function abrirModalPaciente() {
-  ['pNome','pEnd','pTel','pMeds'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('pCondicao').value = '';
-  document.getElementById('modalPaciente').classList.add('aberto');
-}
-function fecharModalPaciente() { document.getElementById('modalPaciente').classList.remove('aberto'); }
-function salvarPaciente() {
-  const nome = document.getElementById('pNome').value.trim();
-  if (!nome) { alert('Digite o nome do paciente!'); return; }
-  pacientes.push({
-    id: Date.now(), nome,
-    end:      document.getElementById('pEnd').value.trim(),
-    tel:      document.getElementById('pTel').value.trim(),
-    condicao: document.getElementById('pCondicao').value,
-    meds:     document.getElementById('pMeds').value.trim(),
-  });
-  localStorage.setItem('pv_pacientes', JSON.stringify(pacientes));
-  fecharModalPaciente();
-  renderPacientes();
-  mostrarToast('✅ Paciente cadastrado!');
+function marcarItem(key){
+  if(tomadosHoje[key])delete tomadosHoje[key];else tomadosHoje[key]=true;
+  localStorage.setItem(chaveM('tomados')+'_'+hoje(),JSON.stringify(tomadosHoje));
+  renderAgenda();renderRemedios();atualizarHeader();
 }
 
-// ═══════════ ASSISTENTE IA ═══════════
-async function enviarIA() {
-  const input = document.getElementById('iaInput');
-  const msg = input.value.trim();
-  if (!msg) return;
-  input.value = '';
+function renderMembros(){
+  document.getElementById('listaMembros').innerHTML=membros.map(m=>`
+    <div class="membro-card ${m.id===membroAtualId?'ativo':''}" onclick="trocarMembro(${m.id})">
+      <div class="membro-avatar" style="background:${m.id===membroAtualId?'var(--verde)':'var(--verde-claro)'};color:${m.id===membroAtualId?'white':'inherit'}">${m.icone||'👤'}</div>
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:800">${m.nome}</div>
+        <div style="font-size:10px;color:var(--cinza-texto);font-weight:600">${(JSON.parse(localStorage.getItem('pv_remedios_'+m.id)||'[]')).length} remédio(s)</div>
+      </div>
+      ${m.id===membroAtualId?'<div style="font-size:10px;font-weight:800;color:var(--verde)">✅ ATIVO</div>':''}
+    </div>`).join('');
+}
 
-  const chat = document.getElementById('iaChat');
-  chat.innerHTML += `<div class="msg user"><div class="msg-bubble">${msg}</div></div>`;
+function abrirModalMembro(){
+  document.getElementById('mmNome').value='';
+  iconeSelMembro='👴';
+  const icones=['👴','👵','👨','👩','👦','👧','🧑','👶'];
+  document.getElementById('iconeGrid').innerHTML=icones.map(ic=>`<span style="font-size:26px;cursor:pointer;padding:4px;border-radius:7px;border:2px solid transparent" id="ic_${ic.codePointAt(0)}" onclick="selecionarIcone('${ic}')">${ic}</span>`).join('');
+  document.getElementById('modalMembro').classList.add('aberto');
+}
+function fecharModalMembro(){document.getElementById('modalMembro').classList.remove('aberto');}
+function selecionarIcone(ic){
+  iconeSelMembro=ic;
+  document.querySelectorAll('#iconeGrid span').forEach(el=>el.style.border='2px solid transparent');
+  const el=document.getElementById('ic_'+ic.codePointAt(0));
+  if(el)el.style.border='2px solid var(--verde)';
+}
+function salvarMembro(){
+  const nome=document.getElementById('mmNome').value.trim();
+  if(!nome){alert('Digite o nome!');return;}
+  membros.push({id:Date.now(),nome,icone:iconeSelMembro});
+  localStorage.setItem('pv_membros',JSON.stringify(membros));
+  fecharModalMembro();renderMembros();mostrarToast('👤 '+nome+' adicionado!');
+}
 
-  const typing = document.createElement('div');
-  typing.className = 'msg ia';
-  typing.innerHTML = `<div class="msg-bubble digitando"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
-  chat.appendChild(typing);
-  chat.scrollTop = chat.scrollHeight;
-
+// ========== CHAMADA API CENTRAL ==========
+async function chamarAPI(system,userContent){
+  const body={model:'claude-sonnet-4-6',max_tokens:1000,system,messages:[{role:'user',content:userContent}]};
+  let resp;
   try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': getApiKey(),
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1000,
-        system: `Você é um assistente de saúde do app PREVITA, criado por Wilson Foster, ACS da UBS São Pedro, microárea 09, Santana de Parnaíba – SP.
-Responda em português brasileiro, de forma clara, acolhedora e acessível para pessoas de todas as idades e escolaridades.
-Fale sobre: para que serve cada medicamento, horários ideais, efeitos colaterais comuns, interações simples, dicas de adesão.
-SEMPRE finalize lembrando que o usuário deve consultar médico ou farmacêutico para orientações personalizadas.
-Nunca prescreva medicamentos, nunca diga doses específicas.`,
-        messages: [{ role: 'user', content: msg }]
-      })
-    });
-    const data = await resp.json();
-    if (data.error) throw new Error(data.error.message);
-    const texto = data.content?.[0]?.text || 'Não consegui responder agora. Tente novamente!';
-    typing.remove();
-    chat.innerHTML += `<div class="msg ia"><div class="msg-bubble">${texto.replace(/\n/g,'<br>')}</div></div>`;
-  } catch(e) {
-    typing.remove();
-    const errMsg = e.message?.includes('API') ? '🔑 API não configurada. Veja as instruções em Configurações.' : '⚠️ Sem conexão. Verifique sua internet e tente novamente.';
-    chat.innerHTML += `<div class="msg ia"><div class="msg-bubble">${errMsg}</div></div>`;
+    resp=await fetch(API_URL,{method:'POST',headers:API_HEADERS,body:JSON.stringify(body)});
+  } catch(err) {
+    throw new Error('Sem conexão com a internet ou bloqueio de rede. Verifique sua conexão.');
   }
-  chat.scrollTop = chat.scrollHeight;
-}
-
-function perguntaRapida(txt) {
-  document.getElementById('iaInput').value = txt;
-  enviarIA();
-}
-
-// ═══════════ API KEY ═══════════
-function getApiKey() { return localStorage.getItem('pv_apikey') || ''; }
-
-function salvarApiKey() {
-  const val = document.getElementById('apiKeyInput')?.value.trim() || '';
-  _persistApiKey(val);
-}
-
-function salvarApiKeyBanner() {
-  const val = document.getElementById('apiKeyBanner').value.trim();
-  if (!val.startsWith('sk-ant-')) {
-    mostrarToast('⚠️ Chave inválida. Deve começar com sk-ant-');
-    return;
+  if(!resp.ok){
+    let err='';
+    try{err=await resp.text();}catch(e){}
+    if(resp.status===401)throw new Error('Chave de API inválida (401).');
+    if(resp.status===429)throw new Error('Muitas requisições. Aguarde um momento.');
+    throw new Error('Erro '+resp.status+': '+err.substring(0,100));
   }
-  _persistApiKey(val);
-  document.getElementById('bannerApiKey').style.display = 'none';
-  mostrarToast('✅ Chave salva! Assistente ativado.');
+  const data=await resp.json();
+  return (data.content&&data.content[0]&&data.content[0].text)||'';
 }
 
-function _persistApiKey(val) {
-  localStorage.setItem('pv_apikey', val);
-  // Sincroniza campo em Config se existir
-  const inp = document.getElementById('apiKeyInput');
-  if (inp) inp.value = val;
-  const el = document.getElementById('apiKeyStatus');
-  if (el) {
-    if (val.startsWith('sk-ant-')) {
-      el.textContent = '✅ Chave configurada e ativa';
-      el.style.color = 'var(--verde)';
-    } else if (val) {
-      el.textContent = '⚠️ Formato inválido (deve começar com sk-ant-)';
-      el.style.color = 'var(--laranja)';
-    } else {
-      el.textContent = 'Nenhuma chave configurada';
-      el.style.color = 'var(--cinza-texto)';
-    }
-  }
-}
-
-function iniciarApiKeyUI() {
-  const key = getApiKey();
-  const inp = document.getElementById('apiKeyInput');
-  if (inp && key) { inp.value = key; }
-  _persistApiKey(key);
-  // Mostra banner na tela IA se não tiver chave
-  verificarBannerApiKey();
-}
-
-function verificarBannerApiKey() {
-  const banner = document.getElementById('bannerApiKey');
-  if (banner) banner.style.display = getApiKey() ? 'none' : 'block';
-}
-
-// ═══════════ RECEITA ═══════════
-let receitaMedicamentos = [];
-
-async function processarReceita(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  const apiKey = getApiKey();
-  if (!apiKey) {
-    alert('Configure sua chave API em Configurações primeiro!');
-    return;
-  }
-
-  // Mostrar preview
-  const reader = new FileReader();
-  reader.onload = async (e) => {
-    const base64 = e.target.result.split(',')[1];
-    const mediaType = file.type || 'image/jpeg';
-
-    document.getElementById('receitaPreview').style.display = 'block';
-    document.getElementById('receitaImg').src = e.target.result;
-    document.getElementById('receitaLoading').style.display = 'block';
-    document.getElementById('receitaResultado').style.display = 'none';
-
-    try {
-      const resp = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true'
-        },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-6',
-          max_tokens: 1000,
-          messages: [{
-            role: 'user',
-            content: [
-              { type: 'image', source: { type: 'base64', media_type: mediaType, data: base64 } },
-              { type: 'text', text: `Analise esta receita médica e extraia os medicamentos. Responda APENAS em JSON puro sem markdown, no formato:
-{"medicamentos":[{"nome":"Nome do remédio com dosagem","dose":"posologia/instruções de uso","horarios":["08:00"]}]}
-Se não conseguir identificar nenhum medicamento, retorne: {"medicamentos":[]}
-Inclua o horário mais adequado baseado na posologia (manhã=07:00, almoço=12:00, noite=20:00, etc).` }
-            ]
-          }]
-        })
-      });
-      const data = await resp.json();
-      if (data.error) throw new Error(data.error.message);
-      const texto = data.content?.[0]?.text || '{}';
-      const parsed = JSON.parse(texto.replace(/```json|```/g, '').trim());
-      receitaMedicamentos = parsed.medicamentos || [];
-      mostrarResultadoReceita();
-    } catch(e) {
-      document.getElementById('receitaLoading').style.display = 'none';
-      mostrarToast('❌ Erro ao analisar receita. Tente novamente.');
+// ========== RECEITA FOTO ==========
+async function processarFoto(input){
+  const file=input.files[0];if(!file)return;
+  const preview=document.getElementById('fotoPreview');
+  const reader=new FileReader();
+  reader.onload=async(e)=>{
+    preview.src=e.target.result;preview.style.display='block';
+    document.getElementById('fotoStatus').style.display='block';
+    document.getElementById('fotoStatus').textContent='⏳ Lendo receita com IA...';
+    try{
+      const base64=e.target.result.split(',')[1];
+      const mediaType=file.type||'image/jpeg';
+      const body={
+        model:'claude-sonnet-4-6',max_tokens:1000,
+        system:`Você é um assistente farmacêutico do PREVITA. Analise a imagem da receita médica e retorne SOMENTE JSON válido:
+[{"nome":"Nome","dose":"1 comprimido","horarios":["08:00"],"obs":"dica curta"}]
+- Extraia TODOS os medicamentos visíveis na receita
+- Define horários ideais para cada um
+- Retorne APENAS o JSON array, sem texto extra`,
+        messages:[{role:'user',content:[
+          {type:'image',source:{type:'base64',media_type:mediaType,data:base64}},
+          {type:'text',text:'Leia todos os medicamentos desta receita médica e retorne o JSON.'}
+        ]}]
+      };
+      const resp=await fetch(API_URL,{method:'POST',headers:API_HEADERS,body:JSON.stringify(body)});
+      if(!resp.ok)throw new Error('API '+resp.status);
+      const data=await resp.json();
+      const txt=(data.content&&data.content[0]&&data.content[0].text)||'[]';
+      receitaProcessada=JSON.parse(txt.replace(/```json|```/g,'').trim());
+      document.getElementById('fotoStatus').textContent='✅ '+receitaProcessada.length+' remédio(s) identificado(s)!';
+      renderReceitaResultado();
+    }catch(e){
+      document.getElementById('fotoStatus').textContent='❌ Erro ao ler foto. Tente digitar os remédios abaixo.';
+      document.getElementById('fotoStatus').style.color='#ef4444';
+      setTimeout(()=>{document.getElementById('fotoStatus').style.display='none';document.getElementById('fotoStatus').style.color='var(--verde)';},5000);
     }
   };
   reader.readAsDataURL(file);
 }
 
-function mostrarResultadoReceita() {
-  document.getElementById('receitaLoading').style.display = 'none';
-  const div = document.getElementById('receitaLista');
-  if (!receitaMedicamentos.length) {
-    div.innerHTML = '<div class="vazio" style="padding:12px">Nenhum medicamento identificado.<br>Tente uma foto com mais luz.</div>';
-    document.getElementById('receitaResultado').style.display = 'block';
-    return;
+// ========== RECEITA TEXTO ==========
+async function processarReceita(){
+  const texto=document.getElementById('receitaTexto').value.trim();
+  if(!texto){alert('Cole os remédios primeiro!');return;}
+  document.getElementById('receitaStatus').style.display='block';
+  document.getElementById('receitaResultado').style.display='none';
+  document.getElementById('btnProcessar').disabled=true;
+  try{
+    const txt=await chamarAPI(
+      `Você é assistente farmacêutico do PREVITA. Analise e retorne SOMENTE JSON:
+[{"nome":"Nome","dose":"1 comprimido","horarios":["08:00"],"obs":"dica"}]
+Retorne APENAS o JSON array.`,
+      'Medicamentos:\n'+texto
+    );
+    receitaProcessada=JSON.parse(txt.replace(/```json|```/g,'').trim());
+    document.getElementById('receitaStatus').style.display='none';
+    document.getElementById('btnProcessar').disabled=false;
+    renderReceitaResultado();
+  }catch(e){
+    document.getElementById('receitaStatus').textContent='❌ Erro: '+e.message;
+    document.getElementById('receitaStatus').style.color='#ef4444';
+    document.getElementById('btnProcessar').disabled=false;
+    setTimeout(()=>{document.getElementById('receitaStatus').style.display='none';document.getElementById('receitaStatus').style.color='var(--verde)';document.getElementById('receitaStatus').textContent='⏳ Processando com IA...';},5000);
   }
-  div.innerHTML = receitaMedicamentos.map((m, i) => `
-    <div style="background:var(--cinza);border-radius:10px;padding:10px 12px;margin-bottom:7px;display:flex;align-items:center;gap:10px">
-      <div style="font-size:20px">${EMOJIS[i % EMOJIS.length]}</div>
+}
+
+function renderReceitaResultado(){
+  if(!receitaProcessada.length)return;
+  document.getElementById('receitaLista').innerHTML=receitaProcessada.map((r,i)=>`
+    <div style="padding:9px 0;border-bottom:1px solid var(--cinza);display:flex;align-items:center;gap:9px">
+      <div style="font-size:20px">${['💊','🔵','🔴','🟡','🟢','🟠'][i%6]}</div>
       <div style="flex:1">
-        <div style="font-size:13px;font-weight:800">${m.nome}</div>
-        <div style="font-size:11px;color:var(--cinza-texto);font-weight:600">${m.dose || '—'}</div>
-        <div style="font-size:11px;color:var(--verde);font-weight:700;margin-top:2px">${(m.horarios||[]).join(', ')}</div>
+        <div style="font-size:12px;font-weight:800">${r.nome}</div>
+        <div style="font-size:10px;color:var(--cinza-texto);font-weight:600">${r.dose}${r.obs?' · '+r.obs:''}</div>
+        <div style="display:flex;gap:3px;margin-top:2px;flex-wrap:wrap">${r.horarios.map(h=>`<span class="horario-badge">${h}</span>`).join('')}</div>
       </div>
+      <input type="checkbox" checked style="width:17px;height:17px;accent-color:var(--verde)" id="sel_${i}">
     </div>`).join('');
-  document.getElementById('receitaResultado').style.display = 'block';
+  document.getElementById('receitaResultado').style.display='block';
 }
 
-function adicionarDaReceita() {
-  if (!receitaMedicamentos.length) return;
-  receitaMedicamentos.forEach(m => {
-    remedios.push({
-      id: Date.now() + Math.random(),
-      nome: m.nome,
-      dose: m.dose || '',
-      horarios: m.horarios || ['08:00'],
-      obs: 'Adicionado via receita',
-    });
+function importarSelecionados(){
+  let imp=0;
+  receitaProcessada.forEach((r,i)=>{
+    const cb=document.getElementById('sel_'+i);
+    if(cb&&cb.checked&&!remedios.find(x=>x.nome.toLowerCase()===r.nome.toLowerCase())){
+      remedios.push({id:Date.now()+i,nome:r.nome,dose:r.dose,horarios:r.horarios,obs:r.obs||''});imp++;
+    }
   });
-  localStorage.setItem('pv_remedios', JSON.stringify(remedios));
-  renderRemedios();
-  atualizarHeader();
-  mostrarToast(`✅ ${receitaMedicamentos.length} remédio(s) adicionado(s)!`);
-  irPara('remedios', document.querySelector('.tab-btn'));
-  document.querySelector('.tab-btn').classList.add('ativa');
+  localStorage.setItem(chaveM('remedios'),JSON.stringify(remedios));
+  renderRemedios();atualizarHeader();
+  mostrarToast('✅ '+imp+' remédio'+(imp!==1?'s':'')+' importado'+(imp!==1?'s':'')+'!');
+  limparReceita();
+  irPara('remedios',document.querySelectorAll('.tab-btn')[0]);
 }
 
-// ═══════════ CONFIGURAÇÕES ═══════════
-function toggleAltoContraste() {
-  const on = document.getElementById('toggleContraste').checked;
-  document.body.classList.toggle('alto-contraste', on);
-  localStorage.setItem('pv_alto_contraste', on ? '1' : '0');
+function limparReceita(){
+  receitaProcessada=[];
+  document.getElementById('receitaTexto').value='';
+  document.getElementById('receitaResultado').style.display='none';
+  const p=document.getElementById('fotoPreview');p.style.display='none';p.src='';
+  document.getElementById('fotoStatus').style.display='none';
+  document.getElementById('fotoInput').value='';
 }
 
-function limparDados() {
-  if (!confirm('Apagar todos os remédios e dados? Esta ação não pode ser desfeita.')) return;
-  localStorage.clear();
-  location.reload();
-}
-
-function exportarPDF() {
-  const agora = new Date();
-  const linhas = remedios.map(r => `
-    <tr>
-      <td>${r.nome}</td>
-      <td>${r.dose || '—'}</td>
-      <td>${r.horarios.join(', ')}</td>
-      <td>${r.obs || '—'}</td>
-    </tr>`).join('');
-
-  const html = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">
-  <title>Relatório PREVITA</title>
-  <style>
-    body{font-family:Arial,sans-serif;padding:24px;color:#1a1e2b;font-size:13px}
-    h1{color:#006B3F;font-size:20px;margin-bottom:4px}
-    h2{color:#444;font-size:13px;margin-bottom:16px;font-weight:normal}
-    table{width:100%;border-collapse:collapse;margin-top:12px}
-    th{background:#006B3F;color:white;padding:8px 10px;text-align:left;font-size:12px}
-    td{padding:8px 10px;border-bottom:1px solid #e5e7eb;font-size:12px}
-    tr:nth-child(even) td{background:#f4f6f5}
-    .rodape{margin-top:24px;font-size:10px;color:#9ca3af;text-align:center}
-  </style></head><body>
-  <h1>PREVITA – Relatório de Medicamentos</h1>
-  <h2>Gerado em ${agora.toLocaleDateString('pt-BR')} às ${agora.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'})}</h2>
-  <table>
-    <thead><tr><th>Medicamento</th><th>Dosagem</th><th>Horários</th><th>Observação</th></tr></thead>
-    <tbody>${linhas || '<tr><td colspan="4" style="text-align:center;color:#9ca3af">Nenhum remédio cadastrado</td></tr>'}</tbody>
-  </table>
-  <div class="rodape">
-    Wilson Foster | ACS Microárea 09 | UBS São Pedro | Santana de Parnaíba – SP<br>
-    ⚠️ Este relatório é informativo. Consulte sempre seu médico ou farmacêutico.
-  </div>
-  </body></html>`;
-
-  const blob = new Blob([html], { type: 'text/html' });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
-  a.href = url; a.download = `PREVITA_relatorio_${hoje()}.html`;
-  a.click();
-  URL.revokeObjectURL(url);
-  mostrarToast('📄 Relatório gerado!');
-}
-
-// ═══════════ PWA ═══════════
-function instalarPWA() {
-  if (deferredPrompt) {
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(() => { deferredPrompt = null; });
-  } else {
-    alert('Para instalar:\n\n📱 Chrome/Android: Menu ⋮ → "Adicionar à tela inicial"\n\n🍎 Safari/iPhone: Botão Compartilhar → "Adicionar à Tela de Início"');
+// ========== ASSISTENTE IA ==========
+async function enviarIA(){
+  const input=document.getElementById('iaInput');
+  const msg=input.value.trim();if(!msg)return;
+  input.value='';
+  const chat=document.getElementById('iaChat');
+  chat.innerHTML+=`<div class="msg user"><div class="msg-bubble">${msg}</div></div>`;
+  const typing=document.createElement('div');
+  typing.className='msg ia';
+  typing.innerHTML='<div class="msg-bubble digitando"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
+  chat.appendChild(typing);chat.scrollTop=chat.scrollHeight;
+  try{
+    const texto=await chamarAPI(
+      `Você é assistente de saúde do PREVITA, criado por Wilson Foster, ACS da UBS São Pedro, microárea 09, Santana de Parnaíba-SP. Responda em português claro e acolhedor para todas as idades. Fale sobre: para que serve o medicamento, horários ideais, efeitos colaterais comuns, interações simples, dicas de adesão. SEMPRE oriente a consultar médico ou farmacêutico. Nunca prescreva doses ou substitua consulta médica.`,
+      msg
+    );
+    typing.remove();
+    chat.innerHTML+=`<div class="msg ia"><div class="msg-bubble">${texto.replace(/\n/g,'<br>')}</div></div>`;
+  }catch(e){
+    typing.remove();
+    chat.innerHTML+=`<div class="msg ia"><div class="msg-bubble">⚠️ Não foi possível conectar ao assistente. Verifique sua internet e tente novamente.<br><small style="color:#9ca3af">Erro: ${e.message}</small></div></div>`;
   }
+  chat.scrollTop=chat.scrollHeight;
 }
 
-// ═══════════ ÁUDIO / ALERTAS ═══════════
-function getAudioCtx() {
-  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  return audioCtx;
-}
+function perguntaRapida(txt){document.getElementById('iaInput').value=txt;enviarIA();}
 
-function tocarMelodia() {
-  if (!document.getElementById('toggleSom').checked) return;
-  const ctx = getAudioCtx();
-  const notas = [523.25, 659.25, 783.99, 659.25, 783.99, 1046.50];
-  notas.forEach((freq, i) => {
-    const osc = ctx.createOscillator(), gain = ctx.createGain();
-    osc.connect(gain); gain.connect(ctx.destination);
-    osc.type = 'sine'; osc.frequency.value = freq;
-    const t = ctx.currentTime + i * 0.23;
-    gain.gain.setValueAtTime(0, t);
-    gain.gain.linearRampToValueAtTime(0.5, t + 0.02);
-    gain.gain.linearRampToValueAtTime(0, t + 0.18);
-    osc.start(t); osc.stop(t + 0.23);
+// ========== ALERTA SONORO ==========
+function getAudioCtx(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
+function tocarMelodia(){
+  const ctx=getAudioCtx();
+  [523.25,659.25,783.99,659.25,783.99,1046.50].forEach((freq,i)=>{
+    const osc=ctx.createOscillator(),gain=ctx.createGain();
+    osc.connect(gain);gain.connect(ctx.destination);osc.type='sine';osc.frequency.value=freq;
+    const s=ctx.currentTime+i*0.23;
+    gain.gain.setValueAtTime(0,s);gain.gain.linearRampToValueAtTime(0.5,s+0.02);gain.gain.linearRampToValueAtTime(0,s+0.18);
+    osc.start(s);osc.stop(s+0.25);
   });
 }
+function vibrar(){if(navigator.vibrate)navigator.vibrate([400,100,400,100,600]);}
+function testarSom(){tocarMelodia();vibrar();mostrarToast('🔔 Som e vibração OK!');}
 
-function vibrar() {
-  if (document.getElementById('toggleVibra').checked && navigator.vibrate)
-    navigator.vibrate([400, 100, 400, 100, 600]);
-}
-
-function dispararAlerta(remedio, horario) {
-  const chave = remedio.id + '_' + horario;
-  if (ultimosAlertas[chave]) return;
-  ultimosAlertas[chave] = true;
-  localStorage.setItem('pv_alertas_' + hoje(), JSON.stringify(ultimosAlertas));
-
-  tocarMelodia(); vibrar();
-  let rep = 0;
-  const loop = setInterval(() => { rep++; tocarMelodia(); vibrar(); if (rep >= 2) clearInterval(loop); }, 2200);
-  mostrarModalAlerta(remedio, horario);
-}
-
-function mostrarModalAlerta(remedio, horario) {
-  document.getElementById('modalAlertaSonoro')?.remove();
-  const modal = document.createElement('div');
-  modal.id = 'modalAlertaSonoro';
-  modal.style.cssText = `position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;`;
-  modal.innerHTML = `
-    <div style="background:white;border-radius:24px;padding:28px 24px;width:100%;max-width:380px;text-align:center;animation:entrada 0.3s ease">
-      <div style="font-size:60px;margin-bottom:6px;animation:pulse-emoji 0.8s infinite alternate">💊</div>
-      <div style="font-size:12px;font-weight:900;color:var(--cinza-texto);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Hora do Remédio</div>
-      <div style="font-size:24px;font-weight:900;color:var(--verde);margin-bottom:4px">${remedio.nome}</div>
-      <div style="font-size:15px;font-weight:700;color:var(--texto);margin-bottom:4px">${remedio.dose || '1 unidade'}</div>
-      <div style="font-size:28px;font-weight:900;color:var(--laranja);margin-bottom:18px">⏰ ${horario}</div>
-      ${remedio.obs ? `<div style="font-size:12px;color:var(--cinza-texto);font-weight:600;margin-bottom:14px;background:var(--cinza);border-radius:10px;padding:8px">💡 ${remedio.obs}</div>` : ''}
-      <button onclick="confirmarTomado('${remedio.id}','${horario}')" style="width:100%;padding:15px;background:var(--verde);color:white;border:none;border-radius:14px;font-size:17px;font-weight:900;cursor:pointer;font-family:Nunito,sans-serif;margin-bottom:9px">✅ Tomei o remédio!</button>
-      <button onclick="adiarAlerta('${remedio.id}','${horario}')" style="width:100%;padding:11px;background:var(--cinza);color:var(--cinza-texto);border:none;border-radius:14px;font-size:13px;font-weight:800;cursor:pointer;font-family:Nunito,sans-serif">⏰ Lembrar em 10 minutos</button>
-    </div>`;
+function dispararAlerta(r,h){
+  const chave=r.id+'_'+h;
+  if(ultimosAlertas[chave])return;
+  ultimosAlertas[chave]=true;
+  localStorage.setItem(chaveM('alertas')+'_'+hoje(),JSON.stringify(ultimosAlertas));
+  tocarMelodia();vibrar();
+  let rep=0;const loop=setInterval(()=>{rep++;tocarMelodia();vibrar();if(rep>=2)clearInterval(loop);},2200);
+  const ex=document.getElementById('modalAlertaSonoro');if(ex)ex.remove();
+  const modal=document.createElement('div');
+  modal.id='modalAlertaSonoro';
+  modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9999;display:flex;align-items:center;justify-content:center;padding:18px';
+  modal.innerHTML=`<div style="background:white;border-radius:22px;padding:22px 18px;width:100%;max-width:350px;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,0.3)">
+    <div style="font-size:56px;margin-bottom:5px;animation:pulse 0.8s infinite alternate">💊</div>
+    <div style="font-size:11px;font-weight:700;color:#6b7280;margin-bottom:3px">HORA DO REMÉDIO · ${membroAtual.icone} ${membroAtual.nome}</div>
+    <div style="font-size:20px;font-weight:900;color:#1a7a4a;margin-bottom:3px">${r.nome}</div>
+    <div style="font-size:13px;font-weight:700;margin-bottom:3px">${r.dose||'1 unidade'}</div>
+    <div style="font-size:24px;font-weight:900;color:#f5821f;margin-bottom:16px">⏰ ${h}</div>
+    ${r.obs?`<div style="font-size:11px;color:#6b7280;font-weight:600;margin-bottom:12px;background:#f2f4f6;border-radius:8px;padding:6px">💡 ${r.obs}</div>`:''}
+    <button onclick="confirmarTomado('${r.id}','${h}')" style="width:100%;padding:13px;background:#1a7a4a;color:white;border:none;border-radius:11px;font-size:15px;font-weight:900;cursor:pointer;font-family:Nunito,sans-serif;margin-bottom:7px">✅ Tomei!</button>
+    <button onclick="adiarAlerta('${r.id}','${h}')" style="width:100%;padding:10px;background:#f2f4f6;color:#6b7280;border:none;border-radius:11px;font-size:12px;font-weight:800;cursor:pointer;font-family:Nunito,sans-serif">⏰ Lembrar em 10 min</button>
+  </div>`;
   document.body.appendChild(modal);
 }
 
-function confirmarTomado(id, horario) {
-  const key = parseInt(id) + '_' + horario;
-  tomadosHoje[key] = true;
-  localStorage.setItem('pv_tomados_' + hoje(), JSON.stringify(tomadosHoje));
+function confirmarTomado(id,h){
+  tomadosHoje[id+'_'+h]=true;
+  localStorage.setItem(chaveM('tomados')+'_'+hoje(),JSON.stringify(tomadosHoje));
   document.getElementById('modalAlertaSonoro')?.remove();
-  renderRemedios(); atualizarHeader();
-  mostrarToast('✅ Remédio marcado como tomado!');
+  renderRemedios();atualizarHeader();mostrarToast('✅ Remédio tomado!');
 }
 
-function adiarAlerta(id, horario) {
-  document.getElementById('modalAlertaSonoro')?.remove();
-  mostrarToast('⏰ Lembrete em 10 minutos!');
-  setTimeout(() => {
-    const r = remedios.find(x => x.id == id);
-    if (r) {
-      delete ultimosAlertas[id + '_' + horario];
-      localStorage.setItem('pv_alertas_' + hoje(), JSON.stringify(ultimosAlertas));
-      dispararAlerta(r, horario);
-    }
-  }, 10 * 60 * 1000);
+function adiarAlerta(id,h){
+  document.getElementById('modalAlertaSonoro')?.remove();mostrarToast('⏰ Lembrete em 10 min!');
+  setTimeout(()=>{
+    const r=remedios.find(x=>x.id==id);
+    if(r){delete ultimosAlertas[id+'_'+h];localStorage.setItem(chaveM('alertas')+'_'+hoje(),JSON.stringify(ultimosAlertas));dispararAlerta(r,h);}
+  },600000);
 }
 
-function verificarAlertas() {
-  const now = new Date();
-  const horaAtual = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-  remedios.forEach(r => {
-    r.horarios.forEach(h => {
-      if (h === horaAtual && !tomadosHoje[r.id + '_' + h]) dispararAlerta(r, h);
-    });
-  });
+function verificarAlertas(){
+  const now=new Date();
+  const h=`${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+  remedios.forEach(r=>r.horarios.forEach(ho=>{if(ho===h&&!tomadosHoje[r.id+'_'+ho])dispararAlerta(r,ho);}));
 }
 
-function mostrarToast(msg) {
-  const t = document.createElement('div');
-  t.style.cssText = `position:fixed;bottom:96px;left:50%;transform:translateX(-50%);background:#1a1e2b;color:white;padding:12px 20px;border-radius:12px;font-size:14px;font-weight:700;font-family:Nunito,sans-serif;z-index:8000;box-shadow:0 4px 16px rgba(0,0,0,0.25);white-space:nowrap;`;
-  t.textContent = msg;
-  document.body.appendChild(t);
-  setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity 0.3s'; setTimeout(() => t.remove(), 300); }, 2800);
+function mostrarToast(msg){
+  const t=document.createElement('div');
+  t.style.cssText='position:fixed;bottom:88px;left:50%;transform:translateX(-50%);background:#1a1e2b;color:white;padding:9px 16px;border-radius:11px;font-size:12px;font-weight:700;font-family:Nunito,sans-serif;z-index:8000;box-shadow:0 4px 16px rgba(0,0,0,0.3);white-space:nowrap;';
+  t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),3000);
 }
 
-function testarSom() { tocarMelodia(); vibrar(); mostrarToast('🔔 Som e vibração testados!'); }
+function instalarPWA(){
+  if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.userChoice.then(()=>{deferredPrompt=null;});}
+  else alert('Para instalar:\n\n📱 Chrome/Android: Menu ⋮ → "Adicionar à tela inicial"\n\n🍎 Safari/iPhone: Compartilhar → "Adicionar à Tela de Início"');
+}
 
-// Ativar AudioContext no primeiro toque
-document.addEventListener('touchstart', () => getAudioCtx(), { once: true });
-document.addEventListener('click',      () => getAudioCtx(), { once: true });
-
-// CSS animações
-const styleEl = document.createElement('style');
-styleEl.textContent = `
-  @keyframes pulse-emoji { from{transform:scale(1)} to{transform:scale(1.12)} }
-  @keyframes entrada { from{transform:translateY(30px);opacity:0} to{transform:translateY(0);opacity:1} }
-`;
+const styleEl=document.createElement('style');
+styleEl.textContent='@keyframes pulse{from{transform:scale(1)}to{transform:scale(1.15)}}';
 document.head.appendChild(styleEl);
 
-// ═══════════ INIT ═══════════
-iniciarBoasVindas();
-iniciarApiKeyUI();
+document.addEventListener('touchstart',()=>getAudioCtx(),{once:true});
+document.addEventListener('click',()=>getAudioCtx(),{once:true});
+
 atualizarHeader();
 renderRemedios();
-renderPacientes();
-setInterval(atualizarHeader, 30000);
-setInterval(verificarAlertas, 60000);
-setTimeout(verificarAlertas, 2000);
+setInterval(atualizarHeader,60000);
+setInterval(verificarAlertas,60000);
+setTimeout(verificarAlertas,2000);
 </script>
 </body>
 </html>
