@@ -611,6 +611,21 @@
 
 <!-- ═══════════════ TELA: ASSISTENTE IA ═══════════════ -->
 <div class="tela" id="tela-ia">
+
+  <!-- Banner chave API ausente -->
+  <div id="bannerApiKey" style="display:none;background:#FFF4E0;border:2px solid #FFDBA0;border-radius:14px;padding:14px;margin-bottom:10px">
+    <div style="font-size:13px;font-weight:900;color:var(--laranja);margin-bottom:6px">🔑 Configure sua chave API</div>
+    <div style="font-size:12px;color:var(--cinza-texto);font-weight:600;margin-bottom:10px;line-height:1.6">
+      Para usar o assistente, cole sua chave Anthropic abaixo.<br>
+      Obtenha grátis em <strong>console.anthropic.com</strong> → API Keys.
+    </div>
+    <input type="password" id="apiKeyBanner" placeholder="sk-ant-api03-..."
+      style="width:100%;padding:11px 12px;border:2px solid #FFDBA0;border-radius:10px;font-size:14px;font-family:Nunito,sans-serif;font-weight:600;margin-bottom:8px;background:white">
+    <button onclick="salvarApiKeyBanner()" style="width:100%;padding:12px;background:var(--laranja);color:white;border:none;border-radius:10px;font-size:14px;font-weight:900;cursor:pointer;font-family:Nunito,sans-serif">
+      Salvar e ativar ➜
+    </button>
+  </div>
+
   <div class="card">
     <div class="card-titulo">🤖 Assistente de Saúde</div>
     <div style="font-size:12px;color:var(--cinza-texto);font-weight:600;margin-bottom:12px">
@@ -736,7 +751,7 @@
     </div>
     <div class="campo" style="margin-bottom:8px">
       <input type="password" id="apiKeyInput" placeholder="sk-ant-..." style="font-size:13px"
-        value="" oninput="salvarApiKey()">
+        value="" oninput="_persistApiKey(this.value.trim())">
     </div>
     <div id="apiKeyStatus" style="font-size:11px;font-weight:700;color:var(--cinza-texto)">
       Nenhuma chave configurada
@@ -979,6 +994,7 @@ function irPara(tela, btn) {
   document.getElementById('tela-' + tela).classList.add('ativa');
   btn.classList.add('ativa');
   if (tela === 'agenda') { renderAgenda(); renderAdesao(); }
+  if (tela === 'ia') verificarBannerApiKey();
 }
 
 // ═══════════ HEADER ═══════════
@@ -1284,27 +1300,53 @@ function perguntaRapida(txt) {
 function getApiKey() { return localStorage.getItem('pv_apikey') || ''; }
 
 function salvarApiKey() {
-  const val = document.getElementById('apiKeyInput').value.trim();
+  const val = document.getElementById('apiKeyInput')?.value.trim() || '';
+  _persistApiKey(val);
+}
+
+function salvarApiKeyBanner() {
+  const val = document.getElementById('apiKeyBanner').value.trim();
+  if (!val.startsWith('sk-ant-')) {
+    mostrarToast('⚠️ Chave inválida. Deve começar com sk-ant-');
+    return;
+  }
+  _persistApiKey(val);
+  document.getElementById('bannerApiKey').style.display = 'none';
+  mostrarToast('✅ Chave salva! Assistente ativado.');
+}
+
+function _persistApiKey(val) {
   localStorage.setItem('pv_apikey', val);
+  // Sincroniza campo em Config se existir
+  const inp = document.getElementById('apiKeyInput');
+  if (inp) inp.value = val;
   const el = document.getElementById('apiKeyStatus');
-  if (val.startsWith('sk-ant-')) {
-    el.textContent = '✅ Chave configurada';
-    el.style.color = 'var(--verde)';
-  } else if (val) {
-    el.textContent = '⚠️ Formato inválido (deve começar com sk-ant-)';
-    el.style.color = 'var(--laranja)';
-  } else {
-    el.textContent = 'Nenhuma chave configurada';
-    el.style.color = 'var(--cinza-texto)';
+  if (el) {
+    if (val.startsWith('sk-ant-')) {
+      el.textContent = '✅ Chave configurada e ativa';
+      el.style.color = 'var(--verde)';
+    } else if (val) {
+      el.textContent = '⚠️ Formato inválido (deve começar com sk-ant-)';
+      el.style.color = 'var(--laranja)';
+    } else {
+      el.textContent = 'Nenhuma chave configurada';
+      el.style.color = 'var(--cinza-texto)';
+    }
   }
 }
 
 function iniciarApiKeyUI() {
   const key = getApiKey();
-  if (key) {
-    document.getElementById('apiKeyInput').value = key;
-    salvarApiKey();
-  }
+  const inp = document.getElementById('apiKeyInput');
+  if (inp && key) { inp.value = key; }
+  _persistApiKey(key);
+  // Mostra banner na tela IA se não tiver chave
+  verificarBannerApiKey();
+}
+
+function verificarBannerApiKey() {
+  const banner = document.getElementById('bannerApiKey');
+  if (banner) banner.style.display = getApiKey() ? 'none' : 'block';
 }
 
 // ═══════════ RECEITA ═══════════
