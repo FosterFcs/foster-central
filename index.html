@@ -1,317 +1,723 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#1F2328">
-    <title>Foster Obras — Diário de Obra Digital</title>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --grafite: #1F2328;
-            --grafite2: #2a3240;
-            --vermelho: #E00000;
-            --vermelho2: #c00000;
-            --preto: #0d0d0d;
-            --branco: #ffffff;
-            --cinza: #6b7280;
-            --cinza-claro: #f4f4f4;
-            --borda: #e0e0e0;
-            --verde: #16a34a;
-            --amarelo: #d97706;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: var(--cinza-claro); color: var(--grafite); min-height: 100vh; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#1a7a4a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="PREVITA">
+<title>PREVITA – Prevenção + Vida</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+  :root {
+    --verde: #1a7a4a; --verde-claro: #e8f5ee; --verde-medio: #2da865;
+    --laranja: #f5821f; --laranja-claro: #fff3e8;
+    --cinza: #f2f4f6; --cinza-texto: #6b7280;
+    --texto: #1a1e2b; --branco: #ffffff;
+    --sombra: 0 2px 12px rgba(0,0,0,0.10); --radius: 16px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Nunito', sans-serif; background: #f0f4f2; color: var(--texto); min-height: 100vh; max-width: 480px; margin: 0 auto; padding-bottom: 80px; }
 
-        /* HEADER */
-        header { background: var(--grafite); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; border-bottom: 3px solid var(--vermelho); box-shadow: 0 2px 16px rgba(0,0,0,0.4); }
-        .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-        .logo-text { color: white; }
-        .logo-text h1 { font-family: 'Oswald', sans-serif; font-size: 16px; font-weight: 700; letter-spacing: 1px; line-height: 1.1; }
-        .logo-text h1 span { color: var(--vermelho); }
-        .logo-text p { font-size: 9px; color: #aaa; letter-spacing: 2px; text-transform: uppercase; margin-top: 3px; }
-        .header-right { display: flex; align-items: center; gap: 10px; }
-        .user-info { color: #aaa; font-size: 11px; text-align: right; }
-        .btn-sair { background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.15); padding: 6px 12px; border-radius: 4px; font-size: 11px; cursor: pointer; font-family: 'Oswald', sans-serif; letter-spacing: 0.5px; }
-        .btn-sair:hover { background: var(--vermelho); border-color: var(--vermelho); }
+  /* HEADER */
+  .header { background: linear-gradient(135deg, #1a7a4a 0%, #0d4f2e 100%); color: white; padding: 16px 16px 20px; position: sticky; top: 0; z-index: 100; border-radius: 0 0 24px 24px; box-shadow: 0 4px 20px rgba(26,122,74,0.35); }
+  .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .logo-area { display: flex; align-items: center; gap: 10px; }
+  .logo-box { width: 48px; height: 48px; background: white; border-radius: 14px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.2); flex-shrink: 0; }
+  .logo-box svg { width: 32px; height: 32px; }
+  .logo-text h1 { font-size: 22px; font-weight: 900; letter-spacing: -0.5px; }
+  .logo-text p { font-size: 10px; opacity: 0.8; font-weight: 600; }
+  .header-data { font-size: 11px; opacity: 0.75; text-align: right; font-weight: 600; }
+  .membro-bar { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.15); border-radius: 12px; padding: 8px 12px; }
+  .membro-nome { font-size: 13px; font-weight: 800; flex: 1; }
+  .membro-trocar { background: rgba(255,255,255,0.25); border: none; color: white; border-radius: 8px; padding: 4px 10px; font-size: 11px; font-weight: 800; cursor: pointer; font-family: Nunito,sans-serif; }
+  .alerta-badge { background: var(--laranja); color: white; border-radius: 20px; padding: 2px 10px; font-size: 11px; font-weight: 800; }
 
-        /* TABS */
-        .tabs { display: flex; background: var(--grafite2); overflow-x: auto; border-bottom: 2px solid var(--vermelho); }
-        .tab { flex: 1; padding: 13px 8px; text-align: center; cursor: pointer; border: none; background: none; color: #888; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase; border-bottom: 3px solid transparent; margin-bottom: -2px; white-space: nowrap; transition: all 0.2s; }
-        .tab.active { color: var(--vermelho); border-bottom-color: var(--vermelho); }
-        .tab:hover { color: white; }
+  /* TABS */
+  .nav-tabs { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: white; display: flex; border-top: 1px solid #e5e7eb; box-shadow: 0 -4px 20px rgba(0,0,0,0.08); z-index: 200; }
+  .tab-btn { flex: 1; padding: 10px 2px 8px; border: none; background: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px; color: var(--cinza-texto); font-family: Nunito,sans-serif; font-size: 9px; font-weight: 700; transition: color 0.2s; }
+  .tab-btn.ativa { color: var(--verde); }
+  .tab-btn .icon { font-size: 20px; }
 
-        /* CONTAINER */
-        .container { max-width: 640px; margin: 0 auto; padding: 16px; }
+  /* TELAS */
+  .tela { display: none; padding: 14px; }
+  .tela.ativa { display: block; }
 
-        /* CARDS */
-        .card { background: var(--branco); border-radius: 4px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid var(--borda); }
-        .card-title { font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 700; color: var(--grafite); letter-spacing: 0.5px; }
+  /* CARDS */
+  .card { background: white; border-radius: var(--radius); padding: 14px; margin-bottom: 12px; box-shadow: var(--sombra); }
+  .card-titulo { font-size: 13px; font-weight: 800; color: var(--verde); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
 
-        /* FORM */
-        .form-group { margin-bottom: 14px; }
-        label { display: block; font-size: 11px; font-weight: 600; color: var(--cinza); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
-        input, select, textarea { width: 100%; padding: 10px 12px; border: 1.5px solid var(--borda); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 13px; background: var(--branco); color: var(--grafite); transition: border-color 0.2s; }
-        textarea { resize: vertical; min-height: 80px; }
-        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--vermelho); box-shadow: 0 0 0 3px rgba(224,0,0,0.1); }
+  /* REMÉDIOS */
+  .remedio-item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--cinza); }
+  .remedio-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .remedio-cor { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+  .remedio-info { flex: 1; }
+  .remedio-nome { font-size: 14px; font-weight: 800; }
+  .remedio-dose { font-size: 11px; color: var(--cinza-texto); font-weight: 600; margin-top: 1px; }
+  .remedio-horarios { margin-top: 3px; display: flex; gap: 4px; flex-wrap: wrap; }
+  .horario-badge { background: var(--verde-claro); color: var(--verde); border-radius: 6px; padding: 1px 7px; font-size: 10px; font-weight: 700; }
+  .check-btn { width: 34px; height: 34px; border-radius: 10px; border: 2px solid #d1d5db; background: none; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; }
+  .check-btn.tomado { background: var(--verde); border-color: var(--verde); color: white; }
 
-        /* BUTTONS */
-        .btn-primary { width: 100%; padding: 13px; background: var(--vermelho); color: white; border: none; border-radius: 4px; font-weight: 700; font-size: 13px; letter-spacing: 1px; cursor: pointer; font-family: 'Oswald', sans-serif; text-transform: uppercase; transition: background 0.2s; }
-        .btn-primary:hover { background: var(--vermelho2); }
-        .btn-secondary { padding: 9px 16px; background: var(--grafite); color: white; border: none; border-radius: 4px; font-weight: 700; font-size: 11px; cursor: pointer; transition: background 0.2s; font-family: 'Oswald', sans-serif; letter-spacing: 0.5px; text-transform: uppercase; }
-        .btn-secondary:hover { background: #000; }
+  /* BOTÕES */
+  .btn-verde { width: 100%; padding: 13px; background: var(--verde); color: white; border: none; border-radius: 12px; font-size: 14px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: Nunito,sans-serif; transition: background 0.2s; }
+  .btn-verde:hover { background: #145c38; }
+  .btn-laranja { background: var(--laranja); color: white; border: none; border-radius: 12px; padding: 11px 18px; font-size: 13px; font-weight: 800; cursor: pointer; font-family: Nunito,sans-serif; }
+  .btn-cinza { background: var(--cinza); color: var(--cinza-texto); border: none; border-radius: 12px; padding: 11px 18px; font-size: 13px; font-weight: 800; cursor: pointer; font-family: Nunito,sans-serif; }
 
-        /* STATS */
-        .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
-        .stat-card { background: white; border-radius: 4px; padding: 14px 10px; text-align: center; border: 1px solid var(--borda); border-top: 3px solid var(--vermelho); }
-        .stat-num { font-family: 'Oswald', sans-serif; font-size: 28px; font-weight: 700; color: var(--vermelho); line-height: 1; }
-        .stat-label { font-size: 10px; color: var(--cinza); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.5px; }
+  /* MODAL */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 500; align-items: flex-end; justify-content: center; }
+  .modal-overlay.aberto { display: flex; }
+  .modal { background: white; border-radius: 24px 24px 0 0; width: 100%; max-width: 480px; padding: 22px 18px 30px; max-height: 88vh; overflow-y: auto; }
+  .modal h2 { font-size: 17px; font-weight: 900; margin-bottom: 14px; color: var(--verde); }
+  .campo { margin-bottom: 12px; }
+  .campo label { font-size: 12px; font-weight: 700; color: var(--cinza-texto); display: block; margin-bottom: 4px; }
+  .campo input, .campo select, .campo textarea { width: 100%; padding: 11px; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 14px; font-family: Nunito,sans-serif; font-weight: 600; color: var(--texto); background: white; }
+  .campo input:focus, .campo select:focus, .campo textarea:focus { outline: none; border-color: var(--verde); }
+  .horarios-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 7px; margin-top: 5px; }
+  .horario-toggle { padding: 7px 3px; border: 2px solid #e5e7eb; border-radius: 9px; background: none; font-size: 11px; font-weight: 700; cursor: pointer; font-family: Nunito,sans-serif; text-align: center; }
+  .horario-toggle.sel { background: var(--verde-claro); border-color: var(--verde); color: var(--verde); }
+  .modal-fechar { position: absolute; top: 14px; right: 16px; background: none; border: none; font-size: 22px; cursor: pointer; color: var(--cinza-texto); }
 
-        /* LOGIN */
-        .login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--grafite); padding: 20px; }
-        .login-box { background: white; border-radius: 8px; padding: 32px 24px; width: 100%; max-width: 380px; border-top: 4px solid var(--vermelho); }
-        .login-logo { text-align: center; margin-bottom: 24px; }
-        .login-logo h1 { font-family: 'Oswald', sans-serif; font-size: 22px; color: var(--grafite); }
-        .login-logo p { font-size: 12px; color: var(--cinza); margin-top: 4px; }
+  /* AGENDA */
+  .agenda-item { display: flex; align-items: center; gap: 10px; padding: 10px; background: var(--cinza); border-radius: 12px; margin-bottom: 7px; }
+  .agenda-hora { font-size: 14px; font-weight: 900; color: var(--verde); min-width: 48px; text-align: center; }
+  .agenda-info { flex: 1; }
+  .agenda-nome { font-size: 13px; font-weight: 800; }
+  .agenda-dose { font-size: 11px; color: var(--cinza-texto); font-weight: 600; }
+  .vazio { text-align: center; padding: 28px; color: var(--cinza-texto); font-size: 13px; font-weight: 600; }
 
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
+  /* STATS */
+  .stats-row { display: flex; gap: 8px; margin-bottom: 12px; }
+  .stat-box { flex: 1; background: white; border-radius: 14px; padding: 11px; text-align: center; box-shadow: var(--sombra); }
+  .stat-num { font-size: 26px; font-weight: 900; color: var(--verde); }
+  .stat-label { font-size: 10px; color: var(--cinza-texto); font-weight: 700; }
 
-        .empty { text-align: center; padding: 40px 20px; color: var(--cinza); }
-        .empty .icon { font-size: 48px; margin-bottom: 12px; }
-        .empty h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; color: var(--grafite); }
-        .empty p { font-size: 13px; }
+  /* PROGRESSO */
+  .progresso-bar { height: 6px; background: #e5e7eb; border-radius: 10px; margin: 7px 0; overflow: hidden; }
+  .progresso-fill { height: 100%; background: var(--verde); border-radius: 10px; transition: width 0.3s; }
 
-        .alert { padding: 12px 14px; border-radius: 8px; font-size: 12px; margin-bottom: 12px; background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+  /* IA CHAT */
+  .ia-chat { min-height: 200px; max-height: 320px; overflow-y: auto; margin-bottom: 10px; }
+  .msg { margin-bottom: 9px; display: flex; flex-direction: column; }
+  .msg.user { align-items: flex-end; }
+  .msg.ia { align-items: flex-start; }
+  .msg-bubble { max-width: 84%; padding: 9px 13px; border-radius: 16px; font-size: 13px; font-weight: 600; line-height: 1.5; }
+  .msg.user .msg-bubble { background: var(--verde); color: white; border-radius: 16px 16px 4px 16px; }
+  .msg.ia .msg-bubble { background: white; color: var(--texto); border-radius: 16px 16px 16px 4px; box-shadow: var(--sombra); }
+  .ia-input-row { display: flex; gap: 8px; }
+  .ia-input { flex: 1; padding: 11px 13px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 13px; font-family: Nunito,sans-serif; font-weight: 600; }
+  .ia-input:focus { outline: none; border-color: var(--verde); }
+  .btn-enviar { width: 46px; height: 46px; background: var(--verde); border: none; border-radius: 12px; color: white; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .digitando { display: flex; gap: 4px; padding: 10px 14px; }
+  .dot { width: 7px; height: 7px; background: var(--verde); border-radius: 50%; animation: bounce 1s infinite; }
+  .dot:nth-child(2){animation-delay:0.15s} .dot:nth-child(3){animation-delay:0.3s}
+  @keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
 
-        a { color: var(--vermelho); text-decoration: none; }
-        a:hover { text-decoration: underline; }
-    </style>
+  /* RODAPÉ */
+  .rodape { text-align: center; font-size: 9px; color: #9ca3af; padding: 10px 14px; line-height: 1.7; font-weight: 600; border-top: 1px solid #f0f0f0; margin-top: 8px; }
+
+  /* MEMBROS */
+  .membro-card { background: white; border-radius: 14px; padding: 12px 14px; margin-bottom: 8px; box-shadow: var(--sombra); display: flex; align-items: center; gap: 12px; cursor: pointer; border: 2px solid transparent; }
+  .membro-card.ativo { border-color: var(--verde); background: var(--verde-claro); }
+  .membro-avatar { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+  @keyframes pulse{from{transform:scale(1)}to{transform:scale(1.15)}}
+</style>
 </head>
 <body>
 
-<!-- TELA DE LOGIN -->
-<div id="loginScreen" class="login-screen">
-    <div class="login-box">
-        <div class="login-logo">
-            <h1 style="font-family:'Oswald',sans-serif; font-size:24px; color:#1F2328; font-weight:700; letter-spacing:1px;">
-                <span style="color:#E00000;">FOSTER</span> OBRAS
-            </h1>
-            <p style="font-size:12px; color:#6b7280; margin-top:4px; letter-spacing:0.5px;">Diário de Obra Digital</p>
-        </div>
-        <div class="alert">
-            ✅ Modo de Demonstração Ativo
-        </div>
-        <button class="btn-primary" onclick="mostrarAppDemo()">ENTRAR EM MODO DEMO</button>
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <div class="logo-area">
+      <div class="logo-box">
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="32" height="32" rx="8" fill="#e8f5ee"/>
+          <path d="M16 4L6 9v7c0 5.5 4.3 10.7 10 12 5.7-1.3 10-6.5 10-12V9L16 4z" fill="#1a7a4a"/>
+          <rect x="14" y="10" width="4" height="8" rx="2" fill="white"/>
+          <rect x="12" y="14" width="8" height="4" rx="2" fill="white"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <h1>PREVITA</h1>
+        <p>Prevenção + Vida</p>
+      </div>
     </div>
+    <div class="header-data" id="headerData"></div>
+  </div>
+  <div class="membro-bar">
+    <span style="font-size:16px">👤</span>
+    <span class="membro-nome" id="membroNomeHeader">Selecione um membro</span>
+    <div class="alerta-badge" id="badgeHoje">0</div>
+    <button class="membro-trocar" onclick="irPara('membros', document.querySelectorAll('.tab-btn')[4])">Trocar</button>
+  </div>
 </div>
 
-<!-- APP PRINCIPAL -->
-<div id="appMain" style="display:none;">
-    <header>
-        <a href="#" class="logo">
-            <div class="logo-text">
-                <h1><span>FOSTER</span> OBRAS</h1>
-                <p>Digital</p>
-            </div>
-        </a>
-        <div class="header-right">
-            <span class="user-info" id="userInfo">Modo Demo</span>
-            <button class="btn-sair" onclick="sair()">SAIR</button>
-        </div>
-    </header>
+<!-- TELA: REMÉDIOS -->
+<div class="tela ativa" id="tela-remedios">
+  <div class="stats-row">
+    <div class="stat-box"><div class="stat-num" id="statTotal">0</div><div class="stat-label">Remédios</div></div>
+    <div class="stat-box"><div class="stat-num" id="statTomados" style="color:var(--laranja)">0</div><div class="stat-label">Tomados</div></div>
+    <div class="stat-box"><div class="stat-num" id="statPendentes" style="color:#ef4444">0</div><div class="stat-label">Pendentes</div></div>
+  </div>
+  <div class="card">
+    <div class="card-titulo">💊 Remédios Contínuos</div>
+    <div id="listaRemedios"><div class="vazio">Nenhum remédio.<br>Adicione abaixo! 👇</div></div>
+  </div>
+  <button class="btn-verde" onclick="abrirModal()">➕ Adicionar Remédio</button>
+  <div class="rodape">
+    ⚠️ Este app não substitui prescrição ou orientação médica.<br>
+    <strong>Desenvolvido por Wilson Foster</strong><br>
+    ACS – UBS São Pedro – Santana de Parnaíba – SP<br>
+    Apoio: Foster Engenharia &amp; Desenvolvimento Digital
+  </div>
+</div>
 
-    <div class="tabs">
-        <button class="tab active" onclick="mudarAba('dashboard', this)">📊 DASHBOARD</button>
-        <button class="tab" onclick="mudarAba('obras', this)">🏗️ OBRAS</button>
-        <button class="tab" onclick="mudarAba('rdo', this)">📋 RDO</button>
-        <button class="tab" onclick="mudarAba('mapa-tab', this)">🗺️ MAPA</button>
+<!-- TELA: AGENDA -->
+<div class="tela" id="tela-agenda">
+  <div class="card">
+    <div class="card-titulo">📅 Agenda de Hoje</div>
+    <div id="agendaHoje"><div class="vazio">Sem remédios agendados.</div></div>
+  </div>
+  <div class="card">
+    <div class="card-titulo">📊 Progresso</div>
+    <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--cinza-texto)">
+      <span>Doses tomadas</span><span id="progrTexto">0 / 0</span>
     </div>
-
-    <div class="container">
-        <!-- DASHBOARD -->
-        <div id="dashboard" class="tab-content active">
-            <div style="margin-top:20px;">
-                <h2 class="card-title">Bem-vindo ao Foster Obras!</h2>
-                <p style="font-size:13px; color:var(--cinza); margin-top:10px;">Gerencie suas obras e registre relatórios diários de forma simples e eficiente.</p>
-            </div>
-            <div class="stats-row" style="margin-top:20px;">
-                <div class="stat-card">
-                    <div class="stat-num" id="statTotal">0</div>
-                    <div class="stat-label">Total de Obras</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-num" id="statAtivas">0</div>
-                    <div class="stat-label">Em Andamento</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-num" id="statRdos">—</div>
-                    <div class="stat-label">RDOs Registrados</div>
-                </div>
-            </div>
-            <div class="card" style="margin-top:20px;">
-                <h3 class="card-title">Funcionalidades Disponíveis</h3>
-                <ul style="margin-top:12px; padding-left:20px; font-size:13px; line-height:1.8; color:var(--cinza);">
-                    <li>✅ Cadastro de obras com detalhes completos</li>
-                    <li>✅ Registro de Relatórios Diários de Obra (RDO)</li>
-                    <li>✅ Mapa interativo com localização das obras</li>
-                    <li>✅ Visualização de estatísticas e progresso</li>
-                    <li>✅ Modo de demonstração com dados de exemplo</li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- OBRAS -->
-        <div id="obras" class="tab-content">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px; margin-bottom:16px;">
-                <h2 class="card-title">Minhas Obras</h2>
-                <button class="btn-secondary" onclick="abrirModalObra()">+ NOVA</button>
-            </div>
-            <div id="listaObras"></div>
-        </div>
-
-        <!-- RDO -->
-        <div id="rdo" class="tab-content">
-            <div style="margin-top:20px;">
-                <h2 class="card-title">Novo Relatório Diário</h2>
-                <div class="card" style="margin-top:16px;">
-                    <div class="form-group">
-                        <label>Obra *</label>
-                        <select id="obraSelecionadaRdo">
-                            <option value="">— Selecione uma obra —</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Data</label>
-                        <input type="date" id="rdoData" value="">
-                    </div>
-                    <div class="form-group">
-                        <label>Clima</label>
-                        <div class="clima-grid">
-                            <button class="clima-btn active" onclick="selecionarClima('ensolarado', this)">☀️</button>
-                            <button class="clima-btn" onclick="selecionarClima('nublado', this)">☁️</button>
-                            <button class="clima-btn" onclick="selecionarClima('chuva', this)">🌧️</button>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Efetivo (Equipe)</label>
-                        <input type="text" id="rdoEquipe" placeholder="Ex: 5 pedreiros, 2 serventes">
-                    </div>
-                    <div class="form-group">
-                        <label>Atividades Realizadas</label>
-                        <textarea id="rdoAtividades" placeholder="Descreva as atividades do dia..."></textarea>
-                    </div>
-                    <button class="btn-primary">SALVAR RDO</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- MAPA -->
-        <div id="mapa-tab" class="tab-content">
-            <div style="margin-top:20px; text-align:center;">
-                <h2 class="card-title">Mapa de Obras</h2>
-                <p style="font-size:13px; color:var(--cinza); margin-top:10px;">Visualize todas as suas obras no mapa interativo.</p>
-                <a href="mapa.html" class="btn-primary" style="display:inline-block; width:auto; padding:10px 20px; margin-top:16px; text-decoration:none;">
-                    Abrir Mapa Interativo →
-                </a>
-            </div>
-        </div>
+    <div class="progresso-bar"><div class="progresso-fill" id="progrBar" style="width:0%"></div></div>
+    <div style="font-size:11px;color:var(--cinza-texto);font-weight:600;text-align:center" id="progrMsg">Cadastre seus remédios!</div>
+  </div>
+  <div class="card" style="background:var(--verde-claro);border:2px solid var(--verde)">
+    <div style="font-size:13px;font-weight:800;color:var(--verde);margin-bottom:8px">🔔 Alertas Sonoros</div>
+    <div style="font-size:11px;color:var(--cinza-texto);font-weight:600;margin-bottom:10px">Mantanha o app aberto para receber alertas com som e vibração.</div>
+    <div style="display:flex;gap:8px">
+      <button class="btn-laranja" onclick="testarSom()" style="flex:1;border-radius:10px;padding:10px">🔔 Testar Som</button>
+      <button class="btn-verde" onclick="instalarPWA()" style="flex:1">📲 Instalar</button>
     </div>
+  </div>
+</div>
+
+<!-- TELA: RECEITA -->
+<div class="tela" id="tela-receita">
+  <div class="card" style="background:linear-gradient(135deg,#1565c0,#0d47a1);color:white;border:none">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+      <div style="font-size:28px">🏥</div>
+      <div>
+        <div style="font-size:14px;font-weight:900">Importar Receita</div>
+        <div style="font-size:10px;opacity:0.8;font-weight:600">UBS São Pedro – Santana de Parnaíba</div>
+      </div>
+    </div>
+    <div style="font-size:11px;opacity:0.85;font-weight:600">Cole os remédios do portal da Prefeitura ou da receita médica. A IA configura os horários automaticamente!</div>
+  </div>
+
+  <div class="card">
+    <div class="card-titulo">📋 Cole os remédios aqui</div>
+    <div class="campo">
+      <textarea id="receitaTexto" rows="5" placeholder="Losartana Potássica 50mg&#10;Sinvastatina 20mg&#10;Metoprolol 50mg&#10;Hidroclorotiazida 25mg"></textarea>
+    </div>
+    <button class="btn-verde" onclick="processarReceita()" id="btnProcessar">🤖 Processar e Adicionar Alertas</button>
+    <div id="receitaStatus" style="display:none;text-align:center;padding:10px;font-size:13px;font-weight:700;color:var(--verde)">⏳ Processando com IA...</div>
+  </div>
+
+  <div class="card" id="receitaResultado" style="display:none">
+    <div class="card-titulo">✅ Remédios Identificados</div>
+    <div id="receitaLista"></div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="btn-verde" onclick="importarSelecionados()" style="flex:2">➕ Adicionar aos Meus Remédios</button>
+      <button class="btn-cinza" onclick="limparReceita()" style="flex:1">🗑️ Limpar</button>
+    </div>
+  </div>
+
+  <div class="card" style="background:var(--verde-claro);border:2px solid var(--verde)">
+    <div style="font-size:12px;font-weight:800;color:var(--verde);margin-bottom:5px">💡 Como usar</div>
+    <div style="font-size:11px;color:var(--cinza-texto);font-weight:600;line-height:1.7">
+      1. Acesse o portal da Prefeitura de Santana de Parnaíba<br>
+      2. Veja seus <strong>Medicamentos Retirados</strong><br>
+      3. Copie os nomes e cole acima<br>
+      4. Clique em Processar — a IA define os horários<br>
+      5. Confirme e os alertas são criados! 🔔
+    </div>
+  </div>
+</div>
+
+<!-- TELA: ASSISTENTE IA -->
+<div class="tela" id="tela-ia">
+  <div class="card">
+    <div class="card-titulo">🤖 Assistente de Saúde</div>
+    <div style="font-size:11px;color:var(--cinza-texto);font-weight:600;margin-bottom:10px">Tire dúvidas sobre medicamentos. Não substitui seu médico.</div>
+    <div class="ia-chat" id="iaChat">
+      <div class="msg ia">
+        <div class="msg-bubble">Olá! 👋 Sou o assistente do PREVITA. Posso ajudar com dúvidas sobre remédios contínuos, horários, efeitos colaterais e dicas de adesão ao tratamento.<br><br>Como posso te ajudar?</div>
+      </div>
+    </div>
+    <div class="ia-input-row">
+      <input class="ia-input" id="iaInput" placeholder="Ex: Pra que serve a Losartana?" onkeydown="if(event.key==='Enter')enviarIA()">
+      <button class="btn-enviar" onclick="enviarIA()">➤</button>
+    </div>
+  </div>
+  <div class="card" style="background:var(--laranja-claro);border:2px solid var(--laranja)">
+    <div style="font-size:12px;font-weight:800;color:var(--laranja);margin-bottom:8px">💡 Perguntas frequentes</div>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <button onclick="perguntaRapida('Pra que serve a Metformina?')" style="text-align:left;background:white;border:1px solid #fcd9b2;border-radius:9px;padding:8px 11px;font-size:12px;font-weight:700;cursor:pointer;font-family:Nunito,sans-serif">💊 Pra que serve a Metformina?</button>
+      <button onclick="perguntaRapida('Posso tomar Losartana com Aspirina?')" style="text-align:left;background:white;border:1px solid #fcd9b2;border-radius:9px;padding:8px 11px;font-size:12px;font-weight:700;cursor:pointer;font-family:Nunito,sans-serif">⚠️ Losartana com Aspirina?</button>
+      <button onclick="perguntaRapida('Qual o melhor horário para tomar remédio de pressão?')" style="text-align:left;background:white;border:1px solid #fcd9b2;border-radius:9px;padding:8px 11px;font-size:12px;font-weight:700;cursor:pointer;font-family:Nunito,sans-serif">⏰ Horário ideal para pressão?</button>
+      <button onclick="perguntaRapida('Esqueci de tomar meu remédio hoje, o que faço?')" style="text-align:left;background:white;border:1px solid #fcd9b2;border-radius:9px;padding:8px 11px;font-size:12px;font-weight:700;cursor:pointer;font-family:Nunito,sans-serif">❓ Esqueci o remédio, e agora?</button>
+    </div>
+  </div>
+</div>
+
+<!-- TELA: MEMBROS DA FAMÍLIA -->
+<div class="tela" id="tela-membros">
+  <div class="card" style="background:linear-gradient(135deg,var(--verde),#145c38);color:white;border:none">
+    <div style="font-size:15px;font-weight:900;margin-bottom:4px">👨‍👩‍👧‍👦 Membros da Família</div>
+    <div style="font-size:11px;opacity:0.8;font-weight:600">Cada membro tem seus próprios remédios e alertas.</div>
+  </div>
+  <div id="listaMembros"></div>
+  <button class="btn-verde" onclick="abrirModalMembro()">➕ Adicionar Membro</button>
+  <div class="rodape">
+    Dados armazenados apenas neste dispositivo. LGPD – Lei 13.709/2018<br>
+    <strong>Desenvolvido por Wilson Foster</strong> | ACS – UBS São Pedro – Santana de Parnaíba – SP<br>
+    Apoio: Foster Engenharia &amp; Desenvolvimento Digital
+  </div>
+</div>
+
+<!-- TABS -->
+<nav class="nav-tabs">
+  <button class="tab-btn ativa" onclick="irPara('remedios',this)"><span class="icon">💊</span>Remédios</button>
+  <button class="tab-btn" onclick="irPara('agenda',this)"><span class="icon">📅</span>Agenda</button>
+  <button class="tab-btn" onclick="irPara('receita',this)"><span class="icon">📋</span>Receita</button>
+  <button class="tab-btn" onclick="irPara('ia',this)"><span class="icon">🤖</span>Assistente</button>
+  <button class="tab-btn" onclick="irPara('membros',this)"><span class="icon">👨‍👩‍👧</span>Família</button>
+</nav>
+
+<!-- MODAL REMÉDIO -->
+<div class="modal-overlay" id="modalRemedio">
+  <div class="modal" style="position:relative">
+    <button class="modal-fechar" onclick="fecharModal()">✕</button>
+    <h2>➕ Novo Remédio</h2>
+    <div class="campo"><label>Nome do remédio *</label><input type="text" id="mNome" placeholder="Ex: Losartana 50mg"></div>
+    <div class="campo"><label>Dosagem</label><input type="text" id="mDose" placeholder="Ex: 1 comprimido"></div>
+    <div class="campo"><label>Horários</label><div class="horarios-grid" id="horariosGrid"></div></div>
+    <div class="campo"><label>Observação</label><input type="text" id="mObs" placeholder="Ex: Tomar com água"></div>
+    <button class="btn-verde" onclick="salvarRemedio()" style="margin-top:8px">💾 Salvar</button>
+  </div>
+</div>
+
+<!-- MODAL MEMBRO -->
+<div class="modal-overlay" id="modalMembro">
+  <div class="modal" style="position:relative">
+    <button class="modal-fechar" onclick="fecharModalMembro()">✕</button>
+    <h2>👤 Novo Membro</h2>
+    <div class="campo"><label>Nome *</label><input type="text" id="mmNome" placeholder="Ex: Vovó Maria"></div>
+    <div class="campo">
+      <label>Ícone</label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px" id="iconeGrid">
+        <span>👴</span><span>👵</span><span>👨</span><span>👩</span><span>👦</span><span>👧</span><span>🧑</span><span>👶</span>
+      </div>
+      <input type="hidden" id="mmIcone" value="👤">
+    </div>
+    <button class="btn-verde" onclick="salvarMembro()" style="margin-top:8px">💾 Salvar</button>
+  </div>
 </div>
 
 <script>
-    let obras = [];
-    let usuarioAtual = null;
+// ========== ESTADO GLOBAL ==========
+const HORARIOS = ['06:00','07:00','08:00','09:00','12:00','14:00','18:00','20:00','21:00','22:00'];
+const EMOJIS = ['💊','🔵','🔴','🟡','🟢','🟠','⚪','🟣'];
+const CORES = ['#e8f5ee','#e8f0ff','#ffe8e8','#fff8e1','#e8fff4','#fff3e8','#f5f5f5','#f3e8ff'];
 
-    function mostrarAppDemo() {
-        document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('appMain').style.display = 'block';
-        document.getElementById('userInfo').textContent = 'Modo Demo';
-        carregarObrasDemo();
-    }
+let membros = JSON.parse(localStorage.getItem('pv_membros') || 'null');
+if (!membros) {
+  membros = [{ id: 1, nome: 'Eu', icone: '👤' }];
+  localStorage.setItem('pv_membros', JSON.stringify(membros));
+}
 
-    function carregarObrasDemo() {
-        obras = [
-            { id: '1', nome: 'Residência Família Santos', cliente: 'Carlos Santos', endereco: 'Rua das Palmeiras, 120 — Alphaville, SP', area: 220, orcamento: 380000, status: 'andamento', avanco: 42 },
-            { id: '2', nome: 'Edifício Comercial Tijuca', cliente: 'Construtora JBR', endereco: 'Av. Principal, 500 — Tijuca, RJ', area: 1200, orcamento: 2800000, status: 'andamento', avanco: 28 },
-            { id: '3', nome: 'Reforma Apartamento Jardins', cliente: 'Maria Oliveira', endereco: 'Rua Augusta, 800 — Jardins, SP', area: 95, orcamento: 120000, status: 'concluida', avanco: 100 },
-        ];
-        renderizarObras();
-        atualizarStats();
-        popularSelectObra('obraSelecionadaRdo');
-    }
+let membroAtualId = parseInt(localStorage.getItem('pv_membro_atual') || membros[0].id);
+let membroAtual = membros.find(m => m.id === membroAtualId) || membros[0];
 
-    function renderizarObras() {
-        const container = document.getElementById('listaObras');
-        if(!obras || obras.length === 0) {
-            container.innerHTML = '<div class="empty"><div class="icon">🏗️</div><h3>Nenhuma obra cadastrada</h3><p>Clique em "+ NOVA" para começar</p></div>';
-            return;
-        }
-        container.innerHTML = '';
-        obras.forEach(obra => {
-            const avanco = obra.avanco || 0;
-            const statusMap = { andamento: 'Em Andamento', concluida: 'Concluída', pausada: 'Pausada' };
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `
-                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
-                    <h3 style="font-size:15px; font-weight:700;">${obra.nome}</h3>
-                    <span style="background:var(--vermelho); color:white; padding:3px 10px; border-radius:3px; font-size:11px; font-weight:700;">${statusMap[obra.status] || 'Ativo'}</span>
-                </div>
-                <div style="font-size:12px; color:var(--cinza); margin-bottom:3px;">👤 ${obra.cliente || '—'}</div>
-                <div style="font-size:12px; color:var(--cinza); margin-bottom:8px;">📍 ${obra.endereco || '—'}</div>
-                <div style="background:#f3f4f6; border-radius:99px; height:6px; margin:10px 0 4px; overflow:hidden;"><div style="height:100%; background:var(--vermelho); width:${avanco}%;"></div></div>
-                <div style="font-size:11px; color:var(--cinza);">Avanço: <strong>${avanco}%</strong></div>`;
-            container.appendChild(card);
-        });
-    }
+function chaveM(sufixo) { return 'pv_' + sufixo + '_' + membroAtual.id; }
 
-    function atualizarStats() {
-        document.getElementById('statTotal').textContent = obras.length;
-        document.getElementById('statAtivas').textContent = obras.filter(o => o.status === 'andamento').length;
-    }
+let remedios = JSON.parse(localStorage.getItem(chaveM('remedios')) || '[]');
+let tomadosHoje = JSON.parse(localStorage.getItem(chaveM('tomados') + '_' + hoje()) || '{}');
+let ultimosAlertas = JSON.parse(localStorage.getItem(chaveM('alertas') + '_' + hoje()) || '{}');
+let receitaProcessada = [];
+let horasSel = [];
+let deferredPrompt = null;
+let audioCtx = null;
+let iconeSelMembro = '👴';
 
-    function mudarAba(aba, el) {
-        document.querySelectorAll('.tab-content').forEach(e => e.classList.remove('active'));
-        document.querySelectorAll('.tab').forEach(e => e.classList.remove('active'));
-        document.getElementById(aba).classList.add('active');
-        if(el) el.classList.add('active');
-        if(aba === 'rdo') popularSelectObra('obraSelecionadaRdo');
-    }
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt = e; });
 
-    function popularSelectObra(selectId) {
-        const sel = document.getElementById(selectId);
-        sel.innerHTML = '<option value="">— Selecione uma obra —</option>';
-        obras.forEach(o => {
-            const opt = document.createElement('option');
-            opt.value = o.id;
-            opt.textContent = o.nome;
-            sel.appendChild(opt);
-        });
-    }
+function hoje() { return new Date().toISOString().split('T')[0]; }
 
-    function abrirModalObra() {
-        alert('Funcionalidade disponível na versão completa com Supabase.');
-    }
+function trocarMembro(id) {
+  membroAtualId = id;
+  membroAtual = membros.find(m => m.id === id);
+  localStorage.setItem('pv_membro_atual', id);
+  remedios = JSON.parse(localStorage.getItem(chaveM('remedios')) || '[]');
+  tomadosHoje = JSON.parse(localStorage.getItem(chaveM('tomados') + '_' + hoje()) || '{}');
+  ultimosAlertas = JSON.parse(localStorage.getItem(chaveM('alertas') + '_' + hoje()) || '{}');
+  document.getElementById('membroNomeHeader').textContent = membroAtual.icone + ' ' + membroAtual.nome;
+  renderRemedios();
+  renderMembros();
+  atualizarHeader();
+  mostrarToast('👤 ' + membroAtual.nome + ' selecionado!');
+}
 
-    function selecionarClima(clima, el) {
-        document.querySelectorAll('.clima-btn').forEach(b => b.classList.remove('active'));
-        el.classList.add('active');
-    }
+// ========== NAVEGAÇÃO ==========
+function irPara(tela, btn) {
+  document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('ativa'));
+  document.getElementById('tela-' + tela).classList.add('ativa');
+  btn.classList.add('ativa');
+  if (tela === 'agenda') renderAgenda();
+  if (tela === 'membros') renderMembros();
+}
 
-    function sair() {
-        document.getElementById('appMain').style.display = 'none';
-        document.getElementById('loginScreen').style.display = 'flex';
-    }
+// ========== HEADER ==========
+function atualizarHeader() {
+  const now = new Date();
+  const dias = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  const meses = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  document.getElementById('headerData').innerHTML = `${dias[now.getDay()]}, ${now.getDate()} ${meses[now.getMonth()]}<br>${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+  document.getElementById('membroNomeHeader').textContent = (membroAtual.icone || '👤') + ' ' + membroAtual.nome;
 
-    // Inicializar
-    window.addEventListener('load', () => {
-        const hoje = new Date().toISOString().split('T')[0];
-        document.getElementById('rdoData').value = hoje;
+  let pendentes = 0;
+  const agoraStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+  remedios.forEach(r => r.horarios.forEach(h => { if (h <= agoraStr && !tomadosHoje[r.id+'_'+h]) pendentes++; }));
+  document.getElementById('badgeHoje').textContent = pendentes > 0 ? pendentes + ' ⚠️' : '✅';
+}
+
+// ========== REMÉDIOS ==========
+function renderRemedios() {
+  const lista = document.getElementById('listaRemedios');
+  if (!remedios.length) {
+    lista.innerHTML = '<div class="vazio">Nenhum remédio cadastrado.<br>Adicione abaixo! 👇</div>';
+  } else {
+    lista.innerHTML = remedios.map((r, i) => {
+      const tom = r.horarios.filter(h => tomadosHoje[r.id+'_'+h]).length;
+      const total = r.horarios.length;
+      return `<div class="remedio-item">
+        <div class="remedio-cor" style="background:${CORES[i%CORES.length]}">${EMOJIS[i%EMOJIS.length]}</div>
+        <div class="remedio-info">
+          <div class="remedio-nome">${r.nome}</div>
+          <div class="remedio-dose">${r.dose||'1 unidade'}${r.obs?' · '+r.obs:''}</div>
+          <div class="remedio-horarios">${r.horarios.map(h=>`<span class="horario-badge">${h}</span>`).join('')}</div>
+          ${tom>0?`<div style="font-size:10px;color:var(--verde);font-weight:700;margin-top:2px">✅ ${tom}/${total} tomado hoje</div>`:''}
+        </div>
+        <button class="check-btn ${tom===total&&total>0?'tomado':''}" onclick="marcarTodos(${r.id})">${tom===total&&total>0?'✓':'○'}</button>
+      </div>`;
+    }).join('');
+  }
+  atualizarStats();
+}
+
+function marcarTodos(id) {
+  const r = remedios.find(x => x.id===id); if(!r) return;
+  const todos = r.horarios.every(h => tomadosHoje[id+'_'+h]);
+  r.horarios.forEach(h => { if(todos) delete tomadosHoje[id+'_'+h]; else tomadosHoje[id+'_'+h]=true; });
+  localStorage.setItem(chaveM('tomados')+'_'+hoje(), JSON.stringify(tomadosHoje));
+  renderRemedios(); atualizarHeader();
+}
+
+function atualizarStats() {
+  let tomados=0, pendentes=0;
+  remedios.forEach(r => r.horarios.forEach(h => { if(tomadosHoje[r.id+'_'+h]) tomados++; else pendentes++; }));
+  document.getElementById('statTotal').textContent = remedios.length;
+  document.getElementById('statTomados').textContent = tomados;
+  document.getElementById('statPendentes').textContent = pendentes;
+}
+
+// ========== MODAL REMÉDIO ==========
+function abrirModal() {
+  horasSel = [];
+  ['mNome','mDose','mObs'].forEach(id => document.getElementById(id).value='');
+  document.getElementById('horariosGrid').innerHTML = HORARIOS.map(h=>`<button class="horario-toggle" onclick="toggleHorario(this,'${h}')">${h}</button>`).join('');
+  document.getElementById('modalRemedio').classList.add('aberto');
+}
+function fecharModal() { document.getElementById('modalRemedio').classList.remove('aberto'); }
+function toggleHorario(btn,h) {
+  if(horasSel.includes(h)){horasSel=horasSel.filter(x=>x!==h);btn.classList.remove('sel');}
+  else{horasSel.push(h);btn.classList.add('sel');}
+}
+function salvarRemedio() {
+  const nome = document.getElementById('mNome').value.trim();
+  if(!nome){alert('Digite o nome!');return;}
+  if(!horasSel.length){alert('Selecione um horário!');return;}
+  remedios.push({id:Date.now(),nome,dose:document.getElementById('mDose').value.trim(),horarios:horasSel.sort(),obs:document.getElementById('mObs').value.trim()});
+  localStorage.setItem(chaveM('remedios'), JSON.stringify(remedios));
+  fecharModal(); renderRemedios(); atualizarHeader();
+  mostrarToast('✅ Remédio adicionado!');
+}
+
+// ========== AGENDA ==========
+function renderAgenda() {
+  const now = new Date();
+  const agoraStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+  let itens = [];
+  remedios.forEach(r => r.horarios.forEach(h => itens.push({hora:h,nome:r.nome,dose:r.dose,id:r.id,key:r.id+'_'+h})));
+  itens.sort((a,b)=>a.hora.localeCompare(b.hora));
+  const div = document.getElementById('agendaHoje');
+  div.innerHTML = itens.length ? itens.map(it => {
+    const tomado=tomadosHoje[it.key], passado=it.hora<=agoraStr;
+    return `<div class="agenda-item" style="${tomado?'opacity:0.55':''}">
+      <div class="agenda-hora" style="${passado&&!tomado?'color:#ef4444':''}">${it.hora}</div>
+      <div class="agenda-info"><div class="agenda-nome">${it.nome}</div><div class="agenda-dose">${it.dose||'1 unidade'}</div></div>
+      <div style="font-size:20px;cursor:pointer" onclick="marcarItem('${it.key}')">${tomado?'✅':passado?'❌':'⏳'}</div>
+    </div>`;
+  }).join('') : '<div class="vazio">Sem remédios agendados.</div>';
+
+  const total=itens.length, tom=itens.filter(i=>tomadosHoje[i.key]).length;
+  document.getElementById('progrTexto').textContent=`${tom} / ${total}`;
+  document.getElementById('progrBar').style.width=total?`${Math.round(tom/total*100)}%`:'0%';
+  document.getElementById('progrMsg').textContent=total===0?'Cadastre seus remédios!':tom===total?'🎉 Todos os remédios tomados!':tom===0?'💪 Vamos começar!':` Faltam ${total-tom} dose${total-tom>1?'s':''}`;
+}
+
+function marcarItem(key) {
+  if(tomadosHoje[key]) delete tomadosHoje[key]; else tomadosHoje[key]=true;
+  localStorage.setItem(chaveM('tomados')+'_'+hoje(), JSON.stringify(tomadosHoje));
+  renderAgenda(); renderRemedios(); atualizarHeader();
+}
+
+// ========== MEMBROS ==========
+function renderMembros() {
+  const div = document.getElementById('listaMembros');
+  div.innerHTML = membros.map(m => `
+    <div class="membro-card ${m.id===membroAtualId?'ativo':''}" onclick="trocarMembro(${m.id})">
+      <div class="membro-avatar" style="background:${m.id===membroAtualId?'var(--verde)':'var(--verde-claro)'};color:${m.id===membroAtualId?'white':'inherit'}">${m.icone||'👤'}</div>
+      <div style="flex:1">
+        <div style="font-size:15px;font-weight:800">${m.nome}</div>
+        <div style="font-size:11px;color:var(--cinza-texto);font-weight:600">${(JSON.parse(localStorage.getItem('pv_remedios_'+m.id)||'[]')).length} remédio(s)</div>
+      </div>
+      ${m.id===membroAtualId?'<div style="font-size:11px;font-weight:800;color:var(--verde)">✅ ATIVO</div>':''}
+    </div>
+  `).join('');
+}
+
+function abrirModalMembro() {
+  document.getElementById('mmNome').value='';
+  iconeSelMembro='👴';
+  // Setup ícone grid
+  const icones=['👴','👵','👨','👩','👦','👧','🧑','👶'];
+  document.getElementById('iconeGrid').innerHTML=icones.map(ic=>`
+    <span style="font-size:28px;cursor:pointer;padding:4px;border-radius:8px;border:2px solid transparent" 
+      id="ic_${ic}" onclick="selecionarIcone('${ic}')">${ic}</span>`).join('');
+  document.getElementById('modalMembro').classList.add('aberto');
+}
+function fecharModalMembro() { document.getElementById('modalMembro').classList.remove('aberto'); }
+function selecionarIcone(ic) {
+  iconeSelMembro=ic;
+  document.querySelectorAll('#iconeGrid span').forEach(el=>el.style.border='2px solid transparent');
+  const el=document.getElementById('ic_'+ic);
+  if(el) el.style.border='2px solid var(--verde)';
+}
+function salvarMembro() {
+  const nome=document.getElementById('mmNome').value.trim();
+  if(!nome){alert('Digite o nome!');return;}
+  const novo={id:Date.now(),nome,icone:iconeSelMembro};
+  membros.push(novo);
+  localStorage.setItem('pv_membros',JSON.stringify(membros));
+  fecharModalMembro(); renderMembros();
+  mostrarToast('👤 '+nome+' adicionado!');
+}
+
+// ========== RECEITA IA ==========
+async function processarReceita() {
+  const texto=document.getElementById('receitaTexto').value.trim();
+  if(!texto){alert('Cole os remédios primeiro!');return;}
+  document.getElementById('receitaStatus').style.display='block';
+  document.getElementById('receitaResultado').style.display='none';
+  document.getElementById('btnProcessar').disabled=true;
+  try {
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6',max_tokens:1000,
+        system:`Você é um assistente farmacêutico do PREVITA. Analise a lista de medicamentos e retorne SOMENTE JSON válido, sem texto extra, no formato:
+[{"nome":"Nome","dose":"1 comprimido","horarios":["08:00"],"obs":"dica curta"}]
+- horarios: horários ideais (pressão=manhã, colesterol=noite, diabetes=refeições)
+- Retorne APENAS o JSON array`,
+        messages:[{role:'user',content:'Medicamentos:\n'+texto}]
+      })
     });
-</script>
+    const data=await resp.json();
+    const txt=(data.content&&data.content[0]&&data.content[0].text)||'[]';
+    receitaProcessada=JSON.parse(txt.replace(/```json|```/g,'').trim());
+    document.getElementById('receitaStatus').style.display='none';
+    document.getElementById('btnProcessar').disabled=false;
+    renderReceitaResultado();
+  } catch(e) {
+    document.getElementById('receitaStatus').style.display='none';
+    document.getElementById('btnProcessar').disabled=false;
+    document.getElementById('receitaStatus').style.display='block';
+    document.getElementById('receitaStatus').textContent='❌ Erro ao processar. Verifique sua conexão e tente novamente.';
+    setTimeout(()=>{document.getElementById('receitaStatus').style.display='none';document.getElementById('receitaStatus').textContent='⏳ Processando com IA...';},4000);
+  }
+}
 
+function renderReceitaResultado() {
+  if(!receitaProcessada.length)return;
+  document.getElementById('receitaLista').innerHTML=receitaProcessada.map((r,i)=>`
+    <div style="padding:10px 0;border-bottom:1px solid var(--cinza);display:flex;align-items:center;gap:10px">
+      <div style="font-size:22px">${['💊','🔵','🔴','🟡','🟢','🟠'][i%6]}</div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:800">${r.nome}</div>
+        <div style="font-size:11px;color:var(--cinza-texto);font-weight:600">${r.dose}${r.obs?' · '+r.obs:''}</div>
+        <div style="display:flex;gap:3px;margin-top:3px;flex-wrap:wrap">${r.horarios.map(h=>`<span class="horario-badge">${h}</span>`).join('')}</div>
+      </div>
+      <input type="checkbox" checked style="width:18px;height:18px;accent-color:var(--verde)" id="sel_${i}">
+    </div>`).join('');
+  document.getElementById('receitaResultado').style.display='block';
+}
+
+function importarSelecionados() {
+  let importados=0;
+  receitaProcessada.forEach((r,i)=>{
+    const cb=document.getElementById('sel_'+i);
+    if(cb&&cb.checked&&!remedios.find(x=>x.nome.toLowerCase()===r.nome.toLowerCase())){
+      remedios.push({id:Date.now()+i,nome:r.nome,dose:r.dose,horarios:r.horarios,obs:r.obs||''});
+      importados++;
+    }
+  });
+  localStorage.setItem(chaveM('remedios'),JSON.stringify(remedios));
+  renderRemedios(); atualizarHeader();
+  mostrarToast(`✅ ${importados} remédio${importados!==1?'s':''} importado${importados!==1?'s':''}!`);
+  limparReceita();
+  irPara('remedios',document.querySelectorAll('.tab-btn')[0]);
+}
+
+function limparReceita() {
+  receitaProcessada=[];
+  document.getElementById('receitaTexto').value='';
+  document.getElementById('receitaResultado').style.display='none';
+}
+
+// ========== ASSISTENTE IA ==========
+async function enviarIA() {
+  const input=document.getElementById('iaInput');
+  const msg=input.value.trim(); if(!msg)return;
+  input.value='';
+  const chat=document.getElementById('iaChat');
+  chat.innerHTML+=`<div class="msg user"><div class="msg-bubble">${msg}</div></div>`;
+  const typing=document.createElement('div');
+  typing.className='msg ia';
+  typing.innerHTML='<div class="msg-bubble digitando"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
+  chat.appendChild(typing); chat.scrollTop=chat.scrollHeight;
+  try {
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6',max_tokens:1000,
+        system:`Você é assistente de saúde do PREVITA, criado por Wilson Foster, ACS da UBS São Pedro, microárea 09, Santana de Parnaíba-SP. Responda em português claro e acolhedor, acessível para todas as idades. Fale sobre: para que serve o medicamento, horários ideais, efeitos colaterais comuns, interações simples, dicas de adesão. SEMPRE oriente a consultar médico ou farmacêutico. Nunca prescreva doses ou substitua consulta médica.`,
+        messages:[{role:'user',content:msg}]
+      })
+    });
+    const data=await resp.json();
+    const texto=(data.content&&data.content[0]&&data.content[0].text)||'Não consegui responder agora. Tente novamente.';
+    typing.remove();
+    chat.innerHTML+=`<div class="msg ia"><div class="msg-bubble">${texto.replace(/\n/g,'<br>')}</div></div>`;
+  } catch(e) {
+    typing.remove();
+    chat.innerHTML+=`<div class="msg ia"><div class="msg-bubble">⚠️ Não foi possível conectar. Verifique sua internet e tente novamente.</div></div>`;
+  }
+  chat.scrollTop=chat.scrollHeight;
+}
+
+function perguntaRapida(txt){document.getElementById('iaInput').value=txt;enviarIA();}
+
+// ========== ALERTA SONORO ==========
+function getAudioCtx(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
+
+function tocarMelodia(){
+  const ctx=getAudioCtx();
+  const notas=[523.25,659.25,783.99,659.25,783.99,1046.50];
+  notas.forEach((freq,i)=>{
+    const osc=ctx.createOscillator(),gain=ctx.createGain();
+    osc.connect(gain);gain.connect(ctx.destination);
+    osc.type='sine';osc.frequency.value=freq;
+    const s=ctx.currentTime+i*0.23;
+    gain.gain.setValueAtTime(0,s);gain.gain.linearRampToValueAtTime(0.5,s+0.02);gain.gain.linearRampToValueAtTime(0,s+0.18);
+    osc.start(s);osc.stop(s+0.23);
+  });
+}
+
+function vibrar(){if(navigator.vibrate)navigator.vibrate([400,100,400,100,600]);}
+function testarSom(){tocarMelodia();vibrar();mostrarToast('🔔 Som e vibração OK!');}
+
+function dispararAlerta(r,h){
+  const chave=r.id+'_'+h;
+  if(ultimosAlertas[chave])return;
+  ultimosAlertas[chave]=true;
+  localStorage.setItem(chaveM('alertas')+'_'+hoje(),JSON.stringify(ultimosAlertas));
+  tocarMelodia();vibrar();
+  let rep=0;const loop=setInterval(()=>{rep++;tocarMelodia();vibrar();if(rep>=2)clearInterval(loop);},2200);
+  const existente=document.getElementById('modalAlertaSonoro');if(existente)existente.remove();
+  const modal=document.createElement('div');
+  modal.id='modalAlertaSonoro';
+  modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
+  modal.innerHTML=`<div style="background:white;border-radius:24px;padding:24px 20px;width:100%;max-width:360px;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,0.3)">
+    <div style="font-size:60px;margin-bottom:6px;animation:pulse 0.8s infinite alternate">💊</div>
+    <div style="font-size:12px;font-weight:700;color:#6b7280;margin-bottom:4px">HORA DO REMÉDIO • ${membroAtual.icone} ${membroAtual.nome}</div>
+    <div style="font-size:22px;font-weight:900;color:#1a7a4a;margin-bottom:4px">${r.nome}</div>
+    <div style="font-size:14px;font-weight:700;margin-bottom:4px">${r.dose||'1 unidade'}</div>
+    <div style="font-size:26px;font-weight:900;color:#f5821f;margin-bottom:18px">⏰ ${h}</div>
+    ${r.obs?`<div style="font-size:12px;color:#6b7280;font-weight:600;margin-bottom:14px;background:#f2f4f6;border-radius:8px;padding:7px">💡 ${r.obs}</div>`:''}
+    <button onclick="confirmarTomado('${r.id}','${h}')" style="width:100%;padding:14px;background:#1a7a4a;color:white;border:none;border-radius:12px;font-size:16px;font-weight:900;cursor:pointer;font-family:Nunito,sans-serif;margin-bottom:8px">✅ Tomei!</button>
+    <button onclick="adiarAlerta('${r.id}','${h}')" style="width:100%;padding:11px;background:#f2f4f6;color:#6b7280;border:none;border-radius:12px;font-size:13px;font-weight:800;cursor:pointer;font-family:Nunito,sans-serif">⏰ Lembrar em 10 min</button>
+  </div>`;
+  document.body.appendChild(modal);
+}
+
+function confirmarTomado(id,h){
+  tomadosHoje[id+'_'+h]=true;
+  localStorage.setItem(chaveM('tomados')+'_'+hoje(),JSON.stringify(tomadosHoje));
+  document.getElementById('modalAlertaSonoro')?.remove();
+  renderRemedios();atualizarHeader();mostrarToast('✅ Remédio tomado!');
+}
+
+function adiarAlerta(id,h){
+  document.getElementById('modalAlertaSonoro')?.remove();mostrarToast('⏰ Lembrete em 10 min!');
+  setTimeout(()=>{
+    const r=remedios.find(x=>x.id==id);
+    if(r){delete ultimosAlertas[id+'_'+h];localStorage.setItem(chaveM('alertas')+'_'+hoje(),JSON.stringify(ultimosAlertas));dispararAlerta(r,h);}
+  },600000);
+}
+
+function verificarAlertas(){
+  const now=new Date();
+  const horaAtual=`${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+  remedios.forEach(r=>r.horarios.forEach(h=>{if(h===horaAtual&&!tomadosHoje[r.id+'_'+h])dispararAlerta(r,h);}));
+}
+
+// ========== UTILS ==========
+function mostrarToast(msg){
+  const t=document.createElement('div');
+  t.style.cssText='position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#1a1e2b;color:white;padding:10px 18px;border-radius:12px;font-size:13px;font-weight:700;font-family:Nunito,sans-serif;z-index:8000;box-shadow:0 4px 16px rgba(0,0,0,0.3);white-space:nowrap;';
+  t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),3000);
+}
+
+function instalarPWA(){
+  if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.userChoice.then(()=>{deferredPrompt=null;});}
+  else alert('Para instalar:\n\n📱 Chrome/Android: Menu ⋮ → "Adicionar à tela inicial"\n\n🍎 Safari/iPhone: Compartilhar → "Adicionar à Tela de Início"');
+}
+
+// Animação pulse
+const styleEl=document.createElement('style');
+styleEl.textContent='@keyframes pulse{from{transform:scale(1)}to{transform:scale(1.15)}}';
+document.head.appendChild(styleEl);
+
+// Ativar áudio no primeiro toque
+document.addEventListener('touchstart',()=>getAudioCtx(),{once:true});
+document.addEventListener('click',()=>getAudioCtx(),{once:true});
+
+// ========== INIT ==========
+atualizarHeader();
+renderRemedios();
+setInterval(atualizarHeader,60000);
+setInterval(verificarAlertas,60000);
+setTimeout(verificarAlertas,2000);
+</script>
 </body>
 </html>
