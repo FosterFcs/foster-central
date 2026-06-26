@@ -1,745 +1,1124 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<meta name="theme-color" content="#1a7a4a">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="PREVITA">
-<title>PREVITA – Prevenção + Vida</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
-  :root {
-    --verde:#1a7a4a;--verde-claro:#e8f5ee;--laranja:#f5821f;--laranja-claro:#fff3e8;
-    --cinza:#f2f4f6;--cinza-texto:#6b7280;--texto:#1a1e2b;--sombra:0 2px 12px rgba(0,0,0,0.10);--radius:16px;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  body{font-family:'Nunito',sans-serif;background:#f0f4f2;color:var(--texto);min-height:100vh;max-width:480px;margin:0 auto;padding-bottom:80px;}
-
-  .header{background:linear-gradient(135deg,#1a7a4a,#0d4f2e);color:white;padding:14px 14px 18px;position:sticky;top:0;z-index:100;border-radius:0 0 22px 22px;box-shadow:0 4px 20px rgba(26,122,74,0.35);}
-  .header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-  .logo-area{display:flex;align-items:center;gap:10px;}
-  .logo-box{width:46px;height:46px;background:white;border-radius:13px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.2);flex-shrink:0;}
-  .logo-text h1{font-size:21px;font-weight:900;letter-spacing:-0.5px;}
-  .logo-text p{font-size:10px;opacity:0.8;font-weight:600;}
-  .header-data{font-size:10px;opacity:0.75;text-align:right;font-weight:600;}
-  .membro-bar{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.15);border-radius:11px;padding:7px 11px;}
-  .membro-nome{font-size:12px;font-weight:800;flex:1;}
-  .membro-trocar{background:rgba(255,255,255,0.25);border:none;color:white;border-radius:7px;padding:3px 9px;font-size:10px;font-weight:800;cursor:pointer;font-family:Nunito,sans-serif;}
-  .alerta-badge{background:var(--laranja);color:white;border-radius:20px;padding:2px 8px;font-size:10px;font-weight:800;}
-
-  .nav-tabs{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:white;display:flex;border-top:1px solid #e5e7eb;box-shadow:0 -4px 20px rgba(0,0,0,0.08);z-index:200;}
-  .tab-btn{flex:1;padding:9px 2px 7px;border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--cinza-texto);font-family:Nunito,sans-serif;font-size:9px;font-weight:700;transition:color 0.2s;}
-  .tab-btn.ativa{color:var(--verde);}
-  .tab-btn .icon{font-size:19px;}
-
-  .tela{display:none;padding:13px;}
-  .tela.ativa{display:block;}
-
-  .card{background:white;border-radius:var(--radius);padding:13px;margin-bottom:11px;box-shadow:var(--sombra);}
-  .card-titulo{font-size:13px;font-weight:800;color:var(--verde);margin-bottom:10px;display:flex;align-items:center;gap:5px;}
-
-  .remedio-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--cinza);}
-  .remedio-item:last-child{border-bottom:none;padding-bottom:0;}
-  .remedio-cor{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;}
-  .remedio-info{flex:1;}
-  .remedio-nome{font-size:13px;font-weight:800;}
-  .remedio-dose{font-size:10px;color:var(--cinza-texto);font-weight:600;margin-top:1px;}
-  .remedio-horarios{margin-top:3px;display:flex;gap:3px;flex-wrap:wrap;}
-  .horario-badge{background:var(--verde-claro);color:var(--verde);border-radius:5px;padding:1px 6px;font-size:9px;font-weight:700;}
-  .check-btn{width:32px;height:32px;border-radius:9px;border:2px solid #d1d5db;background:none;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;}
-  .check-btn.tomado{background:var(--verde);border-color:var(--verde);color:white;}
-
-  .btn-verde{width:100%;padding:12px;background:var(--verde);color:white;border:none;border-radius:11px;font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;font-family:Nunito,sans-serif;transition:background 0.2s;}
-  .btn-verde:hover{background:#145c38;}
-  .btn-laranja{background:var(--laranja);color:white;border:none;border-radius:11px;padding:10px 16px;font-size:12px;font-weight:800;cursor:pointer;font-family:Nunito,sans-serif;}
-  .btn-cinza{background:var(--cinza);color:var(--cinza-texto);border:none;border-radius:11px;padding:10px 16px;font-size:12px;font-weight:800;cursor:pointer;font-family:Nunito,sans-serif;}
-
-  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:500;align-items:flex-end;justify-content:center;}
-  .modal-overlay.aberto{display:flex;}
-  .modal{background:white;border-radius:22px 22px 0 0;width:100%;max-width:480px;padding:20px 16px 28px;max-height:88vh;overflow-y:auto;}
-  .modal h2{font-size:16px;font-weight:900;margin-bottom:13px;color:var(--verde);}
-  .campo{margin-bottom:11px;}
-  .campo label{font-size:11px;font-weight:700;color:var(--cinza-texto);display:block;margin-bottom:4px;}
-  .campo input,.campo select,.campo textarea{width:100%;padding:10px;border:2px solid #e5e7eb;border-radius:9px;font-size:13px;font-family:Nunito,sans-serif;font-weight:600;color:var(--texto);background:white;}
-  .campo input:focus,.campo select:focus,.campo textarea:focus{outline:none;border-color:var(--verde);}
-  .horarios-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:4px;}
-  .horario-toggle{padding:7px 3px;border:2px solid #e5e7eb;border-radius:8px;background:none;font-size:10px;font-weight:700;cursor:pointer;font-family:Nunito,sans-serif;text-align:center;}
-  .horario-toggle.sel{background:var(--verde-claro);border-color:var(--verde);color:var(--verde);}
-  .modal-fechar{position:absolute;top:13px;right:14px;background:none;border:none;font-size:21px;cursor:pointer;color:var(--cinza-texto);}
-
-  .agenda-item{display:flex;align-items:center;gap:9px;padding:9px;background:var(--cinza);border-radius:11px;margin-bottom:6px;}
-  .agenda-hora{font-size:13px;font-weight:900;color:var(--verde);min-width:46px;text-align:center;}
-  .agenda-info{flex:1;}
-  .agenda-nome{font-size:12px;font-weight:800;}
-  .agenda-dose{font-size:10px;color:var(--cinza-texto);font-weight:600;}
-  .vazio{text-align:center;padding:26px;color:var(--cinza-texto);font-size:12px;font-weight:600;}
-
-  .stats-row{display:flex;gap:7px;margin-bottom:11px;}
-  .stat-box{flex:1;background:white;border-radius:13px;padding:10px;text-align:center;box-shadow:var(--sombra);}
-  .stat-num{font-size:24px;font-weight:900;color:var(--verde);}
-  .stat-label{font-size:9px;color:var(--cinza-texto);font-weight:700;}
-
-  .progresso-bar{height:6px;background:#e5e7eb;border-radius:10px;margin:6px 0;overflow:hidden;}
-  .progresso-fill{height:100%;background:var(--verde);border-radius:10px;transition:width 0.3s;}
-
-  .ia-chat{min-height:180px;max-height:300px;overflow-y:auto;margin-bottom:9px;}
-  .msg{margin-bottom:8px;display:flex;flex-direction:column;}
-  .msg.user{align-items:flex-end;}
-  .msg.ia{align-items:flex-start;}
-  .msg-bubble{max-width:85%;padding:8px 12px;border-radius:14px;font-size:12px;font-weight:600;line-height:1.5;}
-  .msg.user .msg-bubble{background:var(--verde);color:white;border-radius:14px 14px 4px 14px;}
-  .msg.ia .msg-bubble{background:white;color:var(--texto);border-radius:14px 14px 14px 4px;box-shadow:var(--sombra);}
-  .ia-input-row{display:flex;gap:7px;}
-  .ia-input{flex:1;padding:10px 12px;border:2px solid #e5e7eb;border-radius:11px;font-size:13px;font-family:Nunito,sans-serif;font-weight:600;}
-  .ia-input:focus{outline:none;border-color:var(--verde);}
-  .btn-enviar{width:44px;height:44px;background:var(--verde);border:none;border-radius:11px;color:white;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-  .digitando{display:flex;gap:4px;padding:9px 12px;}
-  .dot{width:7px;height:7px;background:var(--verde);border-radius:50%;animation:bounce 1s infinite;}
-  .dot:nth-child(2){animation-delay:0.15s}.dot:nth-child(3){animation-delay:0.3s}
-  @keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
-
-  .membro-card{background:white;border-radius:13px;padding:11px 13px;margin-bottom:7px;box-shadow:var(--sombra);display:flex;align-items:center;gap:11px;cursor:pointer;border:2px solid transparent;}
-  .membro-card.ativo{border-color:var(--verde);background:var(--verde-claro);}
-  .membro-avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
-
-  .rodape{text-align:center;font-size:9px;color:#9ca3af;padding:10px 12px;line-height:1.8;font-weight:600;border-top:1px solid #f0f0f0;margin-top:6px;}
-
-  #fotoPreview{width:100%;border-radius:10px;margin-top:8px;display:none;}
-  @keyframes pulse{from{transform:scale(1)}to{transform:scale(1.15)}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Foster Central de Serviços - Plataforma para profissionais de construção, engenharia e arquitetura">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1F2328">
+    <title>Foster Central de Serviços</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="icon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="icon-16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <style>
+        :root { --grafite: #1F2328; --laranja: #E00000; --papel: #F5EFE6; --verde: #2E7D5B; --linha: #8A8F94; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--papel); color: var(--grafite); min-height: 100vh; }
+        header { background: var(--grafite); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 12px rgba(0,0,0,0.2); position: sticky; top: 0; z-index: 100; border-bottom: 3px solid var(--laranja); }
+        .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: white; }
+        .logo-hexagon { width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; }
+        .logo-text h1 { font-family: 'Oswald', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: 1px; line-height: 1.2; }
+        .logo-text p { font-size: 9px; color: var(--laranja); letter-spacing: 1px; }
+        .header-actions { display: flex; gap: 12px; align-items: center; }
+        .btn-logout { background: var(--laranja); color: white; border: none; padding: 8px 16px; border-radius: 4px; font-weight: 600; cursor: pointer; font-size: 12px; }
+        .tabs { display: flex; background: var(--grafite); border-bottom: 2px solid var(--laranja); overflow-x: auto; flex-wrap: nowrap; }
+        .tab { flex: 1; padding: 14px; text-align: center; cursor: pointer; border: none; background: var(--grafite); color: var(--linha); font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase; border-bottom: 3px solid transparent; margin-bottom: -2px; white-space: nowrap; }
+        .tab.active { color: var(--laranja); border-bottom-color: var(--laranja); }
+        .container { max-width: 600px; margin: 0 auto; padding: 16px; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .form-group { margin-bottom: 16px; }
+        label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--grafite); }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid var(--linha); border-radius: 4px; font-family: 'Inter', sans-serif; font-size: 14px; background: white; color: var(--grafite); }
+        textarea { resize: vertical; min-height: 100px; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--laranja); box-shadow: 0 0 0 3px rgba(224,0,0,0.1); }
+        .btn-primary { width: 100%; padding: 14px; background: var(--laranja); color: white; border: none; border-radius: 4px; font-weight: 700; font-size: 14px; letter-spacing: 1px; cursor: pointer; font-family: 'Oswald', sans-serif; text-transform: uppercase; }
+        .btn-primary:hover { background: #c00000; }
+        .btn-find { width: 100%; padding: 16px; background: var(--laranja); color: white; border: none; border-radius: 6px; font-weight: 700; font-size: 15px; letter-spacing: 1px; cursor: pointer; font-family: 'Oswald', sans-serif; text-transform: uppercase; margin-top: 8px; transition: background 0.2s, transform 0.1s; }
+        .btn-find:hover { background: #c00000; transform: translateY(-1px); }
+        .btn-secondary { padding: 10px 16px; background: var(--verde); color: white; border: none; border-radius: 4px; font-weight: 600; font-size: 12px; cursor: pointer; margin-top: 8px; }
+        .protocolo { background: var(--verde); color: white; padding: 24px; border-radius: 8px; text-align: center; margin: 20px 0; }
+        .protocolo h3 { font-size: 12px; font-weight: 600; letter-spacing: 1px; margin-bottom: 8px; text-transform: uppercase; }
+        .protocolo .numero { font-family: 'Oswald', sans-serif; font-size: 32px; font-weight: 700; margin-bottom: 12px; }
+        .chamado-card { background: white; padding: 16px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid var(--laranja); box-shadow: 0 2px 6px rgba(0,0,0,0.07); transition: box-shadow 0.2s; }
+        .chamado-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+        .chamado-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+        .chamado-info { font-size: 12px; color: var(--linha); margin-bottom: 4px; }
+        .servico-badge { display: inline-block; background: var(--laranja); color: white; padding: 4px 8px; border-radius: 3px; font-size: 11px; font-weight: 600; margin-top: 8px; }
+        .contato-bloqueado { background: #f0f0f0; padding: 12px; border-radius: 4px; margin: 8px 0; font-size: 12px; color: var(--linha); text-align: center; }
+        .btn-desbloquear { background: var(--verde); margin-top: 8px; width: 100%; padding: 12px; border: none; border-radius: 4px; color: white; font-weight: 700; cursor: pointer; }
+        .btn-whatsapp { background: #25D366; margin-top: 8px; width: 100%; padding: 14px; border: none; border-radius: 4px; color: white; font-weight: 700; cursor: pointer; text-transform: uppercase; }
+        .btn-whatsapp:hover { background: #1da851; }
+        .credito-card { background: white; padding: 16px; border-radius: 8px; margin-bottom: 12px; text-align: center; border: 2px solid var(--laranja); }
+        .credito-card h4 { font-size: 18px; font-weight: 700; color: var(--laranja); margin-bottom: 4px; }
+        .credito-card p { font-size: 12px; color: var(--linha); margin-bottom: 12px; }
+        .saldo { background: var(--verde); color: white; padding: 16px; border-radius: 8px; margin-bottom: 16px; text-align: center; }
+        .saldo h3 { font-size: 12px; font-weight: 600; letter-spacing: 1px; margin-bottom: 8px; }
+        .saldo .numero { font-family: 'Oswald', sans-serif; font-size: 36px; font-weight: 700; }
+        /* CATEGORIAS PRINCIPAIS */
+        .cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+        .cat-btn { padding: 14px 10px; background: white; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 700; text-align: center; transition: all 0.15s; color: var(--grafite); line-height: 1.4; }
+        .cat-btn:hover { border-color: var(--laranja); background: #fff5f5; }
+        .cat-btn.active { background: var(--laranja); color: white; border-color: var(--laranja); }
+        /* SUBCATEGORIAS */
+        .subcat-area { background: white; border-radius: 8px; padding: 14px; margin-bottom: 16px; border: 2px solid var(--laranja); animation: fadeIn 0.2s ease; }
+        .subcat-area h4 { font-family: 'Oswald', sans-serif; font-size: 13px; color: var(--laranja); margin-bottom: 10px; letter-spacing: 0.5px; }
+        .subcat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .subcat-btn { padding: 10px 8px; background: var(--papel); border: 2px solid #ddd; border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: 600; text-align: center; transition: all 0.15s; color: var(--grafite); }
+        .subcat-btn:hover { border-color: var(--laranja); background: #fff5f5; }
+        .subcat-btn.active { background: var(--grafite); color: white; border-color: var(--grafite); }
+        /* PROGRESSO */
+        .progress-bar { display: flex; align-items: center; gap: 6px; margin-bottom: 20px; margin-top: 8px; }
+        .progress-step { display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; color: var(--linha); }
+        .progress-step.done { color: var(--verde); }
+        .progress-step.active { color: var(--laranja); }
+        .progress-dot { width: 22px; height: 22px; border-radius: 50%; background: #ddd; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: white; flex-shrink: 0; }
+        .progress-step.done .progress-dot { background: var(--verde); }
+        .progress-step.active .progress-dot { background: var(--laranja); }
+        .progress-line { flex: 1; height: 2px; background: #ddd; }
+        .progress-line.done { background: var(--verde); }
+        /* REGIÃO INFO */
+        .regiao-info { background: #e8f5e9; border: 1px solid #a5d6a7; border-radius: 8px; padding: 12px 14px; margin-top: 8px; font-size: 12px; color: #2E7D5B; display: none; }
+        .regiao-info strong { display: block; margin-bottom: 2px; font-size: 13px; }
+        /* HINT DESC */
+        .desc-hint { font-size: 11px; color: var(--linha); margin-top: 4px; font-style: italic; }
+        /* STATS */
+        .stats-strip { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+        .stat-box { background: white; border-radius: 8px; padding: 12px 8px; text-align: center; border-left: 3px solid var(--laranja); }
+        .stat-num { font-family: 'Oswald', sans-serif; font-size: 22px; font-weight: 700; color: var(--laranja); }
+        .stat-label { font-size: 10px; color: var(--linha); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+        /* CADASTRO PROF */
+        .categoria-select { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+        .categoria-btn { padding: 12px; background: white; border: 2px solid var(--linha); border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600; text-align: center; }
+        .categoria-btn:hover { border-color: var(--laranja); }
+        .categoria-btn.active { background: var(--laranja); color: white; border-color: var(--laranja); }
+        .especialidades { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+        .checkbox-item { display: flex; align-items: center; gap: 8px; }
+        .checkbox-item input[type="checkbox"] { width: auto; cursor: pointer; }
+        .checkbox-item label { margin: 0; font-weight: 400; font-size: 12px; cursor: pointer; text-transform: none; }
+        .pix-info { background: white; padding: 20px; border-radius: 8px; margin: 16px 0; border: 2px dashed var(--laranja); text-align: center; }
+        .pix-chave { background: var(--papel); padding: 12px; border-radius: 4px; font-family: monospace; font-size: 12px; margin: 12px 0; word-break: break-all; color: var(--grafite); }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: white; padding: 24px; border-radius: 8px; max-width: 500px; max-height: 80vh; overflow-y: auto; width: 90%; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .modal-header h2 { font-family: 'Oswald', sans-serif; font-size: 18px; font-weight: 700; }
+        .btn-close { background: none; border: none; font-size: 24px; cursor: pointer; color: var(--linha); }
+        .admin-panel { background: var(--grafite); color: white; padding: 16px; border-radius: 8px; margin-bottom: 16px; }
+        .admin-panel h3 { font-family: 'Oswald', sans-serif; margin-bottom: 12px; font-size: 14px; }
+        footer { background: var(--grafite); color: var(--linha); padding: 24px 16px; text-align: center; font-size: 12px; margin-top: 40px; }
+        footer a { color: var(--laranja); text-decoration: none; cursor: pointer; font-weight: 600; }
+        .sobre-content { font-size: 14px; line-height: 1.6; color: var(--grafite); }
+        .sobre-content h3 { font-family: 'Oswald', sans-serif; font-size: 16px; margin: 16px 0 8px 0; color: var(--laranja); }
+        .sobre-content p { margin-bottom: 12px; }
+        .sobre-contact { background: var(--papel); padding: 12px; border-radius: 4px; margin-top: 16px; font-size: 13px; }
+        .descricao-app { background: white; padding: 16px; border-radius: 8px; margin: 20px 0; border-left: 4px solid var(--laranja); font-size: 13px; color: var(--grafite); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes countUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        .contador-num.loaded { animation: countUp 0.4s ease; }
+    </style>
 </head>
 <body>
+    <header>
+        <a href="#" class="logo" onclick="location.reload(); return false;">
+            <svg class="logo-hexagon" viewBox="0 0 100 115" xmlns="http://www.w3.org/2000/svg" style="width:56px;height:64px;">
+                <polygon points="50,4 94,28 94,76 50,100 6,76 6,28" fill="#E00000"/>
+                <text x="50" y="58" font-family="Oswald,sans-serif" font-size="30" font-weight="900" fill="white" text-anchor="middle" dominant-baseline="middle">FCS</text>
+                <text x="50" y="80" font-family="Oswald,sans-serif" font-size="11" font-weight="700" fill="white" text-anchor="middle" dominant-baseline="middle" letter-spacing="1">CENTRAL</text>
+            </svg>
+            <div class="logo-text">
+                <h1><span style="color:#E00000;">FOSTER</span> <span style="color:white;">CENTRAL</span></h1>
+                <p style="color:#E00000;font-size:9px;letter-spacing:1.5px;">DE SERVIÇOS</p>
+            </div>
+        </a>
+        <div class="header-actions" id="headerActions"></div>
+    </header>
 
-<div class="header">
-  <div class="header-top">
-    <div class="logo-area">
-      <div class="logo-box">
-        <!-- LOGO PREVITA SVG -->
-        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="36" height="36" rx="9" fill="#e8f5ee"/>
-          <path d="M18 3L5 9.5V18c0 7.5 5.5 14 13 15.5C25.5 32 31 25.5 31 18V9.5L18 3z" fill="#1a7a4a"/>
-          <rect x="15.5" y="11" width="5" height="11" rx="2.5" fill="white"/>
-          <rect x="11" y="15.5" width="14" height="5" rx="2.5" fill="white"/>
-        </svg>
-      </div>
-      <div class="logo-text">
-        <h1>PREVITA</h1>
-        <p>Prevenção + Vida</p>
-      </div>
+    <div class="tabs">
+        <button class="tab active" onclick="mudarAba('pedido',this)">🏗️ PEDIR SERVIÇO</button>
+        <button class="tab" onclick="mudarAba('cliente',this)">👤 SOU CLIENTE</button>
+        <button class="tab" onclick="mudarAba('painel',this)">🔧 SOU PROF.</button>
+        <button class="tab" onclick="mudarAba('buscar',this)">🔍 BUSCAR</button>
+        <button class="tab" onclick="mudarAba('avaliacoes',this)">⭐ AVALIAÇÕES</button>
+        <button class="tab" onclick="mudarAba('creditos',this)">💰 CRÉDITOS</button>
     </div>
-    <div class="header-data" id="headerData"></div>
-  </div>
-  <div class="membro-bar">
-    <span style="font-size:15px" id="membroIconeHeader">👤</span>
-    <span class="membro-nome" id="membroNomeHeader">Selecione um membro</span>
-    <div class="alerta-badge" id="badgeHoje">✅</div>
-    <button class="membro-trocar" onclick="irPara('membros',document.querySelectorAll('.tab-btn')[4])">Trocar</button>
-  </div>
-</div>
 
-<!-- REMÉDIOS -->
-<div class="tela ativa" id="tela-remedios">
-  <div class="stats-row">
-    <div class="stat-box"><div class="stat-num" id="statTotal">0</div><div class="stat-label">Remédios</div></div>
-    <div class="stat-box"><div class="stat-num" id="statTomados" style="color:var(--laranja)">0</div><div class="stat-label">Tomados</div></div>
-    <div class="stat-box"><div class="stat-num" id="statPendentes" style="color:#ef4444">0</div><div class="stat-label">Pendentes</div></div>
-  </div>
-  <div class="card">
-    <div class="card-titulo">💊 Remédios Contínuos</div>
-    <div id="listaRemedios"><div class="vazio">Nenhum remédio.<br>Adicione abaixo! 👇</div></div>
-  </div>
-  <button class="btn-verde" onclick="abrirModal()">➕ Adicionar Remédio</button>
-  <div class="rodape">
-    ⚠️ Este app não substitui prescrição ou orientação médica.<br>
-    <strong>Desenvolvido por Wilson Foster</strong><br>
-    ACS – UBS São Pedro – Santana de Parnaíba – SP<br>
-    Foster Engenharia &amp; Desenvolvimento Digital
-  </div>
-</div>
+    <div class="container">
 
-<!-- AGENDA -->
-<div class="tela" id="tela-agenda">
-  <div class="card">
-    <div class="card-titulo">📅 Agenda de Hoje</div>
-    <div id="agendaHoje"><div class="vazio">Sem remédios agendados.</div></div>
-  </div>
-  <div class="card">
-    <div class="card-titulo">📊 Progresso</div>
-    <div style="display:flex;justify-content:space-between;font-size:11px;font-weight:700;color:var(--cinza-texto)">
-      <span>Doses tomadas</span><span id="progrTexto">0 / 0</span>
-    </div>
-    <div class="progresso-bar"><div class="progresso-fill" id="progrBar" style="width:0%"></div></div>
-    <div style="font-size:10px;color:var(--cinza-texto);font-weight:600;text-align:center" id="progrMsg">Cadastre seus remédios!</div>
-  </div>
-  <div class="card" style="background:var(--verde-claro);border:2px solid var(--verde)">
-    <div style="font-size:12px;font-weight:800;color:var(--verde);margin-bottom:7px">🔔 Alertas Sonoros</div>
-    <div style="font-size:10px;color:var(--cinza-texto);font-weight:600;margin-bottom:9px">Mantenha o app aberto para receber alertas com som e vibração.</div>
-    <div style="display:flex;gap:7px">
-      <button class="btn-laranja" onclick="testarSom()" style="flex:1;border-radius:9px;padding:9px">🔔 Testar Som</button>
-      <button class="btn-verde" onclick="instalarPWA()" style="flex:1">📲 Instalar</button>
-    </div>
-  </div>
-</div>
+        <!-- ABA 1: PEDIR SERVIÇO -->
+        <div id="pedido" class="tab-content active">
+            <div class="descricao-app" style="margin-top:20px;">
+                <strong>🏗️ Foster Central de Serviços</strong><br>
+                Encontre o profissional certo para sua obra em poucos cliques. Especialistas em construção, engenharia e arquitetura em todo o Brasil.
+            </div>
 
-<!-- RECEITA -->
-<div class="tela" id="tela-receita">
-  <div class="card" style="background:linear-gradient(135deg,#1565c0,#0d47a1);color:white;border:none">
-    <div style="display:flex;align-items:center;gap:9px;margin-bottom:5px">
-      <div style="font-size:26px">🏥</div>
-      <div>
-        <div style="font-size:13px;font-weight:900">Importar Receita</div>
-        <div style="font-size:9px;opacity:0.8;font-weight:600">UBS São Pedro – Santana de Parnaíba – SP</div>
-      </div>
-    </div>
-    <div style="font-size:10px;opacity:0.85;font-weight:600">Tire foto da receita física ou cole os nomes. A IA configura os horários automaticamente!</div>
-  </div>
+            <!-- ESTATÍSTICAS -->
+            <div class="stats-strip" id="statsStrip" style="display:none;">
+                <div class="stat-box"><div class="stat-num" id="statProf">0</div><div class="stat-label">Profissionais</div></div>
+                <div class="stat-box"><div class="stat-num" id="statChamados">0</div><div class="stat-label">Pedidos Ativos</div></div>
+                <div class="stat-box"><div class="stat-num" id="statCidades">0</div><div class="stat-label">Regiões</div></div>
+            </div>
 
-  <!-- FOTO DA RECEITA -->
-  <div class="card">
-    <div class="card-titulo">📷 Fotografar Receita Física</div>
-    <div style="font-size:11px;color:var(--cinza-texto);font-weight:600;margin-bottom:9px">Tire uma foto da sua receita médica e a IA vai ler os remédios automaticamente.</div>
-    <input type="file" id="fotoInput" accept="image/*" capture="environment" style="display:none" onchange="processarFoto(this)">
-    <button class="btn-verde" onclick="document.getElementById('fotoInput').click()" style="margin-bottom:8px">
-      📷 Abrir Câmera / Galeria
-    </button>
-    <img id="fotoPreview" alt="Foto da receita">
-    <div id="fotoStatus" style="display:none;text-align:center;padding:9px;font-size:12px;font-weight:700;color:var(--verde)">⏳ Lendo receita com IA...</div>
-  </div>
+            <!-- BARRA DE PROGRESSO -->
+            <div class="progress-bar" id="progressBar" style="display:none;">
+                <div class="progress-step" id="prog1"><div class="progress-dot">1</div><span>Categoria</span></div>
+                <div class="progress-line" id="pline1"></div>
+                <div class="progress-step" id="prog2"><div class="progress-dot">2</div><span>Serviço</span></div>
+                <div class="progress-line" id="pline2"></div>
+                <div class="progress-step" id="prog3"><div class="progress-dot">3</div><span>Dados</span></div>
+                <div class="progress-line" id="pline3"></div>
+                <div class="progress-step" id="prog4"><div class="progress-dot">4</div><span>Enviar</span></div>
+            </div>
 
-  <!-- DIGITAR RECEITA -->
-  <div class="card">
-    <div class="card-titulo">⌨️ Ou Digite / Cole os Remédios</div>
-    <div class="campo">
-      <textarea id="receitaTexto" rows="4" placeholder="Losartana Potássica 50mg&#10;Sinvastatina 20mg&#10;Metoprolol 50mg&#10;Hidroclorotiazida 25mg"></textarea>
-    </div>
-    <button class="btn-verde" onclick="processarReceita()" id="btnProcessar">🤖 Processar e Criar Alertas</button>
-    <div id="receitaStatus" style="display:none;text-align:center;padding:9px;font-size:12px;font-weight:700;color:var(--verde)">⏳ Processando com IA...</div>
-  </div>
+            <!-- PASSO 1: CATEGORIAS -->
+            <div id="step1">
+                <div class="form-group">
+                    <label>PASSO 1 — ESCOLHA A CATEGORIA</label>
+                    <div class="cat-grid" id="catGrid"></div>
+                </div>
+            </div>
 
-  <div class="card" id="receitaResultado" style="display:none">
-    <div class="card-titulo">✅ Remédios Identificados</div>
-    <div id="receitaLista"></div>
-    <div style="display:flex;gap:7px;margin-top:11px">
-      <button class="btn-verde" onclick="importarSelecionados()" style="flex:2">➕ Adicionar aos Remédios</button>
-      <button class="btn-cinza" onclick="limparReceita()" style="flex:1">🗑️</button>
-    </div>
-  </div>
+            <!-- PASSO 2: SUBCATEGORIAS -->
+            <div id="step2" style="display:none;">
+                <div class="subcat-area">
+                    <h4 id="subcatTitulo">SELECIONE O SERVIÇO</h4>
+                    <div class="subcat-grid" id="subcatGrid"></div>
+                </div>
+                <button class="btn-secondary" style="width:100%;margin-bottom:12px;" onclick="voltarStep(1)">← Voltar às categorias</button>
+            </div>
 
-  <div class="card" style="background:var(--verde-claro);border:2px solid var(--verde)">
-    <div style="font-size:11px;font-weight:800;color:var(--verde);margin-bottom:4px">💡 Como usar</div>
-    <div style="font-size:10px;color:var(--cinza-texto);font-weight:600;line-height:1.7">
-      1. Tire foto da receita médica físicab<strong>OU</strong> cole os nomes<br>
-      2. Clique em Processar<br>
-      3. A IA identifica e define horários ideais<br>
-      4. Confirme e os alertas são criados! 🔔
-    </div>
-  </div>
-</div>
+            <!-- PASSO 3: DADOS DO PEDIDO -->
+            <div id="step3" style="display:none;">
+                <div style="background:white;padding:12px 14px;border-radius:8px;margin-bottom:16px;border-left:4px solid var(--laranja);">
+                    <div style="font-size:11px;color:var(--linha);">CATEGORIA / SERVIÇO SELECIONADO</div>
+                    <div style="font-weight:700;font-size:14px;margin-top:2px;" id="resumoSelecao">—</div>
+                </div>
 
-<!-- ASSISTENTE IA -->
-<div class="tela" id="tela-ia">
-  <div class="card" style="background:linear-gradient(135deg,#1a7a4a,#0d4f2e);color:white;border:none;text-align:center;padding:28px 20px">
-    <div style="font-size:56px;margin-bottom:10px">🤖</div>
-    <div style="font-size:20px;font-weight:900;margin-bottom:4px">PREV</div>
-    <div style="font-size:12px;opacity:0.85;font-weight:600;margin-bottom:16px">Assistente de Saúde PREVITA<br>Powered by Claude AI</div>
-    <a href="https://claude.ai" target="_blank" style="display:block;background:white;color:#1a7a4a;border-radius:14px;padding:14px;font-size:15px;font-weight:900;text-decoration:none;font-family:Nunito,sans-serif;margin-bottom:10px">
-      💬 Abrir Assistente PREV
-    </a>
-    <div style="font-size:10px;opacity:0.75;font-weight:600">Abre o Claude AI gratuitamente no seu navegador</div>
-  </div>
+                <div class="form-group">
+                    <label>Seu nome</label>
+                    <input type="text" id="nomeCliente" placeholder="Ex: João Silva">
+                </div>
+                <div class="form-group">
+                    <label>Telefone / WhatsApp</label>
+                    <input type="tel" id="telefoneCliente" placeholder="(11) 9999-9999" oninput="formatarTelefoneCliente(this)">
+                </div>
+                <div class="form-group">
+                    <label>Cidade / Região</label>
+                    <input type="text" id="bairroCliente" placeholder="Ex: São Paulo, SP" oninput="verificarRegiao(this.value)">
+                    <div class="regiao-info" id="regiaoInfo">
+                        <strong id="regiaoNome"></strong>
+                        <span id="regiaoMensagem"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Descrição do projeto</label>
+                    <textarea id="descricaoCliente" placeholder="Descreva seu projeto..."></textarea>
+                    <div class="desc-hint" id="descHint"></div>
+                </div>
 
-  <div class="card">
-    <div class="card-titulo">💡 Como usar o PREV</div>
-    <div style="font-size:12px;color:var(--cinza-texto);font-weight:600;line-height:1.8">
-      1. Clique em <strong>"Abrir Assistente PREV"</strong><br>
-      2. Crie uma conta gratuita no Claude AI<br>
-      3. Pergunte sobre seus remédios à vontade!<br>
-      4. Volte ao PREVITA para registrar suas doses ✅
-    </div>
-  </div>
+                <button class="btn-find" onclick="enviarPedidoNovo()">🚀 ENCONTRAR PROFISSIONAIS AGORA</button>
+                <button class="btn-secondary" style="width:100%;margin-top:8px;" onclick="voltarStep(2)">← Voltar ao serviço</button>
+            </div>
 
-  <div class="card" style="background:var(--laranja-claro);border:2px solid var(--laranja)">
-    <div style="font-size:12px;font-weight:800;color:var(--laranja);margin-bottom:8px">💊 Sugestões de perguntas</div>
-    <div style="display:flex;flex-direction:column;gap:6px">
-      <a href="https://claude.ai" target="_blank" style="text-align:left;background:white;border:1px solid #fcd9b2;border-radius:8px;padding:8px 11px;font-size:11px;font-weight:700;cursor:pointer;font-family:Nunito,sans-serif;text-decoration:none;color:var(--texto);display:block">💊 Pra que serve a Metformina?</a>
-      <a href="https://claude.ai" target="_blank" style="text-align:left;background:white;border:1px solid #fcd9b2;border-radius:8px;padding:8px 11px;font-size:11px;font-weight:700;cursor:pointer;font-family:Nunito,sans-serif;text-decoration:none;color:var(--texto);display:block">⚠️ Losartana com Aspirina?</a>
-      <a href="https://claude.ai" target="_blank" style="text-align:left;background:white;border:1px solid #fcd9b2;border-radius:8px;padding:8px 11px;font-size:11px;font-weight:700;cursor:pointer;font-family:Nunito,sans-serif;text-decoration:none;color:var(--texto);display:block">⏰ Horário ideal para remédio de pressão?</a>
-      <a href="https://claude.ai" target="_blank" style="text-align:left;background:white;border:1px solid #fcd9b2;border-radius:8px;padding:8px 11px;font-size:11px;font-weight:700;cursor:pointer;font-family:Nunito,sans-serif;text-decoration:none;color:var(--texto);display:block">❓ Esqueci o remédio, e agora?</a>
-    </div>
-  </div>
-
-  <div class="rodape">
-    ⚠️ Este app não substitui prescrição ou orientação médica.<br>
-    <strong>Desenvolvido por Wilson Foster</strong><br>
-    ACS – UBS São Pedro – Santana de Parnaíba – SP<br>
-    Foster Engenharia &amp; Desenvolvimento Digital
-  </div>
-</div>
-
-<!-- FAMÍLIA -->
-<div class="tela" id="tela-membros">
-  <div class="card" style="background:linear-gradient(135deg,var(--verde),#145c38);color:white;border:none">
-    <div style="font-size:14px;font-weight:900;margin-bottom:3px">👨‍👩‍👧‍👦 Membros da Família</div>
-    <div style="font-size:10px;opacity:0.8;font-weight:600">Cada membro tem seus próprios remédios e alertas independentes.</div>
-  </div>
-  <div id="listaMembros"></div>
-  <button class="btn-verde" onclick="abrirModalMembro()">➕ Adicionar Membro</button>
-  <div class="rodape">
-    Dados armazenados apenas neste dispositivo. LGPD – Lei 13.709/2018<br>
-    <strong>Desenvolvido por Wilson Foster</strong><br>
-    ACS – UBS São Pedro – Santana de Parnaíba – SP<br>
-    Foster Engenharia &amp; Desenvolvimento Digital
-  </div>
-</div>
-
-<!-- TABS -->
-<nav class="nav-tabs">
-  <button class="tab-btn ativa" onclick="irPara('remedios',this)"><span class="icon">💊</span>Remédios</button>
-  <button class="tab-btn" onclick="irPara('agenda',this)"><span class="icon">📅</span>Agenda</button>
-  <button class="tab-btn" onclick="irPara('receita',this)"><span class="icon">📋</span>Receita</button>
-  <button class="tab-btn" onclick="irPara('ia',this)"><span class="icon">🤖</span>PREV</button>
-  <button class="tab-btn" onclick="irPara('membros',this)"><span class="icon">👨‍👩‍👧</span>Família</button>
-</nav>
-
-<!-- MODAL REMÉDIO -->
-<div class="modal-overlay" id="modalRemedio">
-  <div class="modal" style="position:relative">
-    <button class="modal-fechar" onclick="fecharModal()">✕</button>
-    <h2>➕ Novo Remédio</h2>
-    <div class="campo"><label>Nome *</label><input type="text" id="mNome" placeholder="Ex: Losartana 50mg"></div>
-    <div class="campo"><label>Dosagem</label><input type="text" id="mDose" placeholder="Ex: 1 comprimido"></div>
-    <div class="campo"><label>Horários</label><div class="horarios-grid" id="horariosGrid"></div></div>
-    <div class="campo"><label>Observação</label><input type="text" id="mObs" placeholder="Ex: Tomar com água"></div>
-    <button class="btn-verde" onclick="salvarRemedio()" style="margin-top:7px">💾 Salvar</button>
-  </div>
-</div>
-
-<!-- MODAL MEMBRO -->
-<div class="modal-overlay" id="modalMembro">
-  <div class="modal" style="position:relative">
-    <button class="modal-fechar" onclick="fecharModalMembro()">✕</button>
-    <h2>👤 Novo Membro</h2>
-    <div class="campo"><label>Nome *</label><input type="text" id="mmNome" placeholder="Ex: Vovó Maria"></div>
-    <div class="campo">
-      <label>Ícone</label>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:5px" id="iconeGrid"></div>
-    </div>
-    <button class="btn-verde" onclick="salvarMembro()" style="margin-top:7px">💾 Salvar</button>
-  </div>
-</div>
-
-<script>
-const HORARIOS=['06:00','07:00','08:00','09:00','12:00','14:00','18:00','20:00','21:00','22:00'];
-const EMOJIS=['💊','🔵','🔴','🟡','🟢','🟠','⚪','🟣'];
-const CORES=['#e8f5ee','#e8f0ff','#ffe8e8','#fff8e1','#e8fff4','#fff3e8','#f5f5f5','#f3e8ff'];
-const API_URL='https://api.anthropic.com/v1/messages';
-const API_HEADERS={'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true'};
-
-let membros=JSON.parse(localStorage.getItem('pv_membros')||'null');
-if(!membros){membros=[{id:1,nome:'Eu',icone:'👤'}];localStorage.setItem('pv_membros',JSON.stringify(membros));}
-
-let membroAtualId=parseInt(localStorage.getItem('pv_membro_atual')||membros[0].id);
-let membroAtual=membros.find(m=>m.id===membroAtualId)||membros[0];
-
-function chaveM(s){return 'pv_'+s+'_'+membroAtual.id;}
-function hoje(){return new Date().toISOString().split('T')[0];}
-
-let remedios=JSON.parse(localStorage.getItem(chaveM('remedios'))||'[]');
-let tomadosHoje=JSON.parse(localStorage.getItem(chaveM('tomados')+'_'+hoje())||'{}');
-let ultimosAlertas=JSON.parse(localStorage.getItem(chaveM('alertas')+'_'+hoje())||'{}');
-let receitaProcessada=[];
-let horasSel=[];
-let iconeSelMembro='👴';
-let deferredPrompt=null;
-let audioCtx=null;
-
-window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;});
-
-function trocarMembro(id){
-  membroAtualId=id;membroAtual=membros.find(m=>m.id===id);
-  localStorage.setItem('pv_membro_atual',id);
-  remedios=JSON.parse(localStorage.getItem(chaveM('remedios'))||'[]');
-  tomadosHoje=JSON.parse(localStorage.getItem(chaveM('tomados')+'_'+hoje())||'{}');
-  ultimosAlertas=JSON.parse(localStorage.getItem(chaveM('alertas')+'_'+hoje())||'{}');
-  atualizarHeader();renderRemedios();renderMembros();
-  mostrarToast('👤 '+membroAtual.nome+' selecionado!');
-}
-
-function irPara(tela,btn){
-  document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa'));
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('ativa'));
-  document.getElementById('tela-'+tela).classList.add('ativa');
-  btn.classList.add('ativa');
-  if(tela==='agenda')renderAgenda();
-  if(tela==='membros')renderMembros();
-}
-
-function atualizarHeader(){
-  const now=new Date();
-  const dias=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-  const meses=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-  document.getElementById('headerData').innerHTML=`${dias[now.getDay()]}, ${now.getDate()} ${meses[now.getMonth()]}<br>${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-  document.getElementById('membroIconeHeader').textContent=membroAtual.icone||'👤';
-  document.getElementById('membroNomeHeader').textContent=membroAtual.nome;
-  let pendentes=0;
-  const agoraStr=`${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-  remedios.forEach(r=>r.horarios.forEach(h=>{if(h<=agoraStr&&!tomadosHoje[r.id+'_'+h])pendentes++;}));
-  document.getElementById('badgeHoje').textContent=pendentes>0?pendentes+'⚠️':'✅';
-}
-
-function renderRemedios(){
-  const lista=document.getElementById('listaRemedios');
-  if(!remedios.length){lista.innerHTML='<div class="vazio">Nenhum remédio cadastrado.<br>Adicione abaixo! 👇</div>';}
-  else{
-    lista.innerHTML=remedios.map((r,i)=>{
-      const tom=r.horarios.filter(h=>tomadosHoje[r.id+'_'+h]).length,total=r.horarios.length;
-      return `<div class="remedio-item">
-        <div class="remedio-cor" style="background:${CORES[i%CORES.length]}">${EMOJIS[i%EMOJIS.length]}</div>
-        <div class="remedio-info">
-          <div class="remedio-nome">${r.nome}</div>
-          <div class="remedio-dose">${r.dose||'1 unidade'}${r.obs?' · '+r.obs:''}</div>
-          <div class="remedio-horarios">${r.horarios.map(h=>`<span class="horario-badge">${h}</span>`).join('')}</div>
-          ${tom>0?`<div style="font-size:9px;color:var(--verde);font-weight:700;margin-top:2px">✅ ${tom}/${total} hoje</div>`:''}
+            <!-- CONFIRMAÇÃO -->
+            <div id="confirmacaoPedido" style="display:none;">
+                <div class="protocolo">
+                    <h3>✅ Pedido enviado com sucesso!</h3>
+                    <div class="numero" id="numeroProtocolo">#0000</div>
+                    <p style="font-size:13px;margin-top:8px;">Profissionais da sua região já estão vendo seu pedido.<br>Aguarde o contato em breve!</p>
+                </div>
+                <button class="btn-secondary" style="width:100%;margin-top:8px;" onclick="novoPedido()">+ Fazer outro pedido</button>
+            </div>
         </div>
-        <button class="check-btn ${tom===total&&total>0?'tomado':''}" onclick="marcarTodos(${r.id})">${tom===total&&total>0?'✓':'○'}</button>
-      </div>`;
-    }).join('');
-  }
-  atualizarStats();
-}
 
-function marcarTodos(id){
-  const r=remedios.find(x=>x.id===id);if(!r)return;
-  const todos=r.horarios.every(h=>tomadosHoje[id+'_'+h]);
-  r.horarios.forEach(h=>{if(todos)delete tomadosHoje[id+'_'+h];else tomadosHoje[id+'_'+h]=true;});
-  localStorage.setItem(chaveM('tomados')+'_'+hoje(),JSON.stringify(tomadosHoje));
-  renderRemedios();atualizarHeader();
-}
+        <!-- ABA 2: SOU CLIENTE -->
+        <div id="cliente" class="tab-content">
+            <div id="clienteLoginArea" style="margin-top:20px;">
+                <div style="background:white;padding:20px;border-radius:8px;border-left:4px solid var(--laranja);margin-bottom:20px;">
+                    <h3 style="font-family:Oswald;margin-bottom:8px;">👤 ÁREA DO CLIENTE</h3>
+                    <p style="font-size:13px;color:var(--linha);">Acesse para acompanhar seus pedidos e histórico de serviços.</p>
+                </div>
+                <div class="form-group"><label>E-mail</label><input type="email" id="emailCliente" placeholder="seu@email.com"></div>
+                <div class="form-group"><label>Senha</label><input type="password" id="senhaCliente" placeholder="Sua senha"></div>
+                <button class="btn-primary" onclick="loginCliente()">ENTRAR</button>
+                <button class="btn-secondary" style="width:100%;margin-top:8px;" onclick="mostrarCadastroCliente()">CADASTRE-SE</button>
+            </div>
+            <div id="clienteCadastroArea" style="display:none;margin-top:20px;">
+                <h3 style="font-family:Oswald;margin-bottom:16px;">CRIAR CONTA CLIENTE</h3>
+                <div class="form-group"><label>Nome completo</label><input type="text" id="nomeClienteCad" placeholder="Seu nome completo"></div>
+                <div class="form-group"><label>Telefone / WhatsApp</label><input type="tel" id="telefoneClienteCad" placeholder="(11) 9999-9999"></div>
+                <div class="form-group"><label>Cidade / Estado</label><input type="text" id="cidadeClienteCad" placeholder="Ex: São Paulo, SP"></div>
+                <div class="form-group"><label>E-mail</label><input type="email" id="emailClienteCad" placeholder="seu@email.com"></div>
+                <div class="form-group"><label>Senha</label><input type="password" id="senhaClienteCad" placeholder="Crie uma senha"></div>
+                <button class="btn-primary" onclick="cadastrarCliente()" style="margin-top:16px;">CADASTRAR</button>
+                <button class="btn-secondary" style="width:100%;margin-top:8px;" onclick="voltarLoginCliente()">VOLTAR</button>
+            </div>
+            <div id="clientePainelLogado" style="display:none;margin-top:20px;">
+                <div style="background:var(--grafite);color:white;padding:16px;border-radius:8px;margin-bottom:16px;">
+                    <h3 style="font-family:Oswald;font-size:14px;" id="clienteBoasVindas">Olá, Cliente!</h3>
+                    <p style="font-size:12px;color:var(--linha);margin-top:4px;">Seus pedidos recentes</p>
+                </div>
+                <h3 style="font-family:Oswald;margin-bottom:16px;">MEUS PEDIDOS</h3>
+                <div id="listaPedidosCliente"><p style="text-align:center;color:var(--linha);">Carregando seus pedidos...</p></div>
+            </div>
+        </div>
 
-function atualizarStats(){
-  let tom=0,pend=0;
-  remedios.forEach(r=>r.horarios.forEach(h=>{if(tomadosHoje[r.id+'_'+h])tom++;else pend++;}));
-  document.getElementById('statTotal').textContent=remedios.length;
-  document.getElementById('statTomados').textContent=tom;
-  document.getElementById('statPendentes').textContent=pend;
-}
+        <!-- ABA 3: SOU PROFISSIONAL -->
+        <div id="painel" class="tab-content">
+            <div id="loginArea" style="margin-top:20px;">
+                <div style="background:white;padding:20px;border-radius:8px;border-left:4px solid var(--laranja);margin-bottom:20px;">
+                    <h3 style="font-family:Oswald;margin-bottom:8px;">🔧 ÁREA DO PROFISSIONAL</h3>
+                    <p style="font-size:13px;color:var(--linha);">Acesse projetos, gerencie seus créditos e conecte com clientes.</p>
+                </div>
+                <div class="form-group"><label>E-mail</label><input type="email" id="emailProf" placeholder="seu@email.com"></div>
+                <div class="form-group"><label>Senha</label><input type="password" id="senhaProf" placeholder="Sua senha"></div>
+                <button class="btn-primary" onclick="loginProf()">ENTRAR</button>
+                <button class="btn-secondary" style="width:100%;" onclick="mostrarCadastro()">CADASTRE-SE</button>
+            </div>
+            <div id="cadastroArea" style="display:none;margin-top:20px;">
+                <h3 style="font-family:Oswald;margin-bottom:16px;">CRIAR CONTA</h3>
+                <div class="form-group"><label>Nome completo</label><input type="text" id="nomeProf" placeholder="Seu nome"></div>
+                <div class="form-group"><label>CREA/Inscrição (opcional)</label><input type="text" id="creaProf" placeholder="Ex: CREA 1234567"></div>
+                <div class="form-group"><label>Telefone / WhatsApp</label><input type="tel" id="telefoneProf" placeholder="(11) 9999-9999" oninput="formatarTelefone(this)"></div>
+                <div class="form-group">
+                    <label>Senha <small style="font-weight:400;text-transform:none;">(mín. 8 caracteres)</small></label>
+                    <input type="password" id="senhaCadastro" placeholder="Crie uma senha forte" oninput="verificarForcaSenha(this.value)">
+                    <div id="forcaSenhaBar" style="height:4px;border-radius:2px;margin-top:6px;background:#eee;overflow:hidden;"><div id="forcaSenhaFill" style="height:100%;width:0%;transition:width 0.3s,background 0.3s;"></div></div>
+                    <small id="forcaSenhaTexto" style="font-size:11px;color:var(--linha);margin-top:2px;display:block;"></small>
+                </div>
+                <div class="form-group"><label>E-mail</label><input type="email" id="emailCadastro" placeholder="seu@email.com"></div>
+                <div class="form-group"><label>CATEGORIA PRINCIPAL</label><div class="categoria-select" id="categoriasCadastro"></div></div>
+                <div id="especialidadesArea" style="display:none;">
+                    <label>ESPECIALIDADES (Selecione as suas)</label>
+                    <div class="especialidades" id="especialidades"></div>
+                </div>
+                <button class="btn-primary" onclick="cadastrarProf()" style="margin-top:16px;">CADASTRAR</button>
+                <button class="btn-secondary" style="width:100%;margin-top:8px;" onclick="voltarLogin()">VOLTAR</button>
+            </div>
+            <div id="painelLogado" style="display:none;">
+                <div class="admin-panel" id="adminPanel" style="display:none;">
+                    <h3>⚙️ PAINEL ADMIN</h3>
+                    <button class="btn-secondary" style="width:100%;" onclick="abrirModalAdmin()">GERENCIAR PROFISSIONAIS</button>
+                </div>
+                <div class="saldo"><h3>SEUS CRÉDITOS</h3><div class="numero" id="saldoCreditos">0</div></div>
+                <h3 style="font-family:Oswald;margin-top:20px;margin-bottom:16px;">PROJETOS DISPONÍVEIS</h3>
+                <div id="listaChamados"></div>
+            </div>
+        </div>
 
-function abrirModal(){
-  horasSel=[];['mNome','mDose','mObs'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('horariosGrid').innerHTML=HORARIOS.map(h=>`<button class="horario-toggle" onclick="toggleHorario(this,'${h}')">${h}</button>`).join('');
-  document.getElementById('modalRemedio').classList.add('aberto');
-}
-function fecharModal(){document.getElementById('modalRemedio').classList.remove('aberto');}
-function toggleHorario(btn,h){
-  if(horasSel.includes(h)){horasSel=horasSel.filter(x=>x!==h);btn.classList.remove('sel');}
-  else{horasSel.push(h);btn.classList.add('sel');}
-}
-function salvarRemedio(){
-  const nome=document.getElementById('mNome').value.trim();
-  if(!nome){alert('Digite o nome!');return;}
-  if(!horasSel.length){alert('Selecione um horário!');return;}
-  remedios.push({id:Date.now(),nome,dose:document.getElementById('mDose').value.trim(),horarios:horasSel.sort(),obs:document.getElementById('mObs').value.trim()});
-  localStorage.setItem(chaveM('remedios'),JSON.stringify(remedios));
-  fecharModal();renderRemedios();atualizarHeader();mostrarToast('✅ Remédio adicionado!');
-}
+        <!-- ABA 4: BUSCAR -->
+        <div id="buscar" class="tab-content">
+            <div style="margin-top:20px;">
+                <div class="form-group"><label>BUSCAR PROFISSIONAL</label><input type="text" id="buscaInput" placeholder="Ex: Pedreiro, Elétrica, Engenheiro..." oninput="buscarProfissionais()"></div>
+                <div class="form-group">
+                    <label>FILTRAR POR CATEGORIA</label>
+                    <select id="filtroCategoriaSelect" onchange="buscarProfissionais()"><option value="">Todas as categorias</option></select>
+                </div>
+                <div id="resultadosBusca"><p style="text-align:center;color:var(--linha);margin-top:20px;">Digite para buscar profissionais</p></div>
+            </div>
+        </div>
 
-function renderAgenda(){
-  const now=new Date();
-  const agoraStr=`${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-  let itens=[];
-  remedios.forEach(r=>r.horarios.forEach(h=>itens.push({hora:h,nome:r.nome,dose:r.dose,id:r.id,key:r.id+'_'+h})));
-  itens.sort((a,b)=>a.hora.localeCompare(b.hora));
-  const div=document.getElementById('agendaHoje');
-  div.innerHTML=itens.length?itens.map(it=>{
-    const tomado=tomadosHoje[it.key],passado=it.hora<=agoraStr;
-    return `<div class="agenda-item" style="${tomado?'opacity:0.55':''}">
-      <div class="agenda-hora" style="${passado&&!tomado?'color:#ef4444':''}">${it.hora}</div>
-      <div class="agenda-info"><div class="agenda-nome">${it.nome}</div><div class="agenda-dose">${it.dose||'1 unidade'}</div></div>
-      <div style="font-size:19px;cursor:pointer" onclick="marcarItem('${it.key}')">${tomado?'✅':passado?'❌':'⏳'}</div>
-    </div>`;
-  }).join(''):'<div class="vazio">Sem remédios agendados.</div>';
-  const total=itens.length,tom=itens.filter(i=>tomadosHoje[i.key]).length;
-  document.getElementById('progrTexto').textContent=`${tom} / ${total}`;
-  document.getElementById('progrBar').style.width=total?`${Math.round(tom/total*100)}%`:'0%';
-  document.getElementById('progrMsg').textContent=total===0?'Cadastre seus remédios!':tom===total?'🎉 Todos os remédios tomados!':tom===0?'💪 Vamos começar!':'Faltam '+(total-tom)+' dose'+(total-tom>1?'s':'');
-}
+        <!-- ABA 5: AVALIAÇÕES -->
+        <div id="avaliacoes" class="tab-content">
+            <div style="margin-top:20px;">
+                <h3 style="font-family:Oswald;margin-bottom:16px;">AVALIAR PROFISSIONAL</h3>
+                <div class="form-group"><label>BUSCAR PROFISSIONAL</label><input type="text" id="buscaAvaliacaoInput" placeholder="Digite o nome do profissional..." oninput="buscarProfParaAvaliar()"></div>
+                <div id="resultadosBuscaAvaliacao"></div>
+                <div id="formAvaliacao" style="display:none;background:white;padding:16px;border-radius:8px;margin-top:16px;border-left:4px solid var(--laranja);">
+                    <h4 id="nomeAvaliadoTitulo" style="margin-bottom:12px;font-family:Oswald;"></h4>
+                    <div class="form-group"><label>SEU NOME</label><input type="text" id="nomeClienteAvaliacao" placeholder="Seu nome"></div>
+                    <div class="form-group">
+                        <label>NOTA</label>
+                        <div id="estrelasSeletor" style="display:flex;gap:8px;font-size:28px;cursor:pointer;margin-bottom:8px;">
+                            <span onclick="selecionarEstrelas(1)">☆</span><span onclick="selecionarEstrelas(2)">☆</span><span onclick="selecionarEstrelas(3)">☆</span><span onclick="selecionarEstrelas(4)">☆</span><span onclick="selecionarEstrelas(5)">☆</span>
+                        </div>
+                    </div>
+                    <div class="form-group"><label>COMENTÁRIO</label><textarea id="comentarioAvaliacao" placeholder="Como foi o serviço?"></textarea></div>
+                    <button class="btn-primary" onclick="enviarAvaliacao()">ENVIAR AVALIAÇÃO</button>
+                    <button class="btn-secondary" style="width:100%;margin-top:8px;" onclick="cancelarAvaliacao()">CANCELAR</button>
+                </div>
+                <h3 style="font-family:Oswald;margin-top:24px;margin-bottom:16px;">AVALIAÇÕES RECENTES</h3>
+                <div id="listaAvaliacoes"><p style="text-align:center;color:var(--linha);">Carregando avaliações...</p></div>
+            </div>
+        </div>
 
-function marcarItem(key){
-  if(tomadosHoje[key])delete tomadosHoje[key];else tomadosHoje[key]=true;
-  localStorage.setItem(chaveM('tomados')+'_'+hoje(),JSON.stringify(tomadosHoje));
-  renderAgenda();renderRemedios();atualizarHeader();
-}
+        <!-- ABA 6: CRÉDITOS -->
+        <div id="creditos" class="tab-content">
+            <div class="saldo" style="margin-top:20px;"><h3>SEU SALDO</h3><div class="numero" id="saldoCreditos2">0</div><p style="font-size:12px;margin-top:8px;">Escolha um pacote para começar</p></div>
+            <div id="pacotesCredito"></div>
+            <div style="margin-top:24px;padding:16px;background:white;border-radius:8px;font-size:12px;color:var(--linha);">
+                <p><strong>💡 Como funciona:</strong></p>
+                <ul style="margin-left:16px;margin-top:8px;">
+                    <li>Cada profissão tem um custo em créditos (1-3)</li>
+                    <li>Você ganha 10 créditos GRÁTIS ao se cadastrar</li>
+                    <li>Use créditos para desbloquear contato do cliente</li>
+                    <li>Envie proposta via WhatsApp diretamente</li>
+                </ul>
+            </div>
+        </div>
+    </div>
 
-function renderMembros(){
-  document.getElementById('listaMembros').innerHTML=membros.map(m=>`
-    <div class="membro-card ${m.id===membroAtualId?'ativo':''}" onclick="trocarMembro(${m.id})">
-      <div class="membro-avatar" style="background:${m.id===membroAtualId?'var(--verde)':'var(--verde-claro)'};color:${m.id===membroAtualId?'white':'inherit'}">${m.icone||'👤'}</div>
-      <div style="flex:1">
-        <div style="font-size:14px;font-weight:800">${m.nome}</div>
-        <div style="font-size:10px;color:var(--cinza-texto);font-weight:600">${(JSON.parse(localStorage.getItem('pv_remedios_'+m.id)||'[]')).length} remédio(s)</div>
-      </div>
-      ${m.id===membroAtualId?'<div style="font-size:10px;font-weight:800;color:var(--verde)">✅ ATIVO</div>':''}
-    </div>`).join('');
-}
+    <!-- MODAL PIX -->
+    <div id="modalPix" class="modal">
+        <div class="modal-content">
+            <div class="modal-header"><h2>COMPRAR CRÉDITOS</h2><button class="btn-close" onclick="fecharModalPix()">×</button></div>
+            <div id="pixContent"></div>
+        </div>
+    </div>
 
-function abrirModalMembro(){
-  document.getElementById('mmNome').value='';
-  iconeSelMembro='👴';
-  const icones=['👴','👵','👨','👩','👦','👧','🧑','👶'];
-  document.getElementById('iconeGrid').innerHTML=icones.map(ic=>`<span style="font-size:26px;cursor:pointer;padding:4px;border-radius:7px;border:2px solid transparent" id="ic_${ic.codePointAt(0)}" onclick="selecionarIcone('${ic}')">${ic}</span>`).join('');
-  document.getElementById('modalMembro').classList.add('aberto');
-}
-function fecharModalMembro(){document.getElementById('modalMembro').classList.remove('aberto');}
-function selecionarIcone(ic){
-  iconeSelMembro=ic;
-  document.querySelectorAll('#iconeGrid span').forEach(el=>el.style.border='2px solid transparent');
-  const el=document.getElementById('ic_'+ic.codePointAt(0));
-  if(el)el.style.border='2px solid var(--verde)';
-}
-function salvarMembro(){
-  const nome=document.getElementById('mmNome').value.trim();
-  if(!nome){alert('Digite o nome!');return;}
-  membros.push({id:Date.now(),nome,icone:iconeSelMembro});
-  localStorage.setItem('pv_membros',JSON.stringify(membros));
-  fecharModalMembro();renderMembros();mostrarToast('👤 '+nome+' adicionado!');
-}
+    <!-- MODAL ADMIN -->
+    <div id="modalAdmin" class="modal">
+        <div class="modal-content">
+            <div class="modal-header"><h2>GERENCIAR PROFISSIONAIS</h2><button class="btn-close" onclick="fecharModalAdmin()">×</button></div>
+            <div id="adminContent"></div>
+        </div>
+    </div>
 
-// ========== CHAMADA API CENTRAL ==========
-async function chamarAPI(system,userContent){
-  const body={model:'claude-sonnet-4-6',max_tokens:1000,system,messages:[{role:'user',content:userContent}]};
-  let resp;
-  try {
-    resp=await fetch(API_URL,{method:'POST',headers:API_HEADERS,body:JSON.stringify(body)});
-  } catch(err) {
-    throw new Error('Sem conexão com a internet ou bloqueio de rede. Verifique sua conexão.');
-  }
-  if(!resp.ok){
-    let err='';
-    try{err=await resp.text();}catch(e){}
-    if(resp.status===401)throw new Error('Chave de API inválida (401).');
-    if(resp.status===429)throw new Error('Muitas requisições. Aguarde um momento.');
-    throw new Error('Erro '+resp.status+': '+err.substring(0,100));
-  }
-  const data=await resp.json();
-  return (data.content&&data.content[0]&&data.content[0].text)||'';
-}
+    <!-- MODAL SOBRE -->
+    <div id="modalSobre" class="modal">
+        <div class="modal-content">
+            <div class="modal-header"><h2>SOBRE FOSTER CENTRAL</h2><button class="btn-close" onclick="fecharModalSobre()">×</button></div>
+            <div class="sobre-content">
+                <h3>Foster Central de Serviços</h3>
+                <p>Conectando profissionais e clientes em todo Brasil desde <strong>2012</strong>.</p>
+                <p>A Foster Central começou com uma missão simples: conectar profissionais qualificados de construção, engenharia e arquitetura com clientes que precisam de serviços de qualidade, sem intermediários caros.</p>
+                <h3>Missão</h3>
+                <p><strong>"PEGA • CONECTE • RESOLVA"</strong></p>
+                <div class="sobre-contact">
+                    <p><strong>Entre em contato:</strong></p>
+                    <p>📧 comercial@fosterconstrucoes.com.br</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-// ========== RECEITA FOTO ==========
-async function processarFoto(input){
-  const file=input.files[0];if(!file)return;
-  const preview=document.getElementById('fotoPreview');
-  const reader=new FileReader();
-  reader.onload=async(e)=>{
-    preview.src=e.target.result;preview.style.display='block';
-    document.getElementById('fotoStatus').style.display='block';
-    document.getElementById('fotoStatus').textContent='⏳ Lendo receita com IA...';
-    try{
-      const base64=e.target.result.split(',')[1];
-      const mediaType=file.type||'image/jpeg';
-      const body={
-        model:'claude-sonnet-4-6',max_tokens:1000,
-        system:`Você é um assistente farmacêutico do PREVITA. Analise a imagem da receita médica e retorne SOMENTE JSON válido:
-[{"nome":"Nome","dose":"1 comprimido","horarios":["08:00"],"obs":"dica curta"}]
-- Extraia TODOS os medicamentos visíveis na receita
-- Define horários ideais para cada um
-- Retorne APENAS o JSON array, sem texto extra`,
-        messages:[{role:'user',content:[
-          {type:'image',source:{type:'base64',media_type:mediaType,data:base64}},
-          {type:'text',text:'Leia todos os medicamentos desta receita médica e retorne o JSON.'}
-        ]}]
-      };
-      const resp=await fetch(API_URL,{method:'POST',headers:API_HEADERS,body:JSON.stringify(body)});
-      if(!resp.ok)throw new Error('API '+resp.status);
-      const data=await resp.json();
-      const txt=(data.content&&data.content[0]&&data.content[0].text)||'[]';
-      receitaProcessada=JSON.parse(txt.replace(/```json|```/g,'').trim());
-      document.getElementById('fotoStatus').textContent='✅ '+receitaProcessada.length+' remédio(s) identificado(s)!';
-      renderReceitaResultado();
-    }catch(e){
-      document.getElementById('fotoStatus').textContent='❌ Erro ao ler foto. Tente digitar os remédios abaixo.';
-      document.getElementById('fotoStatus').style.color='#ef4444';
-      setTimeout(()=>{document.getElementById('fotoStatus').style.display='none';document.getElementById('fotoStatus').style.color='var(--verde)';},5000);
-    }
-  };
-  reader.readAsDataURL(file);
-}
+    <footer>
+        <p>Foster Central de Serviços © 2026 — Desenvolvido por <strong>Wilson Foster</strong></p>
+        <p style="margin-top:8px;"><a onclick="abrirModalSobre()">Sobre Foster Central</a></p>
+    </footer>
 
-// ========== RECEITA TEXTO ==========
-async function processarReceita(){
-  const texto=document.getElementById('receitaTexto').value.trim();
-  if(!texto){alert('Cole os remédios primeiro!');return;}
-  document.getElementById('receitaStatus').style.display='block';
-  document.getElementById('receitaResultado').style.display='none';
-  document.getElementById('btnProcessar').disabled=true;
-  try{
-    const txt=await chamarAPI(
-      `Você é assistente farmacêutico do PREVITA. Analise e retorne SOMENTE JSON:
-[{"nome":"Nome","dose":"1 comprimido","horarios":["08:00"],"obs":"dica"}]
-Retorne APENAS o JSON array.`,
-      'Medicamentos:\n'+texto
-    );
-    receitaProcessada=JSON.parse(txt.replace(/```json|```/g,'').trim());
-    document.getElementById('receitaStatus').style.display='none';
-    document.getElementById('btnProcessar').disabled=false;
-    renderReceitaResultado();
-  }catch(e){
-    document.getElementById('receitaStatus').textContent='❌ Erro: '+e.message;
-    document.getElementById('receitaStatus').style.color='#ef4444';
-    document.getElementById('btnProcessar').disabled=false;
-    setTimeout(()=>{document.getElementById('receitaStatus').style.display='none';document.getElementById('receitaStatus').style.color='var(--verde)';document.getElementById('receitaStatus').textContent='⏳ Processando com IA...';},5000);
-  }
-}
+    <script>
+        // ===== DADOS DE CATEGORIAS COM SUBCATEGORIAS E HINTS =====
+        const CATEGORIAS = {
+            engenharia: {
+                nome: '📐 Engenharia', icone: '📐',
+                servicos: ['Projeto Estrutural','Projeto Elétrico','Projeto Hidráulico','Laudo Técnico','Vistoria','Perícia Técnica','Regularização de Imóvel','Gerenciamento de Obras','Topografia']
+            },
+            arquitetura: {
+                nome: '🏛️ Arquitetura', icone: '🏛️',
+                servicos: ['Projeto Residencial','Projeto Comercial','Design de Interiores','Paisagismo','Aprovação Legal','Projeto de Reforma']
+            },
+            gestao: {
+                nome: '📊 Gestão de Obras', icone: '📊',
+                servicos: ['Gerenciamento de Projeto','Coordenação de Obra','Fiscalização de Obra','Orçamento de Projeto','Planejamento de Execução']
+            },
+            tecnico: {
+                nome: '🛠️ Técnicos', icone: '🛠️',
+                servicos: ['Levantamento Topográfico','Projeto em CAD','Mapeamento de Terreno','Desenho Técnico','Geoprocessamento']
+            },
+            civil: {
+                nome: '🏗️ Infraestrutura Civil', icone: '🏗️',
+                servicos: ['Alicerce e Fundação','Estrutura de Concreto','Alvenaria','Armação de Ferro','Carpintaria','Pavimentação','Escavação e Terraplanagem','Compactação']
+            },
+            eletrica: {
+                nome: '⚡ Instalações Elétricas', icone: '⚡',
+                servicos: ['Instalação de Tomadas','Fiação Elétrica','Quadro de Disjuntores','Iluminação','Energia Solar','Instalação de CFTV','Instalação de Alarme']
+            },
+            hidraulica: {
+                nome: '💧 Instalações Hidráulicas', icone: '💧',
+                servicos: ['Tubulação de Água','Banheiro Completo','Cozinha Completa','Instalação de Gás','Aquecimento Solar','Sistema de Drenagem']
+            },
+            acabamento: {
+                nome: '🎨 Revestimentos e Acabamentos', icone: '🎨',
+                servicos: ['Pintura','Revestimento em Cerâmica','Piso Porcelanato','Impermeabilização','Gesso e Drywall','Rejuntamento','Espelho e Vidro']
+            },
+            obraSeca: {
+                nome: '🧱 Obras Secas', icone: '🧱',
+                servicos: ['Drywall','Forro de Gesso','Divisórias','Steel Frame','Pisos Vinílicos','Pisos Laminados','Tratamento Acústico','Isolamento Térmico','Montagem Corporativa','Reforma Comercial']
+            },
+            estrutura: {
+                nome: '⚙️ Estruturas Metálicas', icone: '⚙️',
+                servicos: ['Portão de Ferro','Escada de Ferro','Cobertura Metálica','Moldura Metálica','Serralheria','Soldagem']
+            },
+            esquadrias: {
+                nome: '🪟 Esquadrias e Marcenaria', icone: '🪟',
+                servicos: ['Portas de Madeira','Janelas','Móvel Planejado','Armário','Piso de Madeira','Vidraçaria']
+            },
+            cobertura: {
+                nome: '🏠 Coberturas e Fachadas', icone: '🏠',
+                servicos: ['Cobertura em Telha','Calha e Condutores','Fachada de Revestimento','ACM/Alumínio Composto','Impermeabilização de Cobertura','Limpeza de Fachada']
+            },
+            complementar: {
+                nome: '🔧 Serviços Complementares', icone: '🔧',
+                servicos: ['Ar-Condicionado','Limpeza Pós-Obra','Dedetizador','Cerca Elétrica','Paisagismo','Jardineiro']
+            }
+        };
 
-function renderReceitaResultado(){
-  if(!receitaProcessada.length)return;
-  document.getElementById('receitaLista').innerHTML=receitaProcessada.map((r,i)=>`
-    <div style="padding:9px 0;border-bottom:1px solid var(--cinza);display:flex;align-items:center;gap:9px">
-      <div style="font-size:20px">${['💊','🔵','🔴','🟡','🟢','🟠'][i%6]}</div>
-      <div style="flex:1">
-        <div style="font-size:12px;font-weight:800">${r.nome}</div>
-        <div style="font-size:10px;color:var(--cinza-texto);font-weight:600">${r.dose}${r.obs?' · '+r.obs:''}</div>
-        <div style="display:flex;gap:3px;margin-top:2px;flex-wrap:wrap">${r.horarios.map(h=>`<span class="horario-badge">${h}</span>`).join('')}</div>
-      </div>
-      <input type="checkbox" checked style="width:17px;height:17px;accent-color:var(--verde)" id="sel_${i}">
-    </div>`).join('');
-  document.getElementById('receitaResultado').style.display='block';
-}
+        // Hints de descrição por subcategoria
+        const HINTS = {
+            'Projeto Estrutural': 'Informe área construída (m²), quantidade de pavimentos e cidade da obra.',
+            'Laudo Técnico': 'Informe o problema encontrado, endereço completo e finalidade do laudo.',
+            'Projeto Elétrico': 'Informe a metragem da edificação e o tipo de instalação desejada (residencial/comercial).',
+            'Projeto Hidráulico': 'Informe o tipo de edificação, número de banheiros e localização.',
+            'Vistoria': 'Descreva o imóvel (tipo, metragem, idade aproximada) e o motivo da vistoria.',
+            'Perícia Técnica': 'Informe o problema a ser periciado, endereço e finalidade (judicial/extrajudicial).',
+            'Regularização de Imóvel': 'Informe o tipo e endereço do imóvel e a situação atual da documentação.',
+            'Gerenciamento de Obras': 'Informe o tipo de obra, metragem e fase atual (projeto/execução).',
+            'Topografia': 'Informe a área do terreno (m² ou ha) e a finalidade do levantamento.',
+            'Projeto Residencial': 'Informe a metragem do terreno, número de pavimentos desejados e estilo preferido.',
+            'Projeto Comercial': 'Informe o tipo de comércio, metragem disponível e localização.',
+            'Design de Interiores': 'Informe os ambientes a serem projetados e o estilo desejado.',
+            'Drywall': 'Informe os ambientes a dividir, metragem e tipo de acabamento desejado.',
+            'Forro de Gesso': 'Informe a metragem do ambiente e o tipo de forro (liso, tabicado, moldura).',
+            'Steel Frame': 'Informe a metragem da obra e o tipo de edificação (residencial/comercial).',
+            'Energia Solar': 'Informe o consumo médio mensal em kWh e o tipo de telhado.',
+            'Impermeabilização': 'Informe o local (laje, piscina, banheiro, subsolo) e metragem a impermeabilizar.',
+            'default': 'Descreva seu projeto com o máximo de detalhes: metragem, tipo de imóvel, prazo desejado e qualquer informação relevante.'
+        };
 
-function importarSelecionados(){
-  let imp=0;
-  receitaProcessada.forEach((r,i)=>{
-    const cb=document.getElementById('sel_'+i);
-    if(cb&&cb.checked&&!remedios.find(x=>x.nome.toLowerCase()===r.nome.toLowerCase())){
-      remedios.push({id:Date.now()+i,nome:r.nome,dose:r.dose,horarios:r.horarios,obs:r.obs||''});imp++;
-    }
-  });
-  localStorage.setItem(chaveM('remedios'),JSON.stringify(remedios));
-  renderRemedios();atualizarHeader();
-  mostrarToast('✅ '+imp+' remédio'+(imp!==1?'s':'')+' importado'+(imp!==1?'s':'')+'!');
-  limparReceita();
-  irPara('remedios',document.querySelectorAll('.tab-btn')[0]);
-}
+        const PRECOS_SERVICOS = {
+            'Engenheiro Civil':3,'Engenheiro Estrutural':3,'Engenheiro Eletricista':3,'Engenheiro Hidráulico':3,
+            'Arquiteto e Urbanista':3,'Engenheiro de Segurança':3,'Gerente de Projetos':3,'Gerente de Obras':3,
+            'Fiscal de Obras':2,'Mestre de Obras':2,'Pedreiro':1,'Eletricista Predial':2,'Encanador':2,
+            'Pintor':1,'Carpinteiro':2,'Topógrafo':2,'CADista':2,'Soldador':2,'Serralheiro':2,
+            'Azulejista':1,'Impermeabilizador':2,'Telhadista':2,'Vidraceiro':2,'Marceneiro':2,
+            'Operador de Retroescavadeira':2,'Instalador de Energia Solar':2,'Técnico em Edificações':2,
+            'Paisagista':2,'Instalador Elétrico':2,'Instalador de Gás':2
+        };
 
-function limparReceita(){
-  receitaProcessada=[];
-  document.getElementById('receitaTexto').value='';
-  document.getElementById('receitaResultado').style.display='none';
-  const p=document.getElementById('fotoPreview');p.style.display='none';p.src='';
-  document.getElementById('fotoStatus').style.display='none';
-  document.getElementById('fotoInput').value='';
-}
+        let supabaseClient = null;
+        let usuarioAtual = null;
+        let usuarioCliente = null;
+        let categoriaAtual = null;
+        let subcategoriaAtual = null;
+        let especialidadesSelecionadas = [];
+        let stepAtual = 1;
 
-// ========== ASSISTENTE IA ==========
-async function enviarIA(){
-  const input=document.getElementById('iaInput');
-  const msg=input.value.trim();if(!msg)return;
-  input.value='';
-  const chat=document.getElementById('iaChat');
-  chat.innerHTML+=`<div class="msg user"><div class="msg-bubble">${msg}</div></div>`;
-  const typing=document.createElement('div');
-  typing.className='msg ia';
-  typing.innerHTML='<div class="msg-bubble digitando"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
-  chat.appendChild(typing);chat.scrollTop=chat.scrollHeight;
-  try{
-    const texto=await chamarAPI(
-      `Você é assistente de saúde do PREVITA, criado por Wilson Foster, ACS da UBS São Pedro, microárea 09, Santana de Parnaíba-SP. Responda em português claro e acolhedor para todas as idades. Fale sobre: para que serve o medicamento, horários ideais, efeitos colaterais comuns, interações simples, dicas de adesão. SEMPRE oriente a consultar médico ou farmacêutico. Nunca prescreva doses ou substitua consulta médica.`,
-      msg
-    );
-    typing.remove();
-    chat.innerHTML+=`<div class="msg ia"><div class="msg-bubble">${texto.replace(/\n/g,'<br>')}</div></div>`;
-  }catch(e){
-    typing.remove();
-    chat.innerHTML+=`<div class="msg ia"><div class="msg-bubble">⚠️ Não foi possível conectar ao assistente. Verifique sua internet e tente novamente.<br><small style="color:#9ca3af">Erro: ${e.message}</small></div></div>`;
-  }
-  chat.scrollTop=chat.scrollHeight;
-}
+        // ===== INIT =====
+        async function inicializar() {
+            try {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                renderizarCategoriasPedido();
+                renderizarCategoriasCadastro();
+                carregarPacotesCredito();
+                verificarLoginProf();
+                carregarEstatisticas();
+                supabaseClient.auth.onAuthStateChange((event, session) => {
+                    if(event === 'SIGNED_IN' || event === 'USER_UPDATED') { usuarioAtual = session.user; atualizarPainelProf(); }
+                    else if(event === 'SIGNED_OUT') { usuarioAtual = null; atualizarPainelProf(); }
+                });
+            } catch(err) { console.error('Erro init:', err); }
+        }
 
-function perguntaRapida(txt){document.getElementById('iaInput').value=txt;enviarIA();}
+        async function carregarEstatisticas() {
+            try {
+                const [{ count: totalProf }, { data: profData }, { count: totalChamados }] = await Promise.all([
+                    supabaseClient.from('profissionais').select('*', { count: 'exact', head: true }),
+                    supabaseClient.from('profissionais').select('telefone'),
+                    supabaseClient.from('chamados').select('*', { count: 'exact', head: true }).eq('status', 'novo')
+                ]);
+                const ddds = new Set((profData||[]).map(p => p.telefone ? p.telefone.replace(/\D/g,'').substring(0,2) : null).filter(Boolean));
+                if((totalProf||0) > 0) {
+                    document.getElementById('statsStrip').style.display = 'grid';
+                    animarNumero(document.getElementById('statProf'), totalProf||0);
+                    animarNumero(document.getElementById('statChamados'), totalChamados||0);
+                    animarNumero(document.getElementById('statCidades'), ddds.size||0);
+                }
+            } catch(e) {}
+        }
 
-// ========== ALERTA SONORO ==========
-function getAudioCtx(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
-function tocarMelodia(){
-  const ctx=getAudioCtx();
-  [523.25,659.25,783.99,659.25,783.99,1046.50].forEach((freq,i)=>{
-    const osc=ctx.createOscillator(),gain=ctx.createGain();
-    osc.connect(gain);gain.connect(ctx.destination);osc.type='sine';osc.frequency.value=freq;
-    const s=ctx.currentTime+i*0.23;
-    gain.gain.setValueAtTime(0,s);gain.gain.linearRampToValueAtTime(0.5,s+0.02);gain.gain.linearRampToValueAtTime(0,s+0.18);
-    osc.start(s);osc.stop(s+0.25);
-  });
-}
-function vibrar(){if(navigator.vibrate)navigator.vibrate([400,100,400,100,600]);}
-function testarSom(){tocarMelodia();vibrar();mostrarToast('🔔 Som e vibração OK!');}
+        function animarNumero(el, val) {
+            let i=0; const step=val/30;
+            const t=setInterval(()=>{ i+=step; if(i>=val){i=val;clearInterval(t);} el.textContent=Math.floor(i); },30);
+        }
 
-function dispararAlerta(r,h){
-  const chave=r.id+'_'+h;
-  if(ultimosAlertas[chave])return;
-  ultimosAlertas[chave]=true;
-  localStorage.setItem(chaveM('alertas')+'_'+hoje(),JSON.stringify(ultimosAlertas));
-  tocarMelodia();vibrar();
-  let rep=0;const loop=setInterval(()=>{rep++;tocarMelodia();vibrar();if(rep>=2)clearInterval(loop);},2200);
-  const ex=document.getElementById('modalAlertaSonoro');if(ex)ex.remove();
-  const modal=document.createElement('div');
-  modal.id='modalAlertaSonoro';
-  modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9999;display:flex;align-items:center;justify-content:center;padding:18px';
-  modal.innerHTML=`<div style="background:white;border-radius:22px;padding:22px 18px;width:100%;max-width:350px;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,0.3)">
-    <div style="font-size:56px;margin-bottom:5px;animation:pulse 0.8s infinite alternate">💊</div>
-    <div style="font-size:11px;font-weight:700;color:#6b7280;margin-bottom:3px">HORA DO REMÉDIO · ${membroAtual.icone} ${membroAtual.nome}</div>
-    <div style="font-size:20px;font-weight:900;color:#1a7a4a;margin-bottom:3px">${r.nome}</div>
-    <div style="font-size:13px;font-weight:700;margin-bottom:3px">${r.dose||'1 unidade'}</div>
-    <div style="font-size:24px;font-weight:900;color:#f5821f;margin-bottom:16px">⏰ ${h}</div>
-    ${r.obs?`<div style="font-size:11px;color:#6b7280;font-weight:600;margin-bottom:12px;background:#f2f4f6;border-radius:8px;padding:6px">💡 ${r.obs}</div>`:''}
-    <button onclick="confirmarTomado('${r.id}','${h}')" style="width:100%;padding:13px;background:#1a7a4a;color:white;border:none;border-radius:11px;font-size:15px;font-weight:900;cursor:pointer;font-family:Nunito,sans-serif;margin-bottom:7px">✅ Tomei!</button>
-    <button onclick="adiarAlerta('${r.id}','${h}')" style="width:100%;padding:10px;background:#f2f4f6;color:#6b7280;border:none;border-radius:11px;font-size:12px;font-weight:800;cursor:pointer;font-family:Nunito,sans-serif">⏰ Lembrar em 10 min</button>
-  </div>`;
-  document.body.appendChild(modal);
-}
+        // ===== ABAS =====
+        function mudarAba(aba, el) {
+            document.querySelectorAll('.tab-content').forEach(e => e.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(e => e.classList.remove('active'));
+            document.getElementById(aba).classList.add('active');
+            if(el) el.classList.add('active');
+            if(aba === 'buscar') preencherFiltroCategoria();
+            if(aba === 'avaliacoes') carregarAvaliacoes();
+            if(aba === 'cliente' && usuarioCliente) carregarPedidosCliente();
+        }
 
-function confirmarTomado(id,h){
-  tomadosHoje[id+'_'+h]=true;
-  localStorage.setItem(chaveM('tomados')+'_'+hoje(),JSON.stringify(tomadosHoje));
-  document.getElementById('modalAlertaSonoro')?.remove();
-  renderRemedios();atualizarHeader();mostrarToast('✅ Remédio tomado!');
-}
+        // ===== FLUXO DE PEDIDO COM PASSOS =====
+        function renderizarCategoriasPedido() {
+            const grid = document.getElementById('catGrid');
+            grid.innerHTML = '';
+            Object.entries(CATEGORIAS).forEach(([key, cat]) => {
+                const btn = document.createElement('button');
+                btn.className = 'cat-btn';
+                btn.type = 'button';
+                btn.innerHTML = cat.nome;
+                btn.onclick = () => selecionarCategoriaPedido(key, cat, btn);
+                grid.appendChild(btn);
+            });
+        }
 
-function adiarAlerta(id,h){
-  document.getElementById('modalAlertaSonoro')?.remove();mostrarToast('⏰ Lembrete em 10 min!');
-  setTimeout(()=>{
-    const r=remedios.find(x=>x.id==id);
-    if(r){delete ultimosAlertas[id+'_'+h];localStorage.setItem(chaveM('alertas')+'_'+hoje(),JSON.stringify(ultimosAlertas));dispararAlerta(r,h);}
-  },600000);
-}
+        function selecionarCategoriaPedido(key, cat, btn) {
+            categoriaAtual = key;
+            subcategoriaAtual = null;
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            // Renderizar subcategorias
+            const subcatGrid = document.getElementById('subcatGrid');
+            subcatGrid.innerHTML = '';
+            cat.servicos.forEach(s => {
+                const b = document.createElement('button');
+                b.className = 'subcat-btn';
+                b.type = 'button';
+                b.textContent = s;
+                b.onclick = () => selecionarSubcategoria(s, b);
+                subcatGrid.appendChild(b);
+            });
+            document.getElementById('subcatTitulo').textContent = cat.nome.replace(/^[^ ]+ /,'') + ' — Escolha o serviço';
+            irParaStep(2);
+        }
 
-function verificarAlertas(){
-  const now=new Date();
-  const h=`${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-  remedios.forEach(r=>r.horarios.forEach(ho=>{if(ho===h&&!tomadosHoje[r.id+'_'+ho])dispararAlerta(r,ho);}));
-}
+        function selecionarSubcategoria(servico, btn) {
+            subcategoriaAtual = servico;
+            document.querySelectorAll('.subcat-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            // Atualizar resumo e hint
+            const catNome = CATEGORIAS[categoriaAtual] ? CATEGORIAS[categoriaAtual].nome : categoriaAtual;
+            document.getElementById('resumoSelecao').textContent = catNome + ' › ' + servico;
+            const hint = HINTS[servico] || HINTS['default'];
+            const hintEl = document.getElementById('descHint');
+            hintEl.textContent = '💡 ' + hint;
+            document.getElementById('descricaoCliente').placeholder = hint;
+            irParaStep(3);
+        }
 
-function mostrarToast(msg){
-  const t=document.createElement('div');
-  t.style.cssText='position:fixed;bottom:88px;left:50%;transform:translateX(-50%);background:#1a1e2b;color:white;padding:9px 16px;border-radius:11px;font-size:12px;font-weight:700;font-family:Nunito,sans-serif;z-index:8000;box-shadow:0 4px 16px rgba(0,0,0,0.3);white-space:nowrap;';
-  t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),3000);
-}
+        function irParaStep(n) {
+            stepAtual = n;
+            document.getElementById('step1').style.display = n >= 1 ? 'block' : 'none';
+            document.getElementById('step2').style.display = n >= 2 ? 'block' : 'none';
+            document.getElementById('step3').style.display = n >= 3 ? 'block' : 'none';
+            // Barra de progresso
+            document.getElementById('progressBar').style.display = 'flex';
+            for(let i=1;i<=4;i++){
+                const el=document.getElementById('prog'+i);
+                el.classList.remove('done','active');
+                if(i < n) el.classList.add('done');
+                else if(i === n) el.classList.add('active');
+                if(i<4){
+                    const line=document.getElementById('pline'+i);
+                    line.classList.toggle('done', i < n);
+                }
+            }
+            if(n===3) setTimeout(()=>document.getElementById('nomeCliente').focus(), 100);
+        }
 
-function instalarPWA(){
-  if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.userChoice.then(()=>{deferredPrompt=null;});}
-  else alert('Para instalar:\n\n📱 Chrome/Android: Menu ⋮ → "Adicionar à tela inicial"\n\n🍎 Safari/iPhone: Compartilhar → "Adicionar à Tela de Início"');
-}
+        function voltarStep(n) { irParaStep(n); }
 
-const styleEl=document.createElement('style');
-styleEl.textContent='@keyframes pulse{from{transform:scale(1)}to{transform:scale(1.15)}}';
-document.head.appendChild(styleEl);
+        function verificarRegiao(cidade) {
+            const infoEl = document.getElementById('regiaoInfo');
+            const nomeEl = document.getElementById('regiaoNome');
+            const msgEl = document.getElementById('regiaoMensagem');
+            if(cidade.length < 3) { infoEl.style.display = 'none'; return; }
+            // Mensagens contextuais por região
+            const regioes = [
+                { termos: ['alphaville','barueri','santana de parnaíba','cotia','jandira'], msg: 'Profissionais disponíveis para Alphaville, Barueri, Santana de Parnaíba e região.' },
+                { termos: ['são paulo','sp','sao paulo'], msg: 'Grande São Paulo — ampla rede de profissionais disponíveis.' },
+                { termos: ['campinas','americana','piracicaba','limeira'], msg: 'Região de Campinas — profissionais especializados disponíveis.' },
+                { termos: ['rio de janeiro','rj','niterói'], msg: 'Região do Rio de Janeiro — profissionais disponíveis.' },
+                { termos: ['belo horizonte','bh','contagem','betim'], msg: 'Região de Belo Horizonte — profissionais disponíveis.' },
+                { termos: ['curitiba','pr','maringá','londrina'], msg: 'Paraná — profissionais disponíveis em sua região.' },
+                { termos: ['porto alegre','rs','caxias'], msg: 'Rio Grande do Sul — profissionais disponíveis.' },
+            ];
+            const cidadeLower = cidade.toLowerCase();
+            const match = regioes.find(r => r.termos.some(t => cidadeLower.includes(t)));
+            if(match) {
+                nomeEl.textContent = '📍 ' + cidade;
+                msgEl.textContent = match.msg;
+                infoEl.style.display = 'block';
+            } else if(cidade.length >= 4) {
+                nomeEl.textContent = '📍 ' + cidade;
+                msgEl.textContent = 'Buscando profissionais disponíveis na sua região...';
+                infoEl.style.display = 'block';
+            }
+        }
 
-document.addEventListener('touchstart',()=>getAudioCtx(),{once:true});
-document.addEventListener('click',()=>getAudioCtx(),{once:true});
+        function formatarTelefoneCliente(input) {
+            let v=input.value.replace(/\D/g,'').slice(0,11);
+            if(v.length>10) v=v.replace(/(\d{2})(\d{5})(\d{4})/,'($1) $2-$3');
+            else if(v.length>6) v=v.replace(/(\d{2})(\d{4,5})(\d{0,4})/,'($1) $2-$3');
+            else if(v.length>2) v=v.replace(/(\d{2})(\d{0,5})/,'($1) $2');
+            input.value=v;
+        }
 
-atualizarHeader();
-renderRemedios();
-setInterval(atualizarHeader,60000);
-setInterval(verificarAlertas,60000);
-setTimeout(verificarAlertas,2000);
-</script>
+        async function enviarPedidoNovo() {
+            const nome = document.getElementById('nomeCliente').value.trim();
+            const telefone = document.getElementById('telefoneCliente').value.trim();
+            const bairro = document.getElementById('bairroCliente').value.trim();
+            const descricao = document.getElementById('descricaoCliente').value.trim();
+            if(!nome) { alert('Informe seu nome'); return; }
+            if(!telefone || telefone.replace(/\D/g,'').length < 10) { alert('Informe um telefone válido'); return; }
+            if(!bairro) { alert('Informe a cidade / região'); return; }
+            if(!descricao) { alert('Descreva o seu projeto'); return; }
+            if(!subcategoriaAtual) { alert('Selecione o serviço desejado'); return; }
+            try {
+                const { data, error } = await supabaseClient.from('chamados').insert({
+                    nome_cliente: nome, telefone_cliente: telefone,
+                    servico: subcategoriaAtual, bairro, descricao, status: 'novo'
+                }).select();
+                if(error) { alert('Erro: ' + error.message); return; }
+                if(data && data.length > 0) {
+                    document.getElementById('numeroProtocolo').textContent = '#' + String(data[0].id).padStart(4,'0');
+                    document.getElementById('step1').style.display='none';
+                    document.getElementById('step2').style.display='none';
+                    document.getElementById('step3').style.display='none';
+                    document.getElementById('progressBar').style.display='none';
+                    document.getElementById('confirmacaoPedido').style.display='block';
+                }
+            } catch(err) { alert('Erro ao enviar. Tente novamente.'); }
+        }
+
+        function novoPedido() {
+            categoriaAtual=null; subcategoriaAtual=null;
+            document.getElementById('confirmacaoPedido').style.display='none';
+            document.getElementById('nomeCliente').value='';
+            document.getElementById('telefoneCliente').value='';
+            document.getElementById('bairroCliente').value='';
+            document.getElementById('descricaoCliente').value='';
+            document.getElementById('regiaoInfo').style.display='none';
+            document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+            document.querySelectorAll('.subcat-btn').forEach(b=>b.classList.remove('active'));
+            irParaStep(1);
+            document.getElementById('step2').style.display='none';
+            document.getElementById('step3').style.display='none';
+            document.getElementById('progressBar').style.display='none';
+        }
+
+        // ===== ÁREA CLIENTE =====
+        function mostrarCadastroCliente() { document.getElementById('clienteLoginArea').style.display='none'; document.getElementById('clienteCadastroArea').style.display='block'; }
+        function voltarLoginCliente() { document.getElementById('clienteCadastroArea').style.display='none'; document.getElementById('clienteLoginArea').style.display='block'; }
+
+        async function cadastrarCliente() {
+            const nome=document.getElementById('nomeClienteCad').value.trim(), telefone=document.getElementById('telefoneClienteCad').value.trim(), cidade=document.getElementById('cidadeClienteCad').value.trim(), email=document.getElementById('emailClienteCad').value.trim(), senha=document.getElementById('senhaClienteCad').value;
+            if(!nome||!telefone||!email||!senha){alert('Preencha todos os campos');return;}
+            try {
+                const{data:authData,error:authError}=await supabaseClient.auth.signUp({email,password:senha});
+                if(authError){alert('Erro: '+authError.message);return;}
+                await supabaseClient.from('clientes').insert({id:authData.user.id,nome,telefone,cidade,email});
+                alert('✅ Cadastro realizado! Bem-vindo(a) '+nome);
+                voltarLoginCliente();
+            } catch(err){alert('Erro ao cadastrar');}
+        }
+
+        async function loginCliente() {
+            const email=document.getElementById('emailCliente').value.trim(), senha=document.getElementById('senhaCliente').value;
+            if(!email||!senha){alert('Preencha e-mail e senha');return;}
+            try {
+                const{data,error}=await supabaseClient.auth.signInWithPassword({email,password:senha});
+                if(error){alert('Erro: '+error.message);return;}
+                usuarioCliente=data.user; mostrarPainelCliente();
+            } catch(err){alert('Erro ao fazer login');}
+        }
+
+        async function mostrarPainelCliente() {
+            if(!usuarioCliente) return;
+            document.getElementById('clienteLoginArea').style.display='none';
+            document.getElementById('clienteCadastroArea').style.display='none';
+            document.getElementById('clientePainelLogado').style.display='block';
+            const{data:cd}=await supabaseClient.from('clientes').select('nome').eq('id',usuarioCliente.id).maybeSingle();
+            document.getElementById('clienteBoasVindas').textContent='Olá, '+(cd?cd.nome:usuarioCliente.email)+'! 👋';
+            carregarPedidosCliente();
+        }
+
+        async function carregarPedidosCliente() {
+            const container=document.getElementById('listaPedidosCliente');
+            if(!container||!usuarioCliente) return;
+            try {
+                const{data:pedidos}=await supabaseClient.from('chamados').select('*').eq('telefone_cliente',usuarioCliente.phone||'').order('criado_em',{ascending:false});
+                if(!pedidos||pedidos.length===0){container.innerHTML='<p style="text-align:center;color:var(--linha);">Nenhum pedido encontrado.<br><small>Vá em "Pedir Serviço" para solicitar!</small></p>';return;}
+                container.innerHTML='';
+                pedidos.forEach(p=>{const card=document.createElement('div');card.className='chamado-card';card.innerHTML=`<h4>${p.servico}</h4><div class="chamado-info">📍 ${p.bairro}</div><div class="chamado-info">📝 ${p.descricao}</div><div class="servico-badge">${p.status==='novo'?'🟡 Aguardando':'✅ Atendido'}</div>`;container.appendChild(card);});
+            } catch(err){container.innerHTML='<p style="text-align:center;color:red;">Erro ao carregar pedidos</p>';}
+        }
+
+        // ===== ÁREA PROFISSIONAL =====
+        function mostrarCadastro() { document.getElementById('loginArea').style.display='none'; document.getElementById('cadastroArea').style.display='block'; }
+        function voltarLogin() { document.getElementById('cadastroArea').style.display='none'; document.getElementById('loginArea').style.display='block'; }
+
+        function renderizarCategoriasCadastro() {
+            const container = document.getElementById('categoriasCadastro');
+            container.innerHTML = '';
+            Object.entries(CATEGORIAS).forEach(([key, cat]) => {
+                const btn = document.createElement('button');
+                btn.className = 'categoria-btn'; btn.type = 'button'; btn.innerHTML = cat.nome;
+                btn.onclick = (e) => { e.preventDefault(); selecionarCategoriaCadastro(key, cat, e); };
+                container.appendChild(btn);
+            });
+        }
+
+        function selecionarCategoriaCadastro(key, cat, e) {
+            categoriaAtual = key;
+            document.getElementById('especialidadesArea').style.display = 'block';
+            const container = document.getElementById('especialidades');
+            container.innerHTML = '';
+            cat.servicos.forEach(s => {
+                const div = document.createElement('div'); div.className = 'checkbox-item';
+                div.innerHTML = `<input type="checkbox" id="esp_${s.replace(/\s/g,'_')}" value="${s}" onchange="atualizarEspecialidades()"><label for="esp_${s.replace(/\s/g,'_')}">${s}</label>`;
+                container.appendChild(div);
+            });
+            document.querySelectorAll('#categoriasCadastro .categoria-btn').forEach(b => b.classList.remove('active'));
+            if(e && e.target) e.target.classList.add('active');
+        }
+
+        function atualizarEspecialidades() {
+            especialidadesSelecionadas = Array.from(document.querySelectorAll('#especialidades input[type="checkbox"]:checked')).map(el => el.value);
+        }
+
+        function formatarTelefone(input) {
+            let v=input.value.replace(/\D/g,'').slice(0,11);
+            if(v.length>10) v=v.replace(/(\d{2})(\d{5})(\d{4})/,'($1) $2-$3');
+            else if(v.length>6) v=v.replace(/(\d{2})(\d{4,5})(\d{0,4})/,'($1) $2-$3');
+            else if(v.length>2) v=v.replace(/(\d{2})(\d{0,5})/,'($1) $2');
+            input.value=v;
+        }
+
+        function verificarForcaSenha(senha) {
+            const fill=document.getElementById('forcaSenhaFill'), texto=document.getElementById('forcaSenhaTexto');
+            if(!fill) return;
+            let f=0;
+            if(senha.length>=8)f++; if(/[A-Z]/.test(senha))f++; if(/[0-9]/.test(senha))f++; if(/[^A-Za-z0-9]/.test(senha))f++;
+            const n=[{p:'0%',c:'#eee',t:''},{p:'25%',c:'#e00000',t:'⚠️ Muito fraca'},{p:'50%',c:'#f5a623',t:'🔶 Fraca'},{p:'75%',c:'#2E7D5B',t:'🔷 Boa'},{p:'100%',c:'#1a5c3f',t:'✅ Forte'}];
+            const i=senha.length===0?0:f;
+            fill.style.width=n[i].p; fill.style.background=n[i].c; texto.textContent=n[i].t;
+        }
+
+        function checarRateLimit() {
+            const key='fc_cadastros', agora=Date.now(), janela=3600000;
+            let t=JSON.parse(localStorage.getItem(key)||'[]').filter(x=>agora-x<janela);
+            if(t.length>=3){alert(`Muitas tentativas. Tente em ${Math.ceil((janela-(agora-t[0]))/60000)} minutos.`);return false;}
+            t.push(agora); localStorage.setItem(key,JSON.stringify(t)); return true;
+        }
+
+        async function cadastrarProf() {
+            const nome=document.getElementById('nomeProf').value.trim(), telefone=document.getElementById('telefoneProf').value.trim(), email=document.getElementById('emailCadastro').value.trim(), senha=document.getElementById('senhaCadastro').value;
+            if(!nome||!telefone||!email||!senha||!categoriaAtual||especialidadesSelecionadas.length===0){alert('Preencha todos os campos e selecione especialidades');return;}
+            if(nome.trim().split(' ').length<2){alert('Digite seu nome completo');return;}
+            if(telefone.replace(/\D/g,'').length<10){alert('Telefone inválido');return;}
+            if(senha.length<8){alert('Senha deve ter pelo menos 8 caracteres');return;}
+            if(!checarRateLimit()) return;
+            try {
+                const{data:telExiste}=await supabaseClient.from('profissionais').select('id').eq('telefone',telefone).maybeSingle();
+                if(telExiste){alert('Este telefone já está cadastrado.');return;}
+                const{data:authData,error:authError}=await supabaseClient.auth.signUp({email,password:senha,options:{emailRedirectTo:window.location.href}});
+                if(authError){alert('Erro: '+authError.message);return;}
+                const{error:dbError}=await supabaseClient.from('profissionais').insert({id:authData.user.id,nome,telefone,especialidades:especialidadesSelecionadas.join(','),categoria:categoriaAtual,saldo_creditos:10});
+                if(dbError){alert('Erro: '+dbError.message);return;}
+                alert('✅ Cadastro realizado! Verifique seu e-mail.\nVocê ganhou 10 créditos grátis!');
+                voltarLogin();
+            } catch(err){alert('Erro ao cadastrar. Tente novamente.');}
+        }
+
+        async function loginProf() {
+            const email=document.getElementById('emailProf').value, senha=document.getElementById('senhaProf').value;
+            if(!email||!senha){alert('Preencha e-mail e senha');return;}
+            try {
+                const{data,error}=await supabaseClient.auth.signInWithPassword({email,password:senha});
+                if(error){alert('Erro: '+error.message);return;}
+                usuarioAtual=data.user; atualizarPainelProf();
+            } catch(err){alert('Erro ao fazer login');}
+        }
+
+        async function verificarLoginProf() {
+            try {
+                const{data:{session}}=await supabaseClient.auth.getSession();
+                if(session){usuarioAtual=session.user; atualizarPainelProf();}
+            } catch(err){}
+        }
+
+        async function atualizarPainelProf() {
+            const loginArea=document.getElementById('loginArea'), cadastroArea=document.getElementById('cadastroArea'), painelLogado=document.getElementById('painelLogado'), headerActions=document.getElementById('headerActions');
+            if(!usuarioAtual){loginArea.style.display='block';cadastroArea.style.display='none';painelLogado.style.display='none';headerActions.innerHTML='';return;}
+            loginArea.style.display='none';cadastroArea.style.display='none';painelLogado.style.display='block';
+            headerActions.innerHTML=`<button class="btn-logout" onclick="logoutProf()">SAIR</button>`;
+            try {
+                const{data:profData}=await supabaseClient.from('profissionais').select('*').eq('id',usuarioAtual.id).maybeSingle();
+                if(profData){
+                    document.getElementById('saldoCreditos').textContent=profData.saldo_creditos||0;
+                    document.getElementById('saldoCreditos2').textContent=profData.saldo_creditos||0;
+                    if(profData.is_admin) document.getElementById('adminPanel').style.display='block';
+                }
+            } catch(err){}
+            carregarChamados();
+        }
+
+        async function carregarChamados() {
+            const container=document.getElementById('listaChamados');
+            if(!container||!usuarioAtual) return;
+            try {
+                const{data:profData}=await supabaseClient.from('profissionais').select('categoria,saldo_creditos').eq('id',usuarioAtual.id).maybeSingle();
+                const{data:chamados}=await supabaseClient.from('chamados').select('*').eq('status','novo').order('criado_em',{ascending:false});
+                if(!chamados||chamados.length===0){container.innerHTML='<p style="text-align:center;color:var(--linha);">Nenhum projeto disponível no momento</p>';return;}
+                const{data:desbloqueados}=await supabaseClient.from('desbloqueios').select('chamado_id').eq('prof_id',usuarioAtual.id);
+                const idsDesbloqueados=new Set((desbloqueados||[]).map(d=>d.chamado_id));
+                container.innerHTML='';
+                chamados.forEach(c=>{
+                    const jaDesbloqueado=idsDesbloqueados.has(c.id), custo=PRECOS_SERVICOS[c.servico]||1, saldo=profData?(profData.saldo_creditos||0):0;
+                    const card=document.createElement('div'); card.className='chamado-card';
+                    if(jaDesbloqueado){
+                        const tel=c.telefone_cliente?c.telefone_cliente.replace(/\D/g,''):'';
+                        card.innerHTML=`<h4>${c.servico}</h4><div class="chamado-info">📍 ${c.bairro}</div><div class="chamado-info">👤 ${c.nome_cliente}</div><div class="chamado-info">📝 ${c.descricao}</div>${tel?`<a href="https://wa.me/55${tel}?text=Olá%20${encodeURIComponent(c.nome_cliente)}!%20Vi%20seu%20pedido%20na%20Foster%20Central%20e%20tenho%20interesse%20em%20${encodeURIComponent(c.servico)}." target="_blank"><button class="btn-whatsapp">💬 CHAMAR NO WHATSAPP</button></a>`:''}`;
+                    } else {
+                        card.innerHTML=`<h4>${c.servico}</h4><div class="chamado-info">📍 ${c.bairro}</div><div class="chamado-info">📝 ${c.descricao}</div><div class="contato-bloqueado">🔒 Contato bloqueado — custa ${custo} crédito${custo>1?'s':''}</div><button class="btn-desbloquear" onclick="desbloquearChamado(${c.id},${custo})" ${saldo<custo?'disabled style="opacity:0.5;cursor:not-allowed;"':''}>${saldo<custo?'❌ CRÉDITOS INSUFICIENTES':`🔓 DESBLOQUEAR (${custo} crédito${custo>1?'s':''})`}</button>`;
+                    }
+                    container.appendChild(card);
+                });
+            } catch(err){container.innerHTML='<p style="text-align:center;color:red;">Erro ao carregar projetos</p>';}
+        }
+
+        async function desbloquearChamado(chamadoId, custo) {
+            if(!usuarioAtual) return;
+            try {
+                const{data,error}=await supabaseClient.rpc('desbloquear_chamado',{p_prof_id:usuarioAtual.id,p_chamado_id:chamadoId,p_custo:custo});
+                if(error){alert('Erro: '+error.message);return;}
+                if(data===false){alert('Créditos insuficientes!');return;}
+                await atualizarPainelProf();
+            } catch(err){alert('Erro ao desbloquear');}
+        }
+
+        async function logoutProf() { await supabaseClient.auth.signOut(); usuarioAtual=null; atualizarPainelProf(); }
+
+        // ===== BUSCAR =====
+        function preencherFiltroCategoria() {
+            const sel=document.getElementById('filtroCategoriaSelect');
+            if(sel.options.length>1) return;
+            Object.entries(CATEGORIAS).forEach(([key,cat])=>{const o=document.createElement('option');o.value=key;o.textContent=cat.nome;sel.appendChild(o);});
+        }
+
+        async function buscarProfissionais() {
+            const termo=document.getElementById('buscaInput').value.trim().toLowerCase(), categoria=document.getElementById('filtroCategoriaSelect').value, container=document.getElementById('resultadosBusca');
+            if(!termo&&!categoria){container.innerHTML='<p style="text-align:center;color:var(--linha);margin-top:20px;">Digite para buscar profissionais</p>';return;}
+            container.innerHTML='<p style="text-align:center;color:var(--linha);">Buscando...</p>';
+            try {
+                let query=supabaseClient.from('profissionais').select('id,nome,telefone,categoria,especialidades,saldo_creditos');
+                if(categoria) query=query.eq('categoria',categoria);
+                const{data,error}=await query;
+                if(error){container.innerHTML='<p style="text-align:center;color:red;">Erro na busca</p>';return;}
+                let resultados=data||[];
+                if(termo) resultados=resultados.filter(p=>(p.nome&&p.nome.toLowerCase().includes(termo))||(p.especialidades&&p.especialidades.toLowerCase().includes(termo))||(p.categoria&&p.categoria.toLowerCase().includes(termo)));
+                if(resultados.length===0){container.innerHTML='<p style="text-align:center;color:var(--linha);margin-top:20px;">Nenhum profissional encontrado</p>';return;}
+                container.innerHTML='';
+                resultados.forEach(prof=>{
+                    const catNome=CATEGORIAS[prof.categoria]?CATEGORIAS[prof.categoria].nome:prof.categoria||'-', tel=prof.telefone?prof.telefone.replace(/\D/g,''):'';
+                    const card=document.createElement('div'); card.className='chamado-card';
+                    card.innerHTML=`<h4>${prof.nome||'Profissional'}</h4><div class="chamado-info">🏷️ ${catNome}</div><div class="chamado-info">🔧 ${prof.especialidades||'-'}</div>${usuarioAtual?`<div class="chamado-info">📱 ${prof.telefone||'Não informado'}</div>${tel?`<a href="https://wa.me/55${tel}?text=Olá%20${encodeURIComponent(prof.nome)}!%20Vi%20seu%20perfil%20na%20Foster%20Central%20e%20gostaria%20de%20um%20orçamento." target="_blank"><button class="btn-whatsapp" style="margin-top:8px;">💬 CHAMAR NO WHATSAPP</button></a>`:''}`:
+                    `<div class="contato-bloqueado">Faça login para ver o contato</div>`}`;
+                    container.appendChild(card);
+                });
+            } catch(err){container.innerHTML='<p style="text-align:center;color:red;">Erro na busca</p>';}
+        }
+
+        // ===== AVALIAÇÕES =====
+        let estrelasAvaliacao=0, profissionalAvaliando=null;
+
+        function selecionarEstrelas(n) { estrelasAvaliacao=n; document.querySelectorAll('#estrelasSeletor span').forEach((s,i)=>{s.textContent=i<n?'⭐':'☆';}); }
+
+        async function buscarProfParaAvaliar() {
+            const termo=document.getElementById('buscaAvaliacaoInput').value.trim().toLowerCase(), container=document.getElementById('resultadosBuscaAvaliacao');
+            if(!termo){container.innerHTML='';return;}
+            const{data}=await supabaseClient.from('profissionais').select('id,nome,categoria,especialidades');
+            const resultados=(data||[]).filter(p=>(p.nome&&p.nome.toLowerCase().includes(termo))||(p.especialidades&&p.especialidades.toLowerCase().includes(termo)));
+            container.innerHTML='';
+            resultados.slice(0,5).forEach(prof=>{
+                const catNome=CATEGORIAS[prof.categoria]?CATEGORIAS[prof.categoria].nome:prof.categoria||'';
+                const div=document.createElement('div');
+                div.style.cssText='background:white;padding:12px;border-radius:8px;margin-bottom:8px;cursor:pointer;border:2px solid transparent;';
+                div.innerHTML=`<strong>${prof.nome}</strong><br><small style="color:#888;">${catNome}</small>`;
+                div.onmouseover=()=>div.style.borderColor='var(--laranja)'; div.onmouseout=()=>div.style.borderColor='transparent';
+                div.onclick=()=>abrirFormAvaliacao(prof);
+                container.appendChild(div);
+            });
+        }
+
+        function abrirFormAvaliacao(prof) {
+            profissionalAvaliando=prof;
+            document.getElementById('nomeAvaliadoTitulo').textContent='⭐ Avaliar: '+prof.nome;
+            document.getElementById('formAvaliacao').style.display='block';
+            document.getElementById('resultadosBuscaAvaliacao').innerHTML='';
+            document.getElementById('buscaAvaliacaoInput').value='';
+            estrelasAvaliacao=0; selecionarEstrelas(0);
+        }
+
+        function cancelarAvaliacao() {
+            profissionalAvaliando=null;
+            document.getElementById('formAvaliacao').style.display='none';
+            document.getElementById('nomeClienteAvaliacao').value='';
+            document.getElementById('comentarioAvaliacao').value='';
+            estrelasAvaliacao=0;
+        }
+
+        async function enviarAvaliacao() {
+            const nome=document.getElementById('nomeClienteAvaliacao').value.trim(), comentario=document.getElementById('comentarioAvaliacao').value.trim();
+            if(!nome){alert('Digite seu nome');return;} if(!estrelasAvaliacao){alert('Selecione uma nota');return;} if(!profissionalAvaliando) return;
+            const{error}=await supabaseClient.from('avaliacoes').insert({prof_id:profissionalAvaliando.id,nota:estrelasAvaliacao,comentario});
+            if(error){alert('Erro: '+error.message);return;}
+            alert('✅ Avaliação enviada! Obrigado.'); cancelarAvaliacao(); carregarAvaliacoes();
+        }
+
+        async function carregarAvaliacoes() {
+            const container=document.getElementById('listaAvaliacoes');
+            if(!container) return;
+            try {
+                const{data}=await supabaseClient.from('avaliacoes').select('*').order('criado_em',{ascending:false}).limit(20);
+                if(!data||data.length===0){container.innerHTML='<p style="text-align:center;color:var(--linha);">Nenhuma avaliação ainda</p>';return;}
+                container.innerHTML='';
+                for(const av of data){
+                    let nomeProf='Profissional';
+                    const{data:pd}=await supabaseClient.from('profissionais').select('nome').eq('id',av.prof_id).maybeSingle();
+                    if(pd) nomeProf=pd.nome;
+                    const estrelas='⭐'.repeat(av.nota)+'☆'.repeat(5-av.nota);
+                    const card=document.createElement('div'); card.className='chamado-card';
+                    card.innerHTML=`<h4>${nomeProf}</h4><div style="font-size:18px;margin:4px 0;">${estrelas}</div>${av.comentario?`<div class="chamado-info" style="font-style:italic;">"${av.comentario}"</div>`:''}<div class="chamado-info" style="font-size:11px;">${new Date(av.criado_em).toLocaleDateString('pt-BR')}</div>`;
+                    container.appendChild(card);
+                }
+            } catch(err){container.innerHTML='<p style="text-align:center;color:red;">Erro ao carregar</p>';}
+        }
+
+        // ===== CRÉDITOS / PIX =====
+        function carregarPacotesCredito() {
+            const pacotes=[{creditos:5,preco:'R$ 9,90',descricao:'Pacote Básico'},{creditos:15,preco:'R$ 24,90',descricao:'Pacote Profissional'},{creditos:30,preco:'R$ 44,90',descricao:'Pacote Premium'},{creditos:60,preco:'R$ 79,90',descricao:'Pacote Master'}];
+            const container=document.getElementById('pacotesCredito'); if(!container) return; container.innerHTML='';
+            pacotes.forEach(p=>{const card=document.createElement('div');card.className='credito-card';card.innerHTML=`<h4>${p.creditos} Créditos</h4><p>${p.descricao}</p><div style="font-size:22px;font-weight:700;margin:8px 0;">${p.preco}</div><button class="btn-primary" onclick="abrirModalPix(${p.creditos},'${p.preco}')">COMPRAR VIA PIX</button>`;container.appendChild(card);});
+        }
+
+        function abrirModalPix(creditos, preco) {
+            const chave='amigosengenheirosuca@gmail.com';
+            document.getElementById('pixContent').innerHTML=`<div class="pix-info"><p style="font-size:14px;font-weight:700;margin-bottom:8px;">Você está comprando:</p><p style="font-size:24px;font-weight:700;color:var(--laranja);">${creditos} Créditos — ${preco}</p></div><p style="font-size:13px;margin-bottom:12px;text-align:center;">Envie o PIX para a chave abaixo:</p><div class="pix-chave">${chave}</div><button class="btn-primary" onclick="copiarPix('${chave}')">📋 COPIAR CHAVE PIX</button><p style="font-size:11px;color:var(--linha);margin-top:12px;text-align:center;">Créditos adicionados em até 1 hora útil após confirmação.</p>`;
+            document.getElementById('modalPix').classList.add('active');
+        }
+
+        function copiarPix(chave) { navigator.clipboard.writeText(chave).then(()=>alert('✅ Chave PIX copiada!')); }
+        function fecharModalPix() { document.getElementById('modalPix').classList.remove('active'); }
+
+        // ===== ADMIN =====
+        let _filtroAdmin = 'todos';
+
+        async function abrirModalAdmin() {
+            const{data:profissionais}=await supabaseClient.from('profissionais').select('*').order('criado_em',{ascending:false});
+            const{data:chamados}=await supabaseClient.from('chamados').select('*').eq('status','novo');
+            const totalProf=profissionais?profissionais.length:0, totalChamados=chamados?chamados.length:0;
+            const todos=profissionais||[];
+            const completos=todos.filter(p=>p.nome&&p.nome.trim()&&p.telefone&&p.categoria&&p.especialidades);
+            const incompletos=todos.filter(p=>!p.nome||!p.nome.trim()||!p.telefone||!p.categoria||!p.especialidades);
+
+            let html=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+                <div style="background:#1F2328;color:white;padding:16px;border-radius:8px;text-align:center;"><div style="font-size:32px;font-weight:700;color:#DC2626;">${totalProf}</div><div style="font-size:11px;letter-spacing:1px;">PROFISSIONAIS</div></div>
+                <div style="background:#1F2328;color:white;padding:16px;border-radius:8px;text-align:center;"><div style="font-size:32px;font-weight:700;color:#DC2626;">${totalChamados}</div><div style="font-size:11px;letter-spacing:1px;">CHAMADOS ABERTOS</div></div>
+            </div>
+            <div style="display:flex;gap:8px;margin-bottom:16px;border-bottom:2px solid #eee;">
+                <button onclick="mostrarAbaAdmin('profissionais')" id="btnAdmProf" style="flex:1;padding:10px;background:none;border:none;font-weight:700;color:#DC2626;border-bottom:3px solid #DC2626;cursor:pointer;">PROFISSIONAIS</button>
+                <button onclick="mostrarAbaAdmin('chamados')" id="btnAdmCham" style="flex:1;padding:10px;background:none;border:none;font-weight:600;cursor:pointer;">CHAMADOS</button>
+            </div>
+            <div id="admProfissionais">
+                <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;">
+                    <button onclick="filtrarAdmin('todos')" id="fAdmTodos" style="padding:7px 14px;border-radius:20px;border:none;background:#1F2328;color:white;font-size:11px;font-weight:800;cursor:pointer;">TODOS (${totalProf})</button>
+                    <button onclick="filtrarAdmin('completos')" id="fAdmCompletos" style="padding:7px 14px;border-radius:20px;border:2px solid #2E7D5B;background:white;color:#2E7D5B;font-size:11px;font-weight:600;cursor:pointer;opacity:0.45;">✅ COMPLETOS (${completos.length})</button>
+                    <button onclick="filtrarAdmin('incompletos')" id="fAdmIncompletos" style="padding:7px 14px;border-radius:20px;border:2px solid #e74c3c;background:white;color:#e74c3c;font-size:11px;font-weight:600;cursor:pointer;opacity:0.45;">⚠️ INCOMPLETOS (${incompletos.length})</button>
+                </div>
+                <div id="listaAdmProf">`;
+
+            todos.forEach(prof=>{
+                const catNome=CATEGORIAS[prof.categoria]?CATEGORIAS[prof.categoria].nome:prof.categoria||'-';
+                const isCompleto=!!(prof.nome&&prof.nome.trim()&&prof.telefone&&prof.categoria&&prof.especialidades);
+                const nomeDisplay=(prof.nome&&prof.nome.trim())?prof.nome:'<em style="color:#e74c3c;">— Sem nome —</em>';
+                const telDisplay=prof.telefone||'<em style="color:#e74c3c;">Não informado</em>';
+                const espDisplay=prof.especialidades||'<em style="color:#e74c3c;">Não informado</em>';
+                const borderColor=isCompleto?'#2E7D5B':'#e74c3c';
+                const badge=isCompleto?'<span style="background:#2E7D5B;color:white;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:700;margin-left:6px;">✅ COMPLETO</span>':'<span style="background:#e74c3c;color:white;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:700;margin-left:6px;">⚠️ INCOMPLETO</span>';
+                const nomeSafe=(prof.nome||'este cadastro').replace(/'/g,'');
+                html+=`<div class="admCard" data-status="${isCompleto?'completo':'incompleto'}" style="background:#f8f8f8;padding:16px;border-radius:8px;margin-bottom:12px;border-left:4px solid ${borderColor};">
+                    <div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:8px;"><strong style="font-size:14px;">${nomeDisplay}</strong>${badge}</div>
+                    <span style="font-size:12px;color:#666;display:block;">📱 ${telDisplay}</span>
+                    <span style="font-size:12px;color:#666;display:block;">🏷️ ${catNome}</span>
+                    <span style="font-size:12px;color:#666;display:block;">🔧 ${espDisplay}</span>
+                    <span style="font-size:12px;color:#666;display:block;">💰 ${prof.saldo_creditos||0} créditos</span>
+                    <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+                        <input type="number" id="credInput_${prof.id}" placeholder="Qtd" style="width:70px;padding:8px;border:1px solid #ccc;border-radius:4px;font-size:12px;">
+                        <button onclick="adicionarCreditos('${prof.id}','${nomeSafe}')" style="flex:1;background:#2E7D5B;color:white;border:none;padding:8px;border-radius:4px;font-weight:600;cursor:pointer;font-size:12px;">+ CRÉDITOS</button>
+                        <button onclick="tornarAdmin('${prof.id}','${nomeSafe}')" style="flex:1;background:#1F2328;color:white;border:none;padding:8px;border-radius:4px;font-weight:600;cursor:pointer;font-size:12px;">⭐ ADMIN</button>
+                        <button onclick="excluirProfissional('${prof.id}','${nomeSafe}')" style="background:#e74c3c;color:white;border:none;padding:8px 12px;border-radius:4px;font-weight:600;cursor:pointer;font-size:12px;">🗑️</button>
+                    </div>
+                </div>`;
+            });
+
+            html+=`</div></div><div id="admChamados" style="display:none;">`;
+            if(chamados) chamados.forEach(c=>{html+=`<div style="background:#f8f8f8;padding:16px;border-radius:8px;margin-bottom:12px;border-left:3px solid #DC2626;"><strong>${c.nome_cliente}</strong><br><span style="font-size:12px;color:#666;">📱 ${c.telefone_cliente}</span><br><span style="font-size:12px;color:#666;">🔧 ${c.servico}</span><br><span style="font-size:12px;color:#666;">📍 ${c.bairro}</span><br><span style="font-size:12px;color:#666;">📝 ${c.descricao}</span></div>`;});
+            html+='</div>';
+            document.getElementById('adminContent').innerHTML=html;
+            document.getElementById('modalAdmin').classList.add('active');
+            filtrarAdmin(_filtroAdmin);
+        }
+
+        function filtrarAdmin(tipo) {
+            _filtroAdmin=tipo;
+            document.querySelectorAll('.admCard').forEach(card=>{
+                if(tipo==='todos') card.style.display='block';
+                else if(tipo==='completos') card.style.display=card.dataset.status==='completo'?'block':'none';
+                else card.style.display=card.dataset.status==='incompleto'?'block':'none';
+            });
+            const mapa={todos:'fAdmTodos',completos:'fAdmCompletos',incompletos:'fAdmIncompletos'};
+            Object.entries(mapa).forEach(([t,id])=>{
+                const el=document.getElementById(id); if(!el) return;
+                el.style.opacity=t===tipo?'1':'0.45';
+                el.style.fontWeight=t===tipo?'800':'600';
+            });
+        }
+
+        function mostrarAbaAdmin(aba) {
+            document.getElementById('admProfissionais').style.display=aba==='profissionais'?'block':'none';
+            document.getElementById('admChamados').style.display=aba==='chamados'?'block':'none';
+            document.getElementById('btnAdmProf').style.color=aba==='profissionais'?'#DC2626':'#666';
+            document.getElementById('btnAdmProf').style.borderBottom=aba==='profissionais'?'3px solid #DC2626':'none';
+            document.getElementById('btnAdmCham').style.color=aba==='chamados'?'#DC2626':'#666';
+            document.getElementById('btnAdmCham').style.borderBottom=aba==='chamados'?'3px solid #DC2626':'none';
+        }
+
+        async function adicionarCreditos(profId, nome) {
+            const input=document.getElementById(`credInput_${profId}`), qtd=parseInt(input?input.value:0);
+            if(!qtd||qtd<=0){alert('Digite uma quantidade válida');return;}
+            const{data:pd}=await supabaseClient.from('profissionais').select('saldo_creditos').eq('id',profId).maybeSingle();
+            const novoSaldo=(pd.saldo_creditos||0)+qtd;
+            const{error}=await supabaseClient.from('profissionais').update({saldo_creditos:novoSaldo}).eq('id',profId);
+            if(error){alert('Erro: '+error.message);return;}
+            alert(`✅ ${qtd} créditos adicionados para ${nome}!`); abrirModalAdmin();
+        }
+
+        async function tornarAdmin(profId, nome) {
+            if(!confirm(`Tornar ${nome} administrador?`)) return;
+            const{error}=await supabaseClient.from('profissionais').update({is_admin:true}).eq('id',profId);
+            if(error){alert('Erro: '+error.message);return;}
+            alert(`✅ ${nome} agora é administrador!`); abrirModalAdmin();
+        }
+
+        async function excluirProfissional(profId, nome) {
+            if(!confirm(`Excluir ${nome}? Esta ação não pode ser desfeita.`)) return;
+            const{error}=await supabaseClient.from('profissionais').delete().eq('id',profId);
+            if(error){alert('Erro: '+error.message);return;}
+            alert(`✅ ${nome} excluído!`); abrirModalAdmin();
+        }
+
+        function fecharModalAdmin() { document.getElementById('modalAdmin').classList.remove('active'); }
+        function abrirModalSobre() { document.getElementById('modalSobre').classList.add('active'); }
+        function fecharModalSobre() { document.getElementById('modalSobre').classList.remove('active'); }
+
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', e => { if(e.target===modal) modal.classList.remove('active'); });
+        });
+
+        window.addEventListener('load', inicializar);
+    </script>
 </body>
 </html>
