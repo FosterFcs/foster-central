@@ -14,7 +14,17 @@
     <link rel="icon" type="image/png" sizes="16x16" href="icon-16.png">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js" 
+    onerror="carregarSupabaseFallback()"></script>
+<script>
+function carregarSupabaseFallback() {
+    // Fallback: tentar cdnjs se unpkg falhar
+    var s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/supabase-js/2.39.0/umd/supabase.min.js';
+    s.onerror = function() { window._supabaseOffline = true; console.warn('Supabase offline - modo local ativo'); };
+    document.head.appendChild(s);
+}
+</script>
     <script>
 const SUPABASE_URL = "https://prxasqrilvqhenvmmeov.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InByeGFzcXJpbHZxaGVudm1tZW92Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0MTcwNDcsImV4cCI6MjA5Njk5MzA0N30.Rl9BUKgxfwkb56-J0cPp9BG7Hv4-Mjoc_7Rp594NwwA";
@@ -692,6 +702,15 @@ function renderProfCard(prof) {
     '</div>';
 }
 
+
+        function supabaseOK() {
+            if (!supabaseClient) {
+                toast('⚠️ Conexão indisponível. Aguarde alguns segundos e tente novamente.', 4000);
+                return false;
+            }
+            return true;
+        }
+
         async function inicializar() {
             try {
                 supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -1309,6 +1328,21 @@ function renderProfCard(prof) {
         document.querySelectorAll('.modal').forEach(modal => {
             modal.addEventListener('click', e => { if(e.target===modal) modal.classList.remove('active'); });
         });
+
+
+        // Verificar conexão Supabase após 3 segundos
+        setTimeout(async function() {
+            try {
+                if (!supabaseClient) return;
+                await supabaseClient.from('profissionais').select('id', {count:'exact',head:true});
+                console.log('✅ Supabase conectado');
+            } catch(e) {
+                var banner = document.createElement('div');
+                banner.style.cssText = 'background:#fef3c7;border-bottom:2px solid #d97706;padding:10px 16px;text-align:center;font-size:12px;font-weight:700;color:#92400e;position:sticky;top:56px;z-index:200;';
+                banner.innerHTML = '⚠️ Servidor temporariamente indisponível — verifique o projeto no Supabase Dashboard. <a href="https://supabase.com/dashboard" target="_blank" style="color:#d97706;text-decoration:underline;">Abrir Dashboard</a>';
+                document.querySelector('header').insertAdjacentElement('afterend', banner);
+            }
+        }, 3000);
 
         window.addEventListener('load', inicializar);
     </script>
