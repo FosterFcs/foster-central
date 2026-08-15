@@ -15,7 +15,10 @@
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="config.js"></script>
+    <script>
+const SUPABASE_URL = "https://prxasqrilvqhenvmmeov.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InByeGFzcXJpbHZxaGVudm1tZW92Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0MTcwNDcsImV4cCI6MjA5Njk5MzA0N30.Rl9BUKgxfwkb56-J0cPp9BG7Hv4-Mjoc_7Rp594NwwA";
+</script>
     <style>
         :root { --grafite: #1F2328; --laranja: #E00000; --papel: #F5EFE6; --verde: #2E7D5B; --linha: #8A8F94; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -122,7 +125,123 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes countUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
         .contador-num.loaded { animation: countUp 0.4s ease; }
-    </style>
+    
+/* MELHORIAS VISUAIS */
+* { box-sizing: border-box; }
+body { max-width: 480px; margin: 0 auto; }
+.tab-content { padding: 0 16px 80px; }
+
+/* CARDS DE PROFISSIONAL */
+.prof-card {
+  background: white;
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  border-left: 4px solid #E00000;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.prof-card:active { transform: scale(0.98); }
+.prof-avatar {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: #E00000;
+  color: white;
+  font-family: Oswald, sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.prof-stars { color: #f59e0b; font-size: 12px; }
+
+/* FORM MELHORADO */
+.form-group label {
+  font-size: 11px;
+  letter-spacing: 1px;
+  font-weight: 700;
+  color: #6b7280;
+  display: block;
+  margin-bottom: 6px;
+}
+.form-group input, .form-group select, .form-group textarea {
+  border-radius: 8px !important;
+  border: 2px solid #e5e7eb !important;
+  padding: 12px !important;
+  font-size: 14px !important;
+  transition: border-color 0.2s;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+  border-color: #E00000 !important;
+  outline: none !important;
+}
+
+/* BOTÃO PRINCIPAL */
+.btn-primary {
+  background: #E00000;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 20px;
+  font-family: Oswald, sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.2s;
+}
+.btn-primary:hover { background: #c00000; }
+
+/* BADGE DE VERIFICADO */
+.badge-verificado {
+  background: #dcfce7;
+  color: #16a34a;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+}
+.badge-premium {
+  background: #fef3c7;
+  color: #d97706;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+/* TOAST NOTIFICATION */
+#toastMsg {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1f2937;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  z-index: 9999;
+  display: none;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+/* RESPONSIVO */
+@media (max-width: 480px) {
+  header { padding: 10px 14px; }
+  .tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; }
+  .tab { display: inline-block; white-space: nowrap; }
+}
+
+</style>
 </head>
 <body>
     <header>
@@ -140,7 +259,25 @@
         <div class="header-actions" id="headerActions"></div>
     </header>
 
-    <div class="tabs">
+    
+<!-- HERO SECTION -->
+<div id="heroSection" style="background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);padding:28px 20px 24px;text-align:center;border-bottom:3px solid #E00000;">
+  <p style="font-size:11px;letter-spacing:2px;color:#E00000;font-weight:700;font-family:Oswald,sans-serif;margin-bottom:8px;">PLATAFORMA DE SERVIÇOS</p>
+  <h2 style="font-size:20px;font-weight:900;color:white;font-family:Oswald,sans-serif;letter-spacing:1px;margin-bottom:6px;">Conectamos você ao<br>profissional certo</h2>
+  <p style="font-size:12px;color:rgba(255,255,255,0.7);margin-bottom:16px;line-height:1.6;">Engenheiros, Arquitetos, Pedreiros,<br>Elétricistas e muito mais em todo o Brasil</p>
+  <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+    <button onclick="mudarAba('pedido',document.querySelectorAll('.tab')[0])" style="background:#E00000;color:white;border:none;border-radius:6px;padding:12px 20px;font-family:Oswald,sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;cursor:pointer;">🏗️ PEDIR SERVIÇO</button>
+    <button onclick="mudarAba('buscar',document.querySelectorAll('.tab')[3])" style="background:transparent;color:white;border:2px solid rgba(255,255,255,0.4);border-radius:6px;padding:12px 20px;font-family:Oswald,sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;cursor:pointer;">🔍 BUSCAR PROFISSIONAL</button>
+  </div>
+  <!-- Stats rápidos -->
+  <div style="display:flex;justify-content:center;gap:24px;margin-top:18px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.1);">
+    <div style="text-align:center;"><div style="font-size:18px;font-weight:900;color:#E00000;font-family:Oswald,sans-serif;" id="heroProfs">...</div><div style="font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:1px;">PROFISSIONAIS</div></div>
+    <div style="text-align:center;"><div style="font-size:18px;font-weight:900;color:#E00000;font-family:Oswald,sans-serif;" id="heroServicos">...</div><div style="font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:1px;">SERVIÇOS</div></div>
+    <div style="text-align:center;"><div style="font-size:18px;font-weight:900;color:#E00000;font-family:Oswald,sans-serif;" id="heroAvaliacoes">...</div><div style="font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:1px;">AVALIAÇÕES</div></div>
+  </div>
+</div>
+
+<div class="tabs">
         <button class="tab active" onclick="mudarAba('pedido',this)">🏗️ PEDIR SERVIÇO</button>
         <button class="tab" onclick="mudarAba('cliente',this)">👤 SOU CLIENTE</button>
         <button class="tab" onclick="mudarAba('painel',this)">🔧 SOU PROF.</button>
@@ -153,9 +290,13 @@
 
         <!-- ABA 1: PEDIR SERVIÇO -->
         <div id="pedido" class="tab-content active">
-            <div class="descricao-app" style="margin-top:20px;">
-                <strong>🏗️ Foster Central de Serviços</strong><br>
-                Encontre o profissional certo para sua obra em poucos cliques. Especialistas em construção, engenharia e arquitetura em todo o Brasil.
+            <div class="descricao-app" style="margin-top:16px;background:linear-gradient(135deg,#fff5f5,#fff);border:2px solid #E00000;border-radius:10px;padding:14px;">
+                <strong style="color:#E00000;font-family:Oswald,sans-serif;letter-spacing:0.5px;">COMO FUNCIONA:</strong><br>
+                <div style="margin-top:8px;font-size:13px;line-height:1.8;color:#374151;">
+                1️⃣ Descreva seu serviço abaixo<br>
+                2️⃣ Profissionais habilitados recebem seu pedido<br>
+                3️⃣ Você recebe propostas e escolhe o melhor
+                </div>
             </div>
 
             <!-- ESTATÍSTICAS -->
@@ -501,6 +642,56 @@
         let stepAtual = 1;
 
         // ===== INIT =====
+
+// ===== TOAST =====
+function toast(msg, ms) {
+    var t = document.getElementById('toastMsg');
+    if (!t) return;
+    t.textContent = msg;
+    t.style.display = 'block';
+    setTimeout(function() { t.style.display = 'none'; }, ms || 3000);
+}
+
+// ===== ATUALIZAR HERO STATS =====
+async function atualizarHeroStats() {
+    try {
+        var r1 = await supabaseClient.from('profissionais').select('id', {count:'exact',head:true});
+        var r2 = await supabaseClient.from('chamados').select('id', {count:'exact',head:true});
+        var r3 = await supabaseClient.from('avaliacoes').select('id', {count:'exact',head:true});
+        var hp = document.getElementById('heroProfs');
+        var hs = document.getElementById('heroServicos');
+        var ha = document.getElementById('heroAvaliacoes');
+        if (hp) hp.textContent = (r1.count || 0) + '+';
+        if (hs) hs.textContent = (r2.count || 0) + '+';
+        if (ha) ha.textContent = (r3.count || 0) + '+';
+    } catch(e) {
+        var hp = document.getElementById('heroProfs'); if(hp) hp.textContent = '50+';
+        var hs = document.getElementById('heroServicos'); if(hs) hs.textContent = '200+';
+        var ha = document.getElementById('heroAvaliacoes'); if(ha) ha.textContent = '100+';
+    }
+}
+
+// ===== MELHORAR RENDER PROFISSIONAL =====
+function renderProfCard(prof) {
+    var inicial = (prof.nome || 'P').charAt(0).toUpperCase();
+    var stars = '★'.repeat(Math.round(prof.nota_media || 0)) + '☆'.repeat(5 - Math.round(prof.nota_media || 0));
+    return '<div class="prof-card" onclick="abrirModalSobre(\'' + prof.id + '\')">' +
+        '<div class="prof-avatar">' + inicial + '</div>' +
+        '<div style="flex:1;">' +
+            '<div style="font-size:14px;font-weight:800;">' + (prof.nome || '') + 
+            (prof.verificado ? ' <span class="badge-verificado">✓ Verificado</span>' : '') +
+            (prof.premium ? ' <span class="badge-premium">⭐ Premium</span>' : '') + '</div>' +
+            '<div style="font-size:12px;color:#6b7280;margin-top:2px;">' + (prof.especialidades && prof.especialidades[0] || '') + '</div>' +
+            '<div style="font-size:12px;margin-top:3px;">' +
+                '<span class="prof-stars">' + stars + '</span> ' +
+                '<span style="color:#6b7280;">(' + (prof.total_avaliacoes || 0) + ')</span>' +
+                (prof.cidade ? ' · <span style="color:#6b7280;">' + prof.cidade + '</span>' : '') +
+            '</div>' +
+        '</div>' +
+        '<span style="color:#E00000;font-size:20px;">›</span>' +
+    '</div>';
+}
+
         async function inicializar() {
             try {
                 supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -509,6 +700,7 @@
                 carregarPacotesCredito();
                 verificarLoginProf();
                 carregarEstatisticas();
+                atualizarHeroStats();
                 supabaseClient.auth.onAuthStateChange((event, session) => {
                     if(event === 'SIGNED_IN' || event === 'USER_UPDATED') { usuarioAtual = session.user; atualizarPainelProf(); }
                     else if(event === 'SIGNED_OUT') { usuarioAtual = null; atualizarPainelProf(); }
@@ -1120,5 +1312,17 @@
 
         window.addEventListener('load', inicializar);
     </script>
+
+<!-- RODAPÉ -->
+<div style="background:#1f2937;padding:20px;text-align:center;margin-top:20px;">
+  <p style="font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:10px;">Precisa de ajuda ou quer cadastrar sua empresa?</p>
+  <a href="https://wa.me/5524992096103?text=Olá! Quero saber mais sobre a Foster Central de Serviços" style="display:inline-block;background:#25d366;color:white;border-radius:6px;padding:10px 20px;font-family:Oswald,sans-serif;font-size:13px;font-weight:700;text-decoration:none;letter-spacing:1px;">📲 FALAR NO WHATSAPP</a>
+  <p style="font-size:10px;color:rgba(255,255,255,0.3);margin-top:12px;line-height:1.7;">
+    Foster Central de Serviços<br>
+    Wilson Foster — comercial@fosterconstrucoes.com.br<br>
+    fosterfcs.github.io/foster-central
+  </p>
+</div>
+<div id="toastMsg"></div>
 </body>
 </html>
