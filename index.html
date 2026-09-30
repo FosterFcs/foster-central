@@ -138,7 +138,14 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
     
 /* MELHORIAS VISUAIS */
 * { box-sizing: border-box; }
-body { max-width: 480px; margin: 0 auto; }
+html { background: var(--papel); }
+body { width: 100%; margin: 0 auto; }
+@media (min-width: 700px) {
+  body { max-width: 720px; }
+}
+@media (min-width: 1000px) {
+  body { max-width: 900px; box-shadow: 0 0 50px rgba(0,0,0,0.08); }
+}
 .tab-content { padding: 0 16px 80px; }
 
 /* CARDS DE PROFISSIONAL */
@@ -248,7 +255,7 @@ body { max-width: 480px; margin: 0 auto; }
 @media (max-width: 480px) {
   header { padding: 10px 14px; }
   .tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; white-space: nowrap; }
-  .tab { display: inline-block; white-space: nowrap; }
+  .tab { display: inline-block; white-space: nowrap; padding: 12px 9px; font-size: 10.5px; }
 }
 
 </style>
