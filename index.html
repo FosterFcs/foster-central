@@ -761,7 +761,7 @@ function renderProfCard(prof) {
             document.querySelectorAll('.tab').forEach(e => e.classList.remove('active'));
             document.getElementById(aba).classList.add('active');
             if(el) el.classList.add('active');
-            if(aba === 'buscar') preencherFiltroCategoria();
+            if(aba === 'buscar') { preencherFiltroCategoria(); buscarProfissionais(); }
             if(aba === 'avaliacoes') carregarAvaliacoes();
             if(aba === 'cliente' && usuarioCliente) carregarPedidosCliente();
         }
@@ -1139,7 +1139,6 @@ function renderProfCard(prof) {
 
         async function buscarProfissionais() {
             const termo=document.getElementById('buscaInput').value.trim().toLowerCase(), categoria=document.getElementById('filtroCategoriaSelect').value, container=document.getElementById('resultadosBusca');
-            if(!termo&&!categoria){container.innerHTML='<p style="text-align:center;color:var(--linha);margin-top:20px;">Digite para buscar profissionais</p>';return;}
             container.innerHTML='<p style="text-align:center;color:var(--linha);">Buscando...</p>';
             try {
                 let query=supabaseClient.from('profissionais').select('id,nome,telefone,categoria,especialidades,saldo_creditos');
@@ -1148,7 +1147,7 @@ function renderProfCard(prof) {
                 if(error){container.innerHTML='<p style="text-align:center;color:red;">Erro na busca</p>';return;}
                 let resultados=data||[];
                 if(termo) resultados=resultados.filter(p=>(p.nome&&p.nome.toLowerCase().includes(termo))||(p.especialidades&&p.especialidades.toLowerCase().includes(termo))||(p.categoria&&p.categoria.toLowerCase().includes(termo)));
-                if(resultados.length===0){container.innerHTML='<p style="text-align:center;color:var(--linha);margin-top:20px;">Nenhum profissional encontrado</p>';return;}
+                if(resultados.length===0){container.innerHTML=`<p style="text-align:center;color:var(--linha);margin-top:20px;">${termo||categoria?'Nenhum profissional encontrado':'Ainda não há profissionais cadastrados'}</p>`;return;}
                 container.innerHTML='';
                 resultados.forEach(prof=>{
                     const catNome=CATEGORIAS[prof.categoria]?CATEGORIAS[prof.categoria].nome:prof.categoria||'-', tel=prof.telefone?prof.telefone.replace(/\D/g,''):'';
