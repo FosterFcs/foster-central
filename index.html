@@ -403,7 +403,7 @@ body { max-width: 480px; margin: 0 auto; }
             <div id="clienteCadastroArea" style="display:none;margin-top:20px;">
                 <h3 style="font-family:Oswald;margin-bottom:16px;">CRIAR CONTA CLIENTE</h3>
                 <div class="form-group"><label>Nome completo</label><input type="text" id="nomeClienteCad" placeholder="Seu nome completo"></div>
-                <div class="form-group"><label>Telefone / WhatsApp</label><input type="tel" id="telefoneClienteCad" placeholder="(11) 9999-9999"></div>
+                <div class="form-group"><label>Telefone / WhatsApp</label><input type="tel" id="telefoneClienteCad" placeholder="(11) 9999-9999" oninput="formatarTelefoneCliente(this)"></div>
                 <div class="form-group"><label>Cidade / Estado</label><input type="text" id="cidadeClienteCad" placeholder="Ex: São Paulo, SP"></div>
                 <div class="form-group"><label>E-mail</label><input type="email" id="emailClienteCad" placeholder="seu@email.com"></div>
                 <div class="form-group"><label>Senha</label><input type="password" id="senhaClienteCad" placeholder="Crie uma senha"></div>
@@ -643,6 +643,12 @@ body { max-width: 480px; margin: 0 auto; }
             'Paisagista':2,'Instalador Elétrico':2,'Instalador de Gás':2
         };
 
+        const PRECOS_CATEGORIA = {
+            engenharia: 3, arquitetura: 3, gestao: 3, tecnico: 2,
+            civil: 2, eletrica: 2, hidraulica: 2, acabamento: 1,
+            obraSeca: 2, estrutura: 2, esquadrias: 1, cobertura: 2, complementar: 1
+        };
+
         let supabaseClient = null;
         let usuarioAtual = null;
         let usuarioCliente = null;
@@ -877,10 +883,12 @@ function renderProfCard(prof) {
             if(!descricao) { alert('Descreva o seu projeto'); return; }
             if(!subcategoriaAtual) { alert('Selecione o serviço desejado'); return; }
             try {
-                const { data, error } = await supabaseClient.from('chamados').insert({
+                const payload = {
                     nome_cliente: nome, telefone_cliente: telefone,
-                    servico: subcategoriaAtual, bairro, descricao, status: 'novo'
-                }).select();
+                    servico: subcategoriaAtual, categoria: categoriaAtual, bairro, descricao, status: 'novo'
+                };
+                if(usuarioCliente) payload.cliente_id = usuarioCliente.id;
+                const { data, error } = await supabaseClient.from('chamados').insert(payload).select();
                 if(error) { alert('Erro: ' + error.message); return; }
                 if(data && data.length > 0) {
                     document.getElementById('numeroProtocolo').textContent = '#' + String(data[0].id).padStart(4,'0');
@@ -940,16 +948,34 @@ function renderProfCard(prof) {
             document.getElementById('clienteLoginArea').style.display='none';
             document.getElementById('clienteCadastroArea').style.display='none';
             document.getElementById('clientePainelLogado').style.display='block';
-            const{data:cd}=await supabaseClient.from('clientes').select('nome').eq('id',usuarioCliente.id).maybeSingle();
+            const{data:cd}=await supabaseClient.from('clientes').select('nome,telefone').eq('id',usuarioCliente.id).maybeSingle();
             document.getElementById('clienteBoasVindas').textContent='Olá, '+(cd?cd.nome:usuarioCliente.email)+'! 👋';
-            carregarPedidosCliente();
+            carregarPedidosCliente(cd ? cd.telefone : null);
         }
 
-        async function carregarPedidosCliente() {
+        async function carregarPedidosCliente(telefoneClienteCadastrado) {
             const container=document.getElementById('listaPedidosCliente');
             if(!container||!usuarioCliente) return;
             try {
-                const{data:pedidos}=await supabaseClient.from('chamados').select('*').eq('telefone_cliente',usuarioCliente.phone||'').order('criado_em',{ascending:false});
+                // Busca por cliente_id (pedidos feitos já logado) OU pelo telefone cadastrado
+                // (normalizado, só dígitos, para casar independente de formatação),
+                // cobrindo também pedidos feitos antes de estar logado.
+                const telDigits = (telefoneClienteCadastrado||'').replace(/\D/g,'');
+
+                const porId = await supabaseClient.from('chamados').select('*').eq('cliente_id', usuarioCliente.id);
+                let pedidos = porId.data || [];
+
+                if(telDigits){
+                    const porTelefone = await supabaseClient.from('chamados').select('*').order('criado_em',{ascending:false});
+                    const extras = (porTelefone.data || []).filter(p =>
+                        p.telefone_cliente && p.telefone_cliente.replace(/\D/g,'') === telDigits &&
+                        !pedidos.some(existing => existing.id === p.id)
+                    );
+                    pedidos = pedidos.concat(extras);
+                }
+
+                pedidos.sort((a,b)=> new Date(b.criado_em) - new Date(a.criado_em));
+
                 if(!pedidos||pedidos.length===0){container.innerHTML='<p style="text-align:center;color:var(--linha);">Nenhum pedido encontrado.<br><small>Vá em "Pedir Serviço" para solicitar!</small></p>';return;}
                 container.innerHTML='';
                 pedidos.forEach(p=>{const card=document.createElement('div');card.className='chamado-card';card.innerHTML=`<h4>${p.servico}</h4><div class="chamado-info">📍 ${p.bairro}</div><div class="chamado-info">📝 ${p.descricao}</div><div class="servico-badge">${p.status==='novo'?'🟡 Aguardando':'✅ Atendido'}</div>`;container.appendChild(card);});
@@ -1077,7 +1103,9 @@ function renderProfCard(prof) {
                 const idsDesbloqueados=new Set((desbloqueados||[]).map(d=>d.chamado_id));
                 container.innerHTML='';
                 chamados.forEach(c=>{
-                    const jaDesbloqueado=idsDesbloqueados.has(c.id), custo=PRECOS_SERVICOS[c.servico]||1, saldo=profData?(profData.saldo_creditos||0):0;
+                    const jaDesbloqueado=idsDesbloqueados.has(c.id);
+                    const custo = PRECOS_CATEGORIA[c.categoria] || PRECOS_SERVICOS[c.servico] || 1;
+                    const saldo=profData?(profData.saldo_creditos||0):0;
                     const card=document.createElement('div'); card.className='chamado-card';
                     if(jaDesbloqueado){
                         const tel=c.telefone_cliente?c.telefone_cliente.replace(/\D/g,''):'';
@@ -1300,23 +1328,21 @@ function renderProfCard(prof) {
         async function adicionarCreditos(profId, nome) {
             const input=document.getElementById(`credInput_${profId}`), qtd=parseInt(input?input.value:0);
             if(!qtd||qtd<=0){alert('Digite uma quantidade válida');return;}
-            const{data:pd}=await supabaseClient.from('profissionais').select('saldo_creditos').eq('id',profId).maybeSingle();
-            const novoSaldo=(pd.saldo_creditos||0)+qtd;
-            const{error}=await supabaseClient.from('profissionais').update({saldo_creditos:novoSaldo}).eq('id',profId);
+            const{data,error}=await supabaseClient.rpc('admin_adicionar_creditos',{p_prof_id:profId,p_qtd:qtd});
             if(error){alert('Erro: '+error.message);return;}
             alert(`✅ ${qtd} créditos adicionados para ${nome}!`); abrirModalAdmin();
         }
 
         async function tornarAdmin(profId, nome) {
             if(!confirm(`Tornar ${nome} administrador?`)) return;
-            const{error}=await supabaseClient.from('profissionais').update({is_admin:true}).eq('id',profId);
+            const{data,error}=await supabaseClient.rpc('admin_tornar_admin',{p_prof_id:profId});
             if(error){alert('Erro: '+error.message);return;}
             alert(`✅ ${nome} agora é administrador!`); abrirModalAdmin();
         }
 
         async function excluirProfissional(profId, nome) {
             if(!confirm(`Excluir ${nome}? Esta ação não pode ser desfeita.`)) return;
-            const{error}=await supabaseClient.from('profissionais').delete().eq('id',profId);
+            const{data,error}=await supabaseClient.rpc('admin_excluir_profissional',{p_prof_id:profId});
             if(error){alert('Erro: '+error.message);return;}
             alert(`✅ ${nome} excluído!`); abrirModalAdmin();
         }
