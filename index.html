@@ -1146,6 +1146,10 @@ function renderProfCard(prof) {
                 const{data,error}=await query;
                 if(error){container.innerHTML='<p style="text-align:center;color:red;">Erro na busca</p>';return;}
                 let resultados=data||[];
+                // Só mostra na busca pública quem completou o cadastro
+                // (nome, categoria e especialidades preenchidos) — cadastros
+                // incompletos ficam visíveis só no painel Admin pra gestão.
+                resultados=resultados.filter(p=>p.nome&&p.nome.trim()&&p.categoria&&p.especialidades);
                 if(termo) resultados=resultados.filter(p=>(p.nome&&p.nome.toLowerCase().includes(termo))||(p.especialidades&&p.especialidades.toLowerCase().includes(termo))||(p.categoria&&p.categoria.toLowerCase().includes(termo)));
                 if(resultados.length===0){container.innerHTML=`<p style="text-align:center;color:var(--linha);margin-top:20px;">${termo||categoria?'Nenhum profissional encontrado':'Ainda não há profissionais cadastrados'}</p>`;return;}
                 container.innerHTML='';
