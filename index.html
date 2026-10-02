@@ -406,6 +406,7 @@ body { width: 100%; margin: 0 auto; }
                 <div class="form-group"><label>Senha</label><input type="password" id="senhaCliente" placeholder="Sua senha"></div>
                 <button class="btn-primary" onclick="loginCliente()">ENTRAR</button>
                 <button class="btn-secondary" style="width:100%;margin-top:8px;" onclick="mostrarCadastroCliente()">CADASTRE-SE</button>
+                <p style="text-align:center;margin-top:12px;"><a onclick="esqueciSenha('emailCliente')" style="color:var(--laranja);font-size:12px;font-weight:600;cursor:pointer;text-decoration:underline;">Esqueci minha senha</a></p>
             </div>
             <div id="clienteCadastroArea" style="display:none;margin-top:20px;">
                 <h3 style="font-family:Oswald;margin-bottom:16px;">CRIAR CONTA CLIENTE</h3>
@@ -438,6 +439,7 @@ body { width: 100%; margin: 0 auto; }
                 <div class="form-group"><label>Senha</label><input type="password" id="senhaProf" placeholder="Sua senha"></div>
                 <button class="btn-primary" onclick="loginProf()">ENTRAR</button>
                 <button class="btn-secondary" style="width:100%;" onclick="mostrarCadastro()">CADASTRE-SE</button>
+                <p style="text-align:center;margin-top:12px;"><a onclick="esqueciSenha('emailProf')" style="color:var(--laranja);font-size:12px;font-weight:600;cursor:pointer;text-decoration:underline;">Esqueci minha senha</a></p>
             </div>
             <div id="cadastroArea" style="display:none;margin-top:20px;">
                 <h3 style="font-family:Oswald;margin-bottom:16px;">CRIAR CONTA</h3>
@@ -938,6 +940,17 @@ function renderProfCard(prof) {
                 alert('✅ Cadastro realizado! Bem-vindo(a) '+nome);
                 voltarLoginCliente();
             } catch(err){alert('Erro ao cadastrar');}
+        }
+
+        async function esqueciSenha(campoEmailId) {
+            let email = document.getElementById(campoEmailId).value.trim();
+            if(!email) email = prompt('Digite o e-mail cadastrado para receber o link de redefinição de senha:');
+            if(!email) return;
+            try {
+                const{error}=await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo: window.location.href });
+                if(error){alert('Erro: '+error.message);return;}
+                alert('✅ Se esse e-mail estiver cadastrado, enviamos um link para redefinir sua senha.\nVerifique também a caixa de spam. Se não chegar em alguns minutos, entre em contato pelo WhatsApp no rodapé da página.');
+            } catch(err){alert('Erro ao solicitar redefinição de senha.');}
         }
 
         async function loginCliente() {
