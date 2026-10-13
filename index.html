@@ -605,7 +605,7 @@ body { width: 100%; margin: 0 auto; }
             },
             hidraulica: {
                 nome: '💧 Instalações Hidráulicas', icone: '💧',
-                servicos: ['Tubulação de Água','Banheiro Completo','Cozinha Completa','Instalação de Gás','Aquecimento Solar','Sistema de Drenagem']
+                servicos: ['Tubulação de Água','Banheiro Completo','Cozinha Completa','Instalação de Gás','Aquecimento Solar','Sistema de Drenagem','Cisterna e Água de Chuva','Fossa Séptica e Sumidouro','Reservatório de Retenção']
             },
             acabamento: {
                 nome: '🎨 Revestimentos e Acabamentos', icone: '🎨',
@@ -751,6 +751,7 @@ function renderProfCard(prof) {
                 verificarLoginProf();
                 carregarEstatisticas();
                 atualizarHeroStats();
+                preencherPedidoPelaUrl();
                 supabaseClient.auth.onAuthStateChange((event, session) => {
                     if(event === 'SIGNED_IN' || event === 'USER_UPDATED') { usuarioAtual = session.user; atualizarPainelProf(); }
                     else if(event === 'SIGNED_OUT') { usuarioAtual = null; atualizarPainelProf(); }
@@ -924,6 +925,21 @@ function renderProfCard(prof) {
                     document.getElementById('confirmacaoPedido').style.display='block';
                 }
             } catch(err) { alert('Erro ao enviar. Tente novamente.'); }
+        }
+
+        // pedido pré-preenchido vindo das calculadoras do Foster Calc: ?cat=hidraulica&servico=...&desc=...
+        function preencherPedidoPelaUrl() {
+            const q=new URLSearchParams(location.search), key=q.get('cat'), servico=q.get('servico'), desc=q.get('desc');
+            const cat=CATEGORIAS[key];
+            if(!cat) return;
+            const catBtn=[...document.querySelectorAll('#catGrid .cat-btn')][Object.keys(CATEGORIAS).indexOf(key)];
+            if(!catBtn) return;
+            selecionarCategoriaPedido(key, cat, catBtn);
+            const i=cat.servicos.indexOf(servico);
+            if(i>=0){ const sb=document.querySelectorAll('#subcatGrid .subcat-btn')[i]; if(sb) selecionarSubcategoria(servico, sb); }
+            if(desc) document.getElementById('descricaoCliente').value=desc.slice(0,2500);
+            try{ history.replaceState(null,'',location.pathname); }catch(e){}
+            setTimeout(()=>{ const f=document.getElementById(i>=0?'step3':'step2'); if(f) f.scrollIntoView({behavior:'smooth',block:'start'}); },200);
         }
 
         function novoPedido() {
