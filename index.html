@@ -1114,6 +1114,7 @@ function renderProfCard(prof) {
                     document.getElementById('saldoCreditos2').textContent=profData.saldo_creditos||0;
                     if(profData.is_admin) document.getElementById('adminPanel').style.display='block';
                     perfilAtual=profData;
+                    avisarCompras();
                     const incompleto=!profData.nome||profData.nome==='Profissional'||!profData.telefone||!profData.categoria||!profData.especialidades;
                     if(incompleto&&!sessionStorage.getItem('fc_perfil_adiado')) abrirModalPerfil();
                 }
@@ -1163,6 +1164,20 @@ function renderProfCard(prof) {
                 await atualizarPainelProf();
             } catch(err){alert('Erro ao desbloquear');}
         }
+
+        // ===== AVISO DE CRÉDITOS COMPRADOS =====
+        async function avisarCompras() {
+            if(!usuarioAtual) return;
+            const chave='fcs_compra_vista:'+usuarioAtual.id;
+            let visto=null; try{visto=localStorage.getItem(chave);}catch(e){}
+            const{data}=await supabaseClient.from('transacoes_credito').select('valor,criado_em').eq('tipo','compra').order('criado_em',{ascending:false}).limit(10);
+            const ultima=data&&data[0]?data[0].criado_em:null;
+            try{ if(ultima) localStorage.setItem(chave,ultima); else if(!visto) localStorage.setItem(chave,new Date().toISOString()); }catch(e){}
+            if(!visto||!data) return;
+            const novos=data.filter(t=>t.criado_em>visto).reduce((s,t)=>s+(t.valor||0),0);
+            if(novos>0){ fecharModalPix(); alert(`✅ Pagamento confirmado!\n${novos} crédito${novos>1?'s':''} adicionado${novos>1?'s':''} à sua conta.`); }
+        }
+        document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible'&&usuarioAtual) atualizarPainelProf(); });
 
         // ===== COMPLETAR PERFIL =====
         let perfilAtual=null;
@@ -1299,15 +1314,29 @@ function renderProfCard(prof) {
         }
 
         // ===== CRÉDITOS / PIX =====
+        // links de pagamento do Asaas: o webhook asaas-creditos credita pelo e-mail de quem paga
+        const PACOTES_CREDITO=[
+            {creditos:5,preco:'R$ 9,90',descricao:'Pacote Básico',link:'https://www.asaas.com/c/eqgs12tszbk96gti'},
+            {creditos:15,preco:'R$ 24,90',descricao:'Pacote Profissional',link:'https://www.asaas.com/c/1t31qz20dxatkyfv'},
+            {creditos:30,preco:'R$ 44,90',descricao:'Pacote Premium',link:'https://www.asaas.com/c/yqeb9y2wx36ystu7'},
+            {creditos:60,preco:'R$ 79,90',descricao:'Pacote Master',link:'https://www.asaas.com/c/hlh6e4p61i29rfru'}];
         function carregarPacotesCredito() {
-            const pacotes=[{creditos:5,preco:'R$ 9,90',descricao:'Pacote Básico'},{creditos:15,preco:'R$ 24,90',descricao:'Pacote Profissional'},{creditos:30,preco:'R$ 44,90',descricao:'Pacote Premium'},{creditos:60,preco:'R$ 79,90',descricao:'Pacote Master'}];
             const container=document.getElementById('pacotesCredito'); if(!container) return; container.innerHTML='';
-            pacotes.forEach(p=>{const card=document.createElement('div');card.className='credito-card';card.innerHTML=`<h4>${p.creditos} Créditos</h4><p>${p.descricao}</p><div style="font-size:22px;font-weight:700;margin:8px 0;">${p.preco}</div><button class="btn-primary" onclick="abrirModalPix(${p.creditos},'${p.preco}')">COMPRAR VIA PIX</button>`;container.appendChild(card);});
+            PACOTES_CREDITO.forEach((p,i)=>{const card=document.createElement('div');card.className='credito-card';card.innerHTML=`<h4>${p.creditos} Créditos</h4><p>${p.descricao}</p><div style="font-size:22px;font-weight:700;margin:8px 0;">${p.preco}</div><button class="btn-primary" onclick="abrirModalPix(${i})">COMPRAR · PIX OU CARTÃO</button>`;container.appendChild(card);});
         }
 
-        function abrirModalPix(creditos, preco) {
-            const chave='amigosengenheirosuca@gmail.com';
-            document.getElementById('pixContent').innerHTML=`<div class="pix-info"><p style="font-size:14px;font-weight:700;margin-bottom:8px;">Você está comprando:</p><p style="font-size:24px;font-weight:700;color:var(--laranja);">${creditos} Créditos — ${preco}</p></div><p style="font-size:13px;margin-bottom:12px;text-align:center;">Envie o PIX para a chave abaixo:</p><div class="pix-chave">${chave}</div><button class="btn-primary" onclick="copiarPix('${chave}')">📋 COPIAR CHAVE PIX</button><p style="font-size:11px;color:var(--linha);margin-top:12px;text-align:center;">Créditos adicionados em até 1 hora útil após confirmação.</p>`;
+        function abrirModalPix(i) {
+            const p=PACOTES_CREDITO[i]; if(!p) return;
+            const box=document.getElementById('pixContent');
+            if(!usuarioAtual){
+                box.innerHTML=`<div class="pix-info"><p style="font-size:24px;font-weight:700;color:var(--laranja);">${p.creditos} Créditos — ${p.preco}</p></div><p style="font-size:13px;text-align:center;margin-bottom:12px;">Entre na sua conta de profissional antes de comprar: os créditos caem na conta com o mesmo e-mail usado no pagamento.</p><button class="btn-primary" onclick="fecharModalPix();mudarAba('painel',document.querySelector(&quot;.tab[onclick*=painel]&quot;))">ENTRAR NA MINHA CONTA</button>`;
+            } else {
+                const email=esc(usuarioAtual.email||'');
+                box.innerHTML=`<div class="pix-info"><p style="font-size:14px;font-weight:700;margin-bottom:8px;">Você está comprando:</p><p style="font-size:24px;font-weight:700;color:var(--laranja);">${p.creditos} Créditos — ${p.preco}</p></div>
+                    <p style="font-size:13px;margin-bottom:8px;text-align:center;">No pagamento, use <b>este mesmo e-mail</b>:</p><div class="pix-chave">${email}</div>
+                    <a href="${p.link}" target="_blank" rel="noopener" style="text-decoration:none;"><button class="btn-primary">PAGAR COM PIX OU CARTÃO</button></a>
+                    <p style="font-size:11px;color:var(--linha);margin-top:12px;text-align:center;">Pagamento seguro pelo Asaas. Os créditos entram sozinhos assim que o pagamento é confirmado (PIX em instantes). Se usar outro e-mail, fale com a gente pelo WhatsApp.</p>`;
+            }
             document.getElementById('modalPix').classList.add('active');
         }
 
