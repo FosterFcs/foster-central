@@ -540,6 +540,19 @@ body { width: 100%; margin: 0 auto; }
         </div>
     </div>
 
+    <!-- MODAL COMPLETAR PERFIL -->
+    <div id="modalPerfil" class="modal">
+        <div class="modal-content">
+            <div class="modal-header"><h2>COMPLETE SEU PERFIL</h2><button class="btn-close" onclick="fecharModalPerfil()">×</button></div>
+            <p style="font-size:13px;margin-bottom:14px;">Seu cadastro ficou incompleto. Preencha os dados abaixo para aparecer na busca de clientes e receber projetos da sua área.</p>
+            <div class="form-group"><label>Nome completo</label><input type="text" id="perfilNome" placeholder="Seu nome"></div>
+            <div class="form-group"><label>Telefone / WhatsApp</label><input type="tel" id="perfilTelefone" placeholder="(11) 99999-9999" oninput="formatarTelefone(this)"></div>
+            <div class="form-group"><label>Categoria principal</label><select id="perfilCategoria" onchange="renderEspecialidadesPerfil()"><option value="">Selecione</option></select></div>
+            <div class="form-group"><label>Especialidades</label><div class="especialidades" id="perfilEspecialidades"></div></div>
+            <button class="btn-primary" onclick="salvarPerfil()">SALVAR PERFIL</button>
+        </div>
+    </div>
+
     <!-- MODAL SOBRE -->
     <div id="modalSobre" class="modal">
         <div class="modal-content">
@@ -718,6 +731,9 @@ function renderProfCard(prof) {
 }
 
 
+        // escapa texto digitado por usuários antes de ir para innerHTML
+        function esc(v) { return String(v == null ? '' : v).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
+
         function supabaseOK() {
             if (!supabaseClient) {
                 toast('⚠️ Conexão indisponível. Aguarde alguns segundos e tente novamente.', 4000);
@@ -747,7 +763,7 @@ function renderProfCard(prof) {
                 const [{ count: totalProf }, { data: profData }, { count: totalChamados }] = await Promise.all([
                     supabaseClient.from('profissionais').select('*', { count: 'exact', head: true }),
                     supabaseClient.from('profissionais').select('telefone'),
-                    supabaseClient.from('chamados').select('*', { count: 'exact', head: true }).eq('status', 'novo')
+                    supabaseClient.from('chamados').select('id', { count: 'exact', head: true }).eq('status', 'novo')
                 ]);
                 const ddds = new Set((profData||[]).map(p => p.telefone ? p.telefone.replace(/\D/g,'').substring(0,2) : null).filter(Boolean));
                 if((totalProf||0) > 0) {
@@ -897,7 +913,7 @@ function renderProfCard(prof) {
                     servico: subcategoriaAtual, categoria: categoriaAtual, bairro, descricao, status: 'novo'
                 };
                 if(usuarioCliente) payload.cliente_id = usuarioCliente.id;
-                const { data, error } = await supabaseClient.from('chamados').insert(payload).select();
+                const { data, error } = await supabaseClient.from('chamados').insert(payload).select('id');
                 if(error) { alert('Erro: ' + error.message); return; }
                 if(data && data.length > 0) {
                     document.getElementById('numeroProtocolo').textContent = '#' + String(data[0].id).padStart(4,'0');
@@ -934,10 +950,10 @@ function renderProfCard(prof) {
             const nome=document.getElementById('nomeClienteCad').value.trim(), telefone=document.getElementById('telefoneClienteCad').value.trim(), cidade=document.getElementById('cidadeClienteCad').value.trim(), email=document.getElementById('emailClienteCad').value.trim(), senha=document.getElementById('senhaClienteCad').value;
             if(!nome||!telefone||!email||!senha){alert('Preencha todos os campos');return;}
             try {
-                const{data:authData,error:authError}=await supabaseClient.auth.signUp({email,password:senha});
+                // o banco cria a ficha do cliente a partir destes dados (gatilho de cadastro)
+                const{error:authError}=await supabaseClient.auth.signUp({email,password:senha,options:{emailRedirectTo:window.location.href,data:{tipo:'cliente',nome,telefone,cidade}}});
                 if(authError){alert('Erro: '+authError.message);return;}
-                await supabaseClient.from('clientes').insert({id:authData.user.id,nome,telefone,cidade,email});
-                alert('✅ Cadastro realizado! Bem-vindo(a) '+nome);
+                alert('✅ Cadastro realizado! Bem-vindo(a) '+nome+'.\nConfirme seu e-mail para entrar.');
                 voltarLoginCliente();
             } catch(err){alert('Erro ao cadastrar');}
         }
@@ -982,23 +998,13 @@ function renderProfCard(prof) {
                 // cobrindo também pedidos feitos antes de estar logado.
                 const telDigits = (telefoneClienteCadastrado||'').replace(/\D/g,'');
 
-                const porId = await supabaseClient.from('chamados').select('*').eq('cliente_id', usuarioCliente.id);
-                let pedidos = porId.data || [];
-
-                if(telDigits){
-                    const porTelefone = await supabaseClient.from('chamados').select('*').order('criado_em',{ascending:false});
-                    const extras = (porTelefone.data || []).filter(p =>
-                        p.telefone_cliente && p.telefone_cliente.replace(/\D/g,'') === telDigits &&
-                        !pedidos.some(existing => existing.id === p.id)
-                    );
-                    pedidos = pedidos.concat(extras);
-                }
-
-                pedidos.sort((a,b)=> new Date(b.criado_em) - new Date(a.criado_em));
+                // o banco devolve só os pedidos deste cliente (pela conta ou pelo telefone cadastrado)
+                const{data:pedidos,error}=await supabaseClient.rpc('meus_pedidos');
+                if(error) throw error;
 
                 if(!pedidos||pedidos.length===0){container.innerHTML='<p style="text-align:center;color:var(--linha);">Nenhum pedido encontrado.<br><small>Vá em "Pedir Serviço" para solicitar!</small></p>';return;}
                 container.innerHTML='';
-                pedidos.forEach(p=>{const card=document.createElement('div');card.className='chamado-card';card.innerHTML=`<h4>${p.servico}</h4><div class="chamado-info">📍 ${p.bairro}</div><div class="chamado-info">📝 ${p.descricao}</div><div class="servico-badge">${p.status==='novo'?'🟡 Aguardando':'✅ Atendido'}</div>`;container.appendChild(card);});
+                pedidos.forEach(p=>{const card=document.createElement('div');card.className='chamado-card';card.innerHTML=`<h4>${esc(p.servico)}</h4><div class="chamado-info">📍 ${esc(p.bairro)}</div><div class="chamado-info">📝 ${esc(p.descricao)}</div><div class="servico-badge">${p.status==='novo'?'🟡 Aguardando':'✅ Atendido'}</div>`;container.appendChild(card);});
             } catch(err){container.innerHTML='<p style="text-align:center;color:red;">Erro ao carregar pedidos</p>';}
         }
 
@@ -1070,10 +1076,10 @@ function renderProfCard(prof) {
             try {
                 const{data:telExiste}=await supabaseClient.from('profissionais').select('id').eq('telefone',telefone).maybeSingle();
                 if(telExiste){alert('Este telefone já está cadastrado.');return;}
-                const{data:authData,error:authError}=await supabaseClient.auth.signUp({email,password:senha,options:{emailRedirectTo:window.location.href}});
+                // o banco cria a ficha do profissional com estes dados e os 10 créditos de boas-vindas (gatilho de cadastro)
+                const{error:authError}=await supabaseClient.auth.signUp({email,password:senha,options:{emailRedirectTo:window.location.href,
+                    data:{tipo:'profissional',nome,telefone,categoria:categoriaAtual,especialidades:especialidadesSelecionadas.join(',')}}});
                 if(authError){alert('Erro: '+authError.message);return;}
-                const{error:dbError}=await supabaseClient.from('profissionais').insert({id:authData.user.id,nome,telefone,especialidades:especialidadesSelecionadas.join(','),categoria:categoriaAtual,saldo_creditos:10});
-                if(dbError){alert('Erro: '+dbError.message);return;}
                 alert('✅ Cadastro realizado! Verifique seu e-mail.\nVocê ganhou 10 créditos grátis!');
                 voltarLogin();
             } catch(err){alert('Erro ao cadastrar. Tente novamente.');}
@@ -1107,6 +1113,9 @@ function renderProfCard(prof) {
                     document.getElementById('saldoCreditos').textContent=profData.saldo_creditos||0;
                     document.getElementById('saldoCreditos2').textContent=profData.saldo_creditos||0;
                     if(profData.is_admin) document.getElementById('adminPanel').style.display='block';
+                    perfilAtual=profData;
+                    const incompleto=!profData.nome||profData.nome==='Profissional'||!profData.telefone||!profData.categoria||!profData.especialidades;
+                    if(incompleto&&!sessionStorage.getItem('fc_perfil_adiado')) abrirModalPerfil();
                 }
             } catch(err){}
             carregarChamados();
@@ -1117,21 +1126,22 @@ function renderProfCard(prof) {
             if(!container||!usuarioAtual) return;
             try {
                 const{data:profData}=await supabaseClient.from('profissionais').select('categoria,saldo_creditos').eq('id',usuarioAtual.id).maybeSingle();
-                const{data:chamados}=await supabaseClient.from('chamados').select('*').eq('status','novo').order('criado_em',{ascending:false});
+                // contato do cliente não vem na lista: só pela função do banco, depois do desbloqueio pago
+                const{data:chamados}=await supabaseClient.from('chamados').select('id,servico,categoria,bairro,descricao,status,criado_em').eq('status','novo').order('criado_em',{ascending:false});
                 if(!chamados||chamados.length===0){container.innerHTML='<p style="text-align:center;color:var(--linha);">Nenhum projeto disponível no momento</p>';return;}
-                const{data:desbloqueados}=await supabaseClient.from('desbloqueios').select('chamado_id').eq('prof_id',usuarioAtual.id);
-                const idsDesbloqueados=new Set((desbloqueados||[]).map(d=>d.chamado_id));
+                const{data:contatos}=await supabaseClient.rpc('contatos_desbloqueados');
+                const contatoPorId=new Map((contatos||[]).map(d=>[d.chamado_id,d]));
                 container.innerHTML='';
                 chamados.forEach(c=>{
-                    const jaDesbloqueado=idsDesbloqueados.has(c.id);
-                    const custo = PRECOS_CATEGORIA[c.categoria] || PRECOS_SERVICOS[c.servico] || 1;
+                    const contato=contatoPorId.get(c.id);
+                    const custo = PRECOS_CATEGORIA[c.categoria] || 1;   // mesma tabela do banco (custo_chamado)
                     const saldo=profData?(profData.saldo_creditos||0):0;
                     const card=document.createElement('div'); card.className='chamado-card';
-                    if(jaDesbloqueado){
-                        const tel=c.telefone_cliente?c.telefone_cliente.replace(/\D/g,''):'';
-                        card.innerHTML=`<h4>${c.servico}</h4><div class="chamado-info">📍 ${c.bairro}</div><div class="chamado-info">👤 ${c.nome_cliente}</div><div class="chamado-info">📝 ${c.descricao}</div>${tel?`<a href="https://wa.me/55${tel}?text=Olá%20${encodeURIComponent(c.nome_cliente)}!%20Vi%20seu%20pedido%20na%20Foster%20Central%20e%20tenho%20interesse%20em%20${encodeURIComponent(c.servico)}." target="_blank"><button class="btn-whatsapp">💬 CHAMAR NO WHATSAPP</button></a>`:''}`;
+                    if(contato){
+                        const tel=contato.telefone_cliente?contato.telefone_cliente.replace(/\D/g,''):'';
+                        card.innerHTML=`<h4>${esc(c.servico)}</h4><div class="chamado-info">📍 ${esc(c.bairro)}</div><div class="chamado-info">👤 ${esc(contato.nome_cliente)}</div><div class="chamado-info">📱 ${esc(contato.telefone_cliente)}</div><div class="chamado-info">📝 ${esc(c.descricao)}</div>${tel?`<a href="https://wa.me/55${tel}?text=Olá%20${encodeURIComponent(contato.nome_cliente)}!%20Vi%20seu%20pedido%20na%20Foster%20Central%20e%20tenho%20interesse%20em%20${encodeURIComponent(c.servico)}." target="_blank" rel="noopener"><button class="btn-whatsapp">💬 CHAMAR NO WHATSAPP</button></a>`:''}`;
                     } else {
-                        card.innerHTML=`<h4>${c.servico}</h4><div class="chamado-info">📍 ${c.bairro}</div><div class="chamado-info">📝 ${c.descricao}</div><div class="contato-bloqueado">🔒 Contato bloqueado — custa ${custo} crédito${custo>1?'s':''}</div><button class="btn-desbloquear" onclick="desbloquearChamado(${c.id},${custo})" ${saldo<custo?'disabled style="opacity:0.5;cursor:not-allowed;"':''}>${saldo<custo?'❌ CRÉDITOS INSUFICIENTES':`🔓 DESBLOQUEAR (${custo} crédito${custo>1?'s':''})`}</button>`;
+                        card.innerHTML=`<h4>${esc(c.servico)}</h4><div class="chamado-info">📍 ${esc(c.bairro)}</div><div class="chamado-info">📝 ${esc(c.descricao)}</div><div class="contato-bloqueado">🔒 Contato bloqueado — custa ${custo} crédito${custo>1?'s':''}</div><button class="btn-desbloquear" onclick="desbloquearChamado(${Number(c.id)},${custo})" ${saldo<custo?'disabled style="opacity:0.5;cursor:not-allowed;"':''}>${saldo<custo?'❌ CRÉDITOS INSUFICIENTES':`🔓 DESBLOQUEAR (${custo} crédito${custo>1?'s':''})`}</button>`;
                     }
                     container.appendChild(card);
                 });
@@ -1140,12 +1150,51 @@ function renderProfCard(prof) {
 
         async function desbloquearChamado(chamadoId, custo) {
             if(!usuarioAtual) return;
+            if(!confirm(`Desbloquear o contato deste cliente por ${custo} crédito${custo>1?'s':''}?`)) return;
             try {
-                const{data,error}=await supabaseClient.rpc('desbloquear_chamado',{p_prof_id:usuarioAtual.id,p_chamado_id:chamadoId,p_custo:custo});
+                // o custo é calculado no banco; o app só informa qual chamado
+                const{data,error}=await supabaseClient.rpc('desbloquear_chamado',{p_chamado_id:chamadoId});
                 if(error){alert('Erro: '+error.message);return;}
-                if(data===false){alert('Créditos insuficientes!');return;}
+                if(!data||!data.ok){
+                    const motivo={saldo_insuficiente:'Créditos insuficientes! Compre um pacote na aba Créditos.',nao_profissional:'Esta conta não é de profissional.',chamado_inexistente:'Este pedido não existe mais.',nao_autenticado:'Entre na sua conta novamente.'}[data&&data.erro];
+                    alert(motivo||'Não foi possível desbloquear.');return;
+                }
+                toast('✅ Contato liberado!');
                 await atualizarPainelProf();
             } catch(err){alert('Erro ao desbloquear');}
+        }
+
+        // ===== COMPLETAR PERFIL =====
+        let perfilAtual=null;
+        function abrirModalPerfil() {
+            const p=perfilAtual||{};
+            document.getElementById('perfilNome').value=p.nome&&p.nome!=='Profissional'?p.nome:'';
+            document.getElementById('perfilTelefone').value=p.telefone||'';
+            const sel=document.getElementById('perfilCategoria');
+            if(sel.options.length<=1) Object.entries(CATEGORIAS).forEach(([key,cat])=>{const o=document.createElement('option');o.value=key;o.textContent=cat.nome;sel.appendChild(o);});
+            sel.value=p.categoria||'';
+            renderEspecialidadesPerfil((p.especialidades||'').split(',').filter(Boolean));
+            document.getElementById('modalPerfil').classList.add('active');
+        }
+        function fecharModalPerfil() { sessionStorage.setItem('fc_perfil_adiado','1'); document.getElementById('modalPerfil').classList.remove('active'); }
+        function renderEspecialidadesPerfil(marcadas) {
+            const cat=CATEGORIAS[document.getElementById('perfilCategoria').value], box=document.getElementById('perfilEspecialidades');
+            const atuais=marcadas||Array.from(box.querySelectorAll('input:checked')).map(i=>i.value);
+            box.innerHTML='';
+            if(!cat) return;
+            cat.servicos.forEach((s,i)=>{const d=document.createElement('div');d.className='checkbox-item';d.innerHTML=`<input type="checkbox" id="pesp_${i}" value="${esc(s)}" ${atuais.includes(s)?'checked':''}><label for="pesp_${i}">${esc(s)}</label>`;box.appendChild(d);});
+        }
+        async function salvarPerfil() {
+            const nome=document.getElementById('perfilNome').value.trim(), telefone=document.getElementById('perfilTelefone').value.trim(), categoria=document.getElementById('perfilCategoria').value;
+            const especialidades=Array.from(document.querySelectorAll('#perfilEspecialidades input:checked')).map(i=>i.value);
+            if(nome.split(' ').filter(Boolean).length<2){alert('Digite seu nome completo');return;}
+            if(telefone.replace(/\D/g,'').length<10){alert('Telefone inválido');return;}
+            if(!categoria||especialidades.length===0){alert('Escolha a categoria e pelo menos uma especialidade');return;}
+            const{error}=await supabaseClient.from('profissionais').update({nome,telefone,categoria,especialidades:especialidades.join(',')}).eq('id',usuarioAtual.id);
+            if(error){alert('Erro: '+error.message);return;}
+            document.getElementById('modalPerfil').classList.remove('active');
+            toast('✅ Perfil atualizado!');
+            atualizarPainelProf();
         }
 
         async function logoutProf() { await supabaseClient.auth.signOut(); usuarioAtual=null; atualizarPainelProf(); }
@@ -1161,7 +1210,7 @@ function renderProfCard(prof) {
             const termo=document.getElementById('buscaInput').value.trim().toLowerCase(), categoria=document.getElementById('filtroCategoriaSelect').value, container=document.getElementById('resultadosBusca');
             container.innerHTML='<p style="text-align:center;color:var(--linha);">Buscando...</p>';
             try {
-                let query=supabaseClient.from('profissionais').select('id,nome,telefone,categoria,especialidades,saldo_creditos');
+                let query=supabaseClient.from('profissionais').select('id,nome,telefone,categoria,especialidades');
                 if(categoria) query=query.eq('categoria',categoria);
                 const{data,error}=await query;
                 if(error){container.innerHTML='<p style="text-align:center;color:red;">Erro na busca</p>';return;}
@@ -1176,7 +1225,7 @@ function renderProfCard(prof) {
                 resultados.forEach(prof=>{
                     const catNome=CATEGORIAS[prof.categoria]?CATEGORIAS[prof.categoria].nome:prof.categoria||'-', tel=prof.telefone?prof.telefone.replace(/\D/g,''):'';
                     const card=document.createElement('div'); card.className='chamado-card';
-                    card.innerHTML=`<h4>${prof.nome||'Profissional'}</h4><div class="chamado-info">🏷️ ${catNome}</div><div class="chamado-info">🔧 ${prof.especialidades||'-'}</div>${usuarioAtual?`<div class="chamado-info">📱 ${prof.telefone||'Não informado'}</div>${tel?`<a href="https://wa.me/55${tel}?text=Olá%20${encodeURIComponent(prof.nome)}!%20Vi%20seu%20perfil%20na%20Foster%20Central%20e%20gostaria%20de%20um%20orçamento." target="_blank"><button class="btn-whatsapp" style="margin-top:8px;">💬 CHAMAR NO WHATSAPP</button></a>`:''}`:
+                    card.innerHTML=`<h4>${esc(prof.nome||'Profissional')}</h4><div class="chamado-info">🏷️ ${esc(catNome)}</div><div class="chamado-info">🔧 ${esc(prof.especialidades||'-')}</div>${usuarioAtual?`<div class="chamado-info">📱 ${esc(prof.telefone||'Não informado')}</div>${tel?`<a href="https://wa.me/55${tel}?text=Olá%20${encodeURIComponent(prof.nome)}!%20Vi%20seu%20perfil%20na%20Foster%20Central%20e%20gostaria%20de%20um%20orçamento." target="_blank"><button class="btn-whatsapp" style="margin-top:8px;">💬 CHAMAR NO WHATSAPP</button></a>`:''}`:
                     `<div class="contato-bloqueado">Faça login para ver o contato</div>`}`;
                     container.appendChild(card);
                 });
@@ -1198,7 +1247,7 @@ function renderProfCard(prof) {
                 const catNome=CATEGORIAS[prof.categoria]?CATEGORIAS[prof.categoria].nome:prof.categoria||'';
                 const div=document.createElement('div');
                 div.style.cssText='background:white;padding:12px;border-radius:8px;margin-bottom:8px;cursor:pointer;border:2px solid transparent;';
-                div.innerHTML=`<strong>${prof.nome}</strong><br><small style="color:#888;">${catNome}</small>`;
+                div.innerHTML=`<strong>${esc(prof.nome)}</strong><br><small style="color:#888;">${esc(catNome)}</small>`;
                 div.onmouseover=()=>div.style.borderColor='var(--laranja)'; div.onmouseout=()=>div.style.borderColor='transparent';
                 div.onclick=()=>abrirFormAvaliacao(prof);
                 container.appendChild(div);
@@ -1241,9 +1290,9 @@ function renderProfCard(prof) {
                     let nomeProf='Profissional';
                     const{data:pd}=await supabaseClient.from('profissionais').select('nome').eq('id',av.prof_id).maybeSingle();
                     if(pd) nomeProf=pd.nome;
-                    const estrelas='⭐'.repeat(av.nota)+'☆'.repeat(5-av.nota);
+                    const nota=Math.max(0,Math.min(5,Number(av.nota)||0)), estrelas='⭐'.repeat(nota)+'☆'.repeat(5-nota);
                     const card=document.createElement('div'); card.className='chamado-card';
-                    card.innerHTML=`<h4>${nomeProf}</h4><div style="font-size:18px;margin:4px 0;">${estrelas}</div>${av.comentario?`<div class="chamado-info" style="font-style:italic;">"${av.comentario}"</div>`:''}<div class="chamado-info" style="font-size:11px;">${new Date(av.criado_em).toLocaleDateString('pt-BR')}</div>`;
+                    card.innerHTML=`<h4>${esc(nomeProf)}</h4><div style="font-size:18px;margin:4px 0;">${estrelas}</div>${av.comentario?`<div class="chamado-info" style="font-style:italic;">"${esc(av.comentario)}"</div>`:''}<div class="chamado-info" style="font-size:11px;">${new Date(av.criado_em).toLocaleDateString('pt-BR')}</div>`;
                     container.appendChild(card);
                 }
             } catch(err){container.innerHTML='<p style="text-align:center;color:red;">Erro ao carregar</p>';}
@@ -1270,7 +1319,8 @@ function renderProfCard(prof) {
 
         async function abrirModalAdmin() {
             const{data:profissionais}=await supabaseClient.from('profissionais').select('*').order('criado_em',{ascending:false});
-            const{data:chamados}=await supabaseClient.from('chamados').select('*').eq('status','novo');
+            const{data:todosChamados}=await supabaseClient.rpc('admin_chamados');
+            const chamados=(todosChamados||[]).filter(c=>c.status==='novo');
             const totalProf=profissionais?profissionais.length:0, totalChamados=chamados?chamados.length:0;
             const todos=profissionais||[];
             const completos=todos.filter(p=>p.nome&&p.nome.trim()&&p.telefone&&p.categoria&&p.especialidades);
@@ -1295,16 +1345,16 @@ function renderProfCard(prof) {
             todos.forEach(prof=>{
                 const catNome=CATEGORIAS[prof.categoria]?CATEGORIAS[prof.categoria].nome:prof.categoria||'-';
                 const isCompleto=!!(prof.nome&&prof.nome.trim()&&prof.telefone&&prof.categoria&&prof.especialidades);
-                const nomeDisplay=(prof.nome&&prof.nome.trim())?prof.nome:'<em style="color:#e74c3c;">— Sem nome —</em>';
-                const telDisplay=prof.telefone||'<em style="color:#e74c3c;">Não informado</em>';
-                const espDisplay=prof.especialidades||'<em style="color:#e74c3c;">Não informado</em>';
+                const nomeDisplay=(prof.nome&&prof.nome.trim())?esc(prof.nome):'<em style="color:#e74c3c;">— Sem nome —</em>';
+                const telDisplay=prof.telefone?esc(prof.telefone):'<em style="color:#e74c3c;">Não informado</em>';
+                const espDisplay=prof.especialidades?esc(prof.especialidades):'<em style="color:#e74c3c;">Não informado</em>';
                 const borderColor=isCompleto?'#2E7D5B':'#e74c3c';
                 const badge=isCompleto?'<span style="background:#2E7D5B;color:white;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:700;margin-left:6px;">✅ COMPLETO</span>':'<span style="background:#e74c3c;color:white;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:700;margin-left:6px;">⚠️ INCOMPLETO</span>';
-                const nomeSafe=(prof.nome||'este cadastro').replace(/'/g,'');
+                const nomeSafe=esc((prof.nome||'este cadastro').replace(/['"\\]/g,''));
                 html+=`<div class="admCard" data-status="${isCompleto?'completo':'incompleto'}" style="background:#f8f8f8;padding:16px;border-radius:8px;margin-bottom:12px;border-left:4px solid ${borderColor};">
                     <div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-bottom:8px;"><strong style="font-size:14px;">${nomeDisplay}</strong>${badge}</div>
                     <span style="font-size:12px;color:#666;display:block;">📱 ${telDisplay}</span>
-                    <span style="font-size:12px;color:#666;display:block;">🏷️ ${catNome}</span>
+                    <span style="font-size:12px;color:#666;display:block;">🏷️ ${esc(catNome)}</span>
                     <span style="font-size:12px;color:#666;display:block;">🔧 ${espDisplay}</span>
                     <span style="font-size:12px;color:#666;display:block;">💰 ${prof.saldo_creditos||0} créditos</span>
                     <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
@@ -1317,7 +1367,7 @@ function renderProfCard(prof) {
             });
 
             html+=`</div></div><div id="admChamados" style="display:none;">`;
-            if(chamados) chamados.forEach(c=>{html+=`<div style="background:#f8f8f8;padding:16px;border-radius:8px;margin-bottom:12px;border-left:3px solid #DC2626;"><strong>${c.nome_cliente}</strong><br><span style="font-size:12px;color:#666;">📱 ${c.telefone_cliente}</span><br><span style="font-size:12px;color:#666;">🔧 ${c.servico}</span><br><span style="font-size:12px;color:#666;">📍 ${c.bairro}</span><br><span style="font-size:12px;color:#666;">📝 ${c.descricao}</span></div>`;});
+            if(chamados) chamados.forEach(c=>{html+=`<div style="background:#f8f8f8;padding:16px;border-radius:8px;margin-bottom:12px;border-left:3px solid #DC2626;"><strong>${esc(c.nome_cliente)}</strong><br><span style="font-size:12px;color:#666;">📱 ${esc(c.telefone_cliente)}</span><br><span style="font-size:12px;color:#666;">🔧 ${esc(c.servico)}</span><br><span style="font-size:12px;color:#666;">📍 ${esc(c.bairro)}</span><br><span style="font-size:12px;color:#666;">📝 ${esc(c.descricao)}</span></div>`;});
             html+='</div>';
             document.getElementById('adminContent').innerHTML=html;
             document.getElementById('modalAdmin').classList.add('active');

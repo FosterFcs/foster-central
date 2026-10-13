@@ -1,4 +1,4 @@
-const CACHE_NAME = 'fcs-central-v3';
+const CACHE_NAME = 'fcs-central-v4';
 const ASSETS_TO_CACHE = [
   './index.html',
   './manifest.json',
@@ -41,6 +41,21 @@ self.addEventListener('fetch', (event) => {
           headers: { 'Content-Type': 'application/json' }
         });
       })
+    );
+    return;
+  }
+
+  // Páginas e config: rede primeiro, para quem abre o app receber a versão nova
+  const url = new URL(event.request.url);
+  if (event.request.mode === 'navigate' || url.pathname.endsWith('.html') || url.pathname.endsWith('config.js')) {
+    event.respondWith(
+      fetch(event.request).then((response) => {
+        if (response && response.status === 200 && response.type === 'basic') {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+        }
+        return response;
+      }).catch(() => caches.match(event.request).then((c) => c || caches.match('./index.html')))
     );
     return;
   }
