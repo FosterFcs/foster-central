@@ -467,6 +467,10 @@ body { width: 100%; margin: 0 auto; }
                     <button class="btn-secondary" style="width:100%;" onclick="abrirModalAdmin()">GERENCIAR PROFISSIONAIS</button>
                 </div>
                 <div class="saldo"><h3>SEUS CRÉDITOS</h3><div class="numero" id="saldoCreditos">0</div></div>
+                <label for="chkAvisos" style="display:flex;align-items:center;gap:10px;background:white;padding:14px 16px;border-radius:8px;margin-top:12px;font-size:13px;cursor:pointer;min-height:44px;">
+                    <input type="checkbox" id="chkAvisos" onchange="alterarAvisos(this.checked)" style="width:20px;height:20px;accent-color:var(--laranja);flex:none;">
+                    <span><strong>Avisar por e-mail quando chegar pedido na minha área</strong><br><small style="color:var(--linha);">No máximo um aviso a cada 3 horas.</small></span>
+                </label>
                 <h3 style="font-family:Oswald;margin-top:20px;margin-bottom:16px;">PROJETOS DISPONÍVEIS</h3>
                 <div id="listaChamados"></div>
             </div>
@@ -1130,6 +1134,7 @@ function renderProfCard(prof) {
                     document.getElementById('saldoCreditos2').textContent=profData.saldo_creditos||0;
                     if(profData.is_admin) document.getElementById('adminPanel').style.display='block';
                     perfilAtual=profData;
+                    const chk=document.getElementById('chkAvisos'); if(chk) chk.checked=profData.recebe_avisos!==false;
                     avisarCompras();
                     const incompleto=!profData.nome||profData.nome==='Profissional'||!profData.telefone||!profData.categoria||!profData.especialidades;
                     if(incompleto&&!sessionStorage.getItem('fc_perfil_adiado')) abrirModalPerfil();
@@ -1179,6 +1184,13 @@ function renderProfCard(prof) {
                 toast('✅ Contato liberado!');
                 await atualizarPainelProf();
             } catch(err){alert('Erro ao desbloquear');}
+        }
+
+        async function alterarAvisos(ligado) {
+            if(!usuarioAtual) return;
+            const{error}=await supabaseClient.from('profissionais').update({recebe_avisos:ligado}).eq('id',usuarioAtual.id);
+            if(error){alert('Erro: '+error.message);document.getElementById('chkAvisos').checked=!ligado;return;}
+            toast(ligado?'✅ Você vai receber avisos de pedidos por e-mail.':'Avisos por e-mail desligados.');
         }
 
         // ===== AVISO DE CRÉDITOS COMPRADOS =====
