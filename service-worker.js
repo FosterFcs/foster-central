@@ -1,6 +1,7 @@
-const CACHE_NAME = 'fcs-central-v4';
+const CACHE_NAME = 'fcs-central-v5';
 const ASSETS_TO_CACHE = [
   './index.html',
+  './termos.html',
   './manifest.json',
   './config.js',
   './icon-192.png',
@@ -10,8 +11,7 @@ const ASSETS_TO_CACHE = [
   './apple-touch-icon.png',
   './icon-16.png',
   './icon-32.png',
-  'https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap',
-  'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2'
+  'https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap'
 ];
 
 self.addEventListener('install', (event) => {
