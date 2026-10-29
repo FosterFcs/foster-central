@@ -569,3 +569,6 @@ grant execute on function public.minha_conta(), public.pedidos_disponiveis(), pu
   public.admin_excluir_profissional(uuid)
   to authenticated;
 grant execute on function public.perfis_publicos(uuid), public.avaliacoes_publicas(uuid, integer), public.estatisticas_publicas() to anon, authenticated;
+
+-- gatilho e função antiga não são chamáveis pelo app
+revoke execute on function public.handle_new_profissional(), public.adicionar_creditos(integer) from public, anon, authenticated;
