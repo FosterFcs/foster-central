@@ -315,6 +315,25 @@ body { width: 100%; margin: 0 auto; }
 .estrelas-sel { display: flex; gap: 6px; font-size: 32px; cursor: pointer; margin-bottom: 8px; user-select: none; }
 .estrelas-sel span { min-width: 36px; text-align: center; }
 .modal-content { max-height: 88vh; }
+.selo-ouro { background: #fef3c7; color: #92400e; }
+.pct { background: var(--papel); border-radius: 8px; padding: 10px 12px; margin: 10px 0; }
+.pct-bar { height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; margin-top: 6px; }
+.pct-bar i { display: block; height: 100%; background: var(--verde); border-radius: 4px; transition: width .4s; }
+.pct-lista { list-style: none; margin: 8px 0 0; padding: 0; font-size: 12.5px; line-height: 1.9; color: #374151; }
+.pct-lista li.ok { color: #15803d; }
+.pct-lista a { color: var(--laranja); font-weight: 700; cursor: pointer; text-decoration: underline; }
+.galeria { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.foto { position: relative; aspect-ratio: 1; border-radius: 6px; overflow: hidden; background: #e5e7eb; }
+.foto img { width: 100%; height: 100%; object-fit: cover; cursor: zoom-in; display: block; }
+.foto span { position: absolute; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,.6); color: #fff; font-size: 10px; padding: 3px 5px; line-height: 1.3; }
+.foto button { position: absolute; top: 4px; right: 4px; width: 26px; height: 26px; border-radius: 50%; border: 0; background: rgba(0,0,0,.65); color: #fff; font-size: 16px; line-height: 1; cursor: pointer; }
+.orc-linha { background: #fff7ed; border: 1px solid #fed7aa; border-radius: 6px; padding: 9px 10px; margin-top: 8px; font-size: 12.5px; cursor: pointer; }
+.orc-tab { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 13px; }
+.orc-tab td { padding: 6px 0; border-bottom: 1px solid #e5ddd0; }
+.orc-tab td:last-child { text-align: right; white-space: nowrap; }
+.orc-tab tr.tot td { font-weight: 800; border-bottom: 0; font-size: 15px; }
+details.checklist { background: white; border-radius: 8px; padding: 10px 12px; margin: 10px 0; border: 1px solid #e5e7eb; }
+details.checklist summary { font-weight: 700; font-size: 13px; cursor: pointer; }
 @media (max-width: 480px) { .confianca { grid-template-columns: 1fr; } .modal-content { width: 94%; padding: 18px; } }
 </style>
 </head>
@@ -344,7 +363,7 @@ body { width: 100%; margin: 0 auto; }
     <button onclick="mudarAba('buscar')" style="background:transparent;color:white;border:2px solid rgba(255,255,255,0.4);border-radius:6px;padding:12px 20px;font-family:Oswald,sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;cursor:pointer;min-height:44px;">🔍 VER PROFISSIONAIS</button>
   </div>
   <div class="trust-bar">
-    <span>Documento e selfie conferidos</span><span>CREA/CAU checado</span><span>Avaliação só de quem contratou</span><span>Máx. 3 profissionais por pedido</span>
+    <span>CNPJ conferido na Receita</span><span>Fotos de obras reais</span><span>Avaliação só de quem contratou</span><span>Máx. 3 profissionais por pedido</span>
   </div>
   <div id="heroStats" style="display:none;justify-content:center;gap:24px;margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.1);">
     <div style="text-align:center;"><div style="font-size:18px;font-weight:900;color:#ff4d4d;font-family:Oswald,sans-serif;" id="heroProfs">–</div><div style="font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:1px;">PROFISSIONAIS</div></div>
@@ -430,15 +449,16 @@ body { width: 100%; margin: 0 auto; }
                 <p style="font-size:13px;margin-top:8px;line-height:1.6;">Profissionais da área já foram avisados.<br>No máximo 3 vão receber seu contato.</p>
             </div>
             <div class="aviso aviso-info"><b>Acompanhe quem pegou seu pedido.</b> Crie sua conta de cliente com <b>este mesmo telefone</b>: você vê o nome, os selos e as avaliações de cada profissional, chama no WhatsApp e avalia depois do serviço.</div>
+            <details class="checklist" open><summary>✅ Antes de contratar, confira</summary><div id="checklistConfirmacao"></div></details>
             <button class="btn-primary" onclick="mudarAba('cliente');mostrarCadastroCliente();">CRIAR CONTA E ACOMPANHAR</button>
             <button class="btn-secondary" style="width:100%;margin-top:8px;" onclick="novoPedido()">+ Fazer outro pedido</button>
         </div>
 
         <div class="confianca">
-            <div><strong>🪪 Identidade conferida</strong>Documento com foto e selfie analisados antes do selo.</div>
+            <div><strong>🪪 CNPJ conferido</strong>Consultado na Receita Federal: ativo e no nome do profissional.</div>
             <div><strong>📐 Registro checado</strong>CREA, CAU, CFT ou NR-10 conferidos no conselho.</div>
             <div><strong>⭐ Avaliação real</strong>Só quem fez o pedido avalia quem pegou o contato.</div>
-            <div><strong>🛡️ Mediação</strong>Teve problema? Você abre uma reclamação e a gente media.</div>
+            <div><strong>📄 Tudo registrado</strong>Orçamento aceito no app, reclamação com resposta do profissional e relatório para o Procon, se precisar.</div>
         </div>
         <p class="mini" style="text-align:center;margin-bottom:8px;">Supervisão técnica: Eng. Civil José Wilson Pereira — CREA-SP 5071894914</p>
     </div>
@@ -448,7 +468,7 @@ body { width: 100%; margin: 0 auto; }
         <div id="clienteLoginArea" style="margin-top:20px;">
             <div class="card" style="border-left:4px solid var(--laranja);">
                 <h3 style="font-family:Oswald;margin-bottom:8px;">👤 ÁREA DO CLIENTE</h3>
-                <p style="font-size:13px;color:var(--linha);line-height:1.5;">Veja quem pegou seu pedido, compare selos e avaliações, avalie o serviço e peça mediação se der problema.</p>
+                <p style="font-size:13px;color:var(--linha);line-height:1.5;">Veja quem pegou seu pedido, compare selos e avaliações, aceite orçamentos com um clique, avalie o serviço e registre reclamações se der problema.</p>
             </div>
             <div class="form-group"><label>E-mail</label><input type="email" id="emailCliente" placeholder="seu@email.com" autocomplete="email"></div>
             <div class="form-group"><label>Senha</label><input type="password" id="senhaCliente" placeholder="Sua senha" autocomplete="current-password"></div>
@@ -473,6 +493,7 @@ body { width: 100%; margin: 0 auto; }
                 <h3 style="font-family:Oswald;font-size:15px;" id="clienteBoasVindas">Olá!</h3>
                 <p style="font-size:12px;color:#c9cdd2;margin-top:4px;">Seus pedidos e os profissionais que pegaram seu contato</p>
             </div>
+            <details class="checklist"><summary>✅ Antes de contratar, confira (6 dicas rápidas)</summary><div id="checklistCliente"></div></details>
             <div id="listaPedidosCliente"><p style="text-align:center;color:var(--linha);">Carregando seus pedidos...</p></div>
             <button class="btn-out" style="width:100%;margin-top:10px;" onclick="mudarAba('pedido')">+ FAZER NOVO PEDIDO</button>
             <p style="text-align:center;margin-top:18px;"><a onclick="excluirMinhaConta()" style="color:#9ca3af;font-size:11px;cursor:pointer;text-decoration:underline;">Excluir minha conta e meus dados</a></p>
@@ -495,7 +516,7 @@ body { width: 100%; margin: 0 auto; }
                 <div><strong>💸 Pague por contato</strong>Sem mensalidade. Cada contato custa 1 a 3 créditos.</div>
                 <div><strong>👥 Máx. 3 por pedido</strong>Você disputa com no máximo 2 colegas, não com 20.</div>
                 <div><strong>↩️ Crédito de volta</strong>Telefone inválido ou pedido falso? Você recebe o crédito de volta.</div>
-                <div><strong>✅ Selo de verificado</strong>Perfis verificados aparecem primeiro na busca.</div>
+                <div><strong>✅ Selo + 5 créditos</strong>Confirme o CNPJ em 10 segundos. Perfis verificados aparecem primeiro.</div>
             </div>
         </div>
         <div id="cadastroArea" style="display:none;margin-top:20px;">
@@ -514,7 +535,7 @@ body { width: 100%; margin: 0 auto; }
                 <label>ESPECIALIDADES (Selecione as suas)</label>
                 <div class="especialidades" id="especialidades"></div>
             </div>
-            <div class="aviso aviso-info" style="margin-top:14px;">Depois de entrar, envie seu documento e selfie para ganhar o selo <b>✓ Identidade verificada</b>. CREA/CAU também viram selo.</div>
+            <div class="aviso aviso-info" style="margin-top:14px;">Depois de entrar, confirme seu <b>CNPJ em 10 segundos</b> (ou uma selfie) e ganhe o selo de verificado e <b>+5 créditos</b>.</div>
             <label class="check-termos"><input type="checkbox" id="aceiteProf"> <span>Li e aceito os <a href="termos.html" target="_blank">Termos de Uso</a> e a <a href="termos.html#privacidade" target="_blank">Política de Privacidade</a>.</span></label>
             <button class="btn-primary" onclick="cadastrarProf()">CADASTRAR</button>
             <button class="btn-secondary" style="width:100%;margin-top:8px;" onclick="voltarLogin()">VOLTAR</button>
@@ -525,6 +546,7 @@ body { width: 100%; margin: 0 auto; }
                 <h3>⚙️ PAINEL ADMIN</h3>
                 <button class="btn-secondary" style="width:100%;" onclick="abrirModalAdmin()">VERIFICAÇÕES, OCORRÊNCIAS E PROFISSIONAIS <span id="admPendentes"></span></button>
             </div>
+            <div id="avisoSuspenso"></div>
             <div class="card" id="cardMeuPerfil"></div>
             <div id="cardVerificacao"></div>
             <div class="saldo"><h3>SEUS CRÉDITOS</h3><div class="numero" id="saldoCreditos">0</div><button class="btn-out" style="margin-top:8px;background:transparent;color:white;border-color:rgba(255,255,255,0.5);" onclick="mudarAba('creditos')">COMPRAR CRÉDITOS</button></div>
@@ -532,6 +554,7 @@ body { width: 100%; margin: 0 auto; }
                 <input type="checkbox" id="chkAvisos" onchange="alterarAvisos(this.checked)" style="width:20px;height:20px;accent-color:var(--laranja);flex:none;">
                 <span><strong>Avisar por e-mail quando chegar pedido na minha área</strong><br><small style="color:var(--linha);">No máximo um aviso a cada 3 horas.</small></span>
             </label>
+            <div id="minhasReclamacoes"></div>
             <h3 style="font-family:Oswald;margin-top:20px;margin-bottom:6px;">PEDIDOS DISPONÍVEIS</h3>
             <p class="mini" style="margin-bottom:12px;">Pedidos dos últimos 30 dias, com no máximo 3 profissionais por pedido. Os da sua categoria aparecem primeiro.</p>
             <div id="listaChamados"></div>
@@ -617,23 +640,32 @@ body { width: 100%; margin: 0 auto; }
 <!-- MODAL VERIFICAÇÃO -->
 <div id="modalVerificacao" class="modal"><div class="modal-content">
     <div class="modal-header"><h2>VERIFICAR MEU PERFIL</h2><button class="btn-close" onclick="fecharModal('modalVerificacao')">×</button></div>
-    <p style="font-size:13px;line-height:1.5;margin-bottom:14px;">Seus documentos ficam num arquivo <b>privado</b>: só a equipe de verificação vê. Nada disso aparece no seu perfil — lá aparece apenas o selo.</p>
-    <div class="form-group"><label>CPF ou CNPJ (MEI)</label><input type="text" id="verDocumento" inputmode="numeric" placeholder="000.000.000-00" oninput="formatarDocumento(this)"></div>
-    <div class="upload-box" id="boxDocumento"><label style="margin-bottom:4px;">1. Foto do documento com foto (RG ou CNH)</label><small class="mini">Frente, sem reflexo, dá para ler o nome.</small><input type="file" id="verArqDocumento" accept="image/*,application/pdf" onchange="marcarUpload(this,'boxDocumento')"></div>
-    <div class="upload-box" id="boxSelfie"><label style="margin-bottom:4px;">2. Selfie segurando o documento</label><small class="mini">Seu rosto e o documento aparecendo na mesma foto.</small><input type="file" id="verArqSelfie" accept="image/*" capture="user" onchange="marcarUpload(this,'boxSelfie')"></div>
-    <div class="form-group"><label>Registro profissional (opcional)</label>
-        <select id="verRegistroTipo" onchange="document.getElementById('verRegistroExtra').style.display=this.value?'block':'none'">
-            <option value="">Não tenho / não se aplica</option><option value="CREA">CREA</option><option value="CAU">CAU</option><option value="CFT">CFT / CRT (técnico)</option><option value="NR-10">Certificado NR-10</option><option value="Outro">Outro certificado</option>
-        </select>
+    <div class="aviso aviso-ok" id="verBonus">🎁 Na primeira verificação você ganha <b>+5 créditos</b>.</div>
+    <div class="card" style="border:2px solid #86efac;">
+        <h4>⚡ Tem MEI ou CNPJ? Confirme em 10 segundos</h4>
+        <p class="mini" style="margin-bottom:10px;">Consultamos a Receita Federal na hora, sem foto nenhuma. O CNPJ precisa estar <b>ativo</b> e no seu nome (o nome do perfil precisa aparecer na razão social ou entre os sócios).</p>
+        <input type="text" id="verCnpj" inputmode="numeric" placeholder="00.000.000/0000-00" oninput="formatarDocumento(this)">
+        <button class="btn-ok" id="btnCnpj" style="width:100%;margin-top:8px;" onclick="verificarCnpj()">CONFERIR CNPJ</button>
+        <div id="cnpjResultado"></div>
     </div>
-    <div id="verRegistroExtra" style="display:none;">
-        <div class="form-group"><label>Número do registro</label><input type="text" id="verRegistroNumero" maxlength="40" placeholder="Ex: 5071894914"></div>
-        <div class="upload-box" id="boxRegistro"><label style="margin-bottom:4px;">3. Foto da carteira ou certificado</label><input type="file" id="verArqRegistro" accept="image/*,application/pdf" onchange="marcarUpload(this,'boxRegistro')"></div>
+    <div id="blocoSelfie">
+        <h4 style="margin:16px 0 4px;">Não tem CNPJ? Uma selfie resolve</h4>
+        <p class="mini" style="margin-bottom:12px;">A foto fica num arquivo <b>privado</b>: só a equipe de verificação vê. No perfil aparece apenas o selo. Análise em até 2 dias úteis.</p>
+        <div class="form-group"><label>Seu CPF</label><input type="text" id="verDocumento" inputmode="numeric" placeholder="000.000.000-00" oninput="formatarDocumento(this)"></div>
+        <div class="upload-box" id="boxSelfie"><label style="margin-bottom:4px;">Selfie segurando o documento (RG ou CNH)</label><small class="mini">Seu rosto e o documento aparecendo na mesma foto, dá para ler o nome.</small><input type="file" id="verArqSelfie" accept="image/*" capture="user" onchange="marcarUpload(this,'boxSelfie')"></div>
+        <div class="form-group"><label>Registro profissional (opcional)</label>
+            <select id="verRegistroTipo" onchange="document.getElementById('verRegistroExtra').style.display=this.value?'block':'none'">
+                <option value="">Não tenho / não se aplica</option><option value="CREA">CREA</option><option value="CAU">CAU</option><option value="CFT">CFT / CRT (técnico)</option><option value="NR-10">Certificado NR-10</option><option value="Outro">Outro certificado</option>
+            </select>
+        </div>
+        <div id="verRegistroExtra" style="display:none;">
+            <div class="form-group"><label>Número do registro</label><input type="text" id="verRegistroNumero" maxlength="40" placeholder="Ex: 5071894914"></div>
+            <div class="upload-box" id="boxRegistro"><label style="margin-bottom:4px;">Foto da carteira ou certificado (opcional)</label><input type="file" id="verArqRegistro" accept="image/*,application/pdf" onchange="marcarUpload(this,'boxRegistro')"></div>
+        </div>
+        <label class="check-termos"><input type="checkbox" id="verEmiteNf"> <span>Emito nota fiscal</span></label>
+        <label class="check-termos"><input type="checkbox" id="verAceite"> <span>Declaro que a foto e o documento são meus e autorizo a Foster Central a usá-los só para verificar minha identidade, conforme a <a href="termos.html#privacidade" target="_blank">Política de Privacidade</a>.</span></label>
+        <button class="btn-primary" id="btnEnviarVerificacao" onclick="enviarVerificacao()">ENVIAR SELFIE PARA ANÁLISE</button>
     </div>
-    <label class="check-termos"><input type="checkbox" id="verEmiteNf"> <span>Emito nota fiscal</span></label>
-    <label class="check-termos"><input type="checkbox" id="verAceite"> <span>Declaro que os documentos são meus e verdadeiros e autorizo a Foster Central a usá-los só para verificar minha identidade e registro, conforme a <a href="termos.html#privacidade" target="_blank">Política de Privacidade</a>.</span></label>
-    <button class="btn-primary" id="btnEnviarVerificacao" onclick="enviarVerificacao()">ENVIAR PARA ANÁLISE</button>
-    <p class="mini" style="text-align:center;margin-top:10px;">Análise em até 2 dias úteis.</p>
 </div></div>
 
 <!-- MODAL PERFIL PÚBLICO -->
@@ -663,7 +695,7 @@ body { width: 100%; margin: 0 auto; }
 <!-- MODAL ORÇAMENTO -->
 <div id="modalOrcamento" class="modal"><div class="modal-content">
     <div class="modal-header"><h2>GERAR ORÇAMENTO</h2><button class="btn-close" onclick="fecharModal('modalOrcamento')">×</button></div>
-    <p class="mini" style="margin-bottom:12px;">Gera um orçamento padronizado com sua marca e seus selos, pronto para salvar em PDF e mandar ao cliente.</p>
+    <p class="mini" style="margin-bottom:12px;">O cliente recebe um link para ver e <b>aceitar com um clique</b>. O aceite fica registrado com data e hora: é a sua prova do que foi combinado (valor, prazo e pagamento).</p>
     <div class="form-group"><label>Cliente</label><input type="text" id="orcCliente" maxlength="120"></div>
     <div class="form-group"><label>Serviço</label><input type="text" id="orcServico" maxlength="160"></div>
     <div class="form-group"><label>Itens (um por linha: descrição ; valor)</label><textarea id="orcItens" style="min-height:120px;" placeholder="Mão de obra muro 10 m ; 2500&#10;Material (blocos, cimento, areia) ; 1800&#10;Retirada de entulho ; 300" oninput="previaTotalOrcamento()"></textarea><small class="mini" id="orcTotalPrevia"></small></div>
@@ -671,8 +703,14 @@ body { width: 100%; margin: 0 auto; }
     <div class="form-group"><label>Forma de pagamento</label><input type="text" id="orcPagamento" placeholder="Ex: 30% de entrada e o restante na entrega" maxlength="160"></div>
     <div class="form-group"><label>Validade da proposta (dias)</label><input type="number" id="orcValidade" value="15" min="1" max="90"></div>
     <div class="form-group"><label>Observações e garantia</label><textarea id="orcObs" maxlength="800" placeholder="Ex: Garantia de 90 dias sobre a mão de obra. Material incluso conforme lista."></textarea></div>
-    <button class="btn-primary" onclick="gerarOrcamento()">GERAR E SALVAR EM PDF</button>
-    <button class="btn-whatsapp" onclick="enviarResumoOrcamento()">💬 ENVIAR RESUMO NO WHATSAPP</button>
+    <button class="btn-whatsapp" style="margin-top:0;" onclick="enviarResumoOrcamento()">💬 SALVAR E ENVIAR NO WHATSAPP</button>
+    <button class="btn-out" style="width:100%;margin-top:8px;" onclick="gerarOrcamento()">📄 SALVAR E BAIXAR PDF</button>
+</div></div>
+
+<!-- MODAL ORÇAMENTO (link do cliente) -->
+<div id="modalOrcPublico" class="modal"><div class="modal-content">
+    <div class="modal-header"><h2>ORÇAMENTO</h2><button class="btn-close" onclick="fecharModal('modalOrcPublico')">×</button></div>
+    <div id="orcPublicoConteudo"></div>
 </div></div>
 
 <!-- MODAL SOBRE -->
@@ -681,13 +719,20 @@ body { width: 100%; margin: 0 auto; }
     <div class="sobre-content">
         <p>A Foster Central conecta quem precisa de obra, reforma ou projeto com profissionais da construção — com regras feitas para os dois lados confiarem.</p>
         <h3>Como verificamos</h3>
-        <p><b>✓ Identidade verificada:</b> conferimos documento com foto e selfie do profissional segurando o documento.<br>
-        <b>✓ CREA / CAU conferido:</b> o número informado é consultado no conselho profissional.<br>
-        <b>✓ MEI/CNPJ ativo:</b> CNPJ conferido na consulta pública da Receita Federal.<br>
-        <b>Emite nota fiscal:</b> informação declarada pelo profissional.</p>
-        <p class="mini">O selo confirma quem a pessoa é e o registro dela. Ele não garante o resultado do serviço — por isso existem as avaliações e a mediação.</p>
+        <p><b>✓ CNPJ ativo:</b> consultado automaticamente na Receita Federal; precisa estar ativo e no nome do profissional.<br>
+        <b>✓ Identidade verificada:</b> selfie do profissional segurando o documento, conferida pela equipe.<br>
+        <b>✓ CREA / CAU conferido:</b> número consultado no conselho profissional.<br>
+        <b>Emite NF:</b> informação declarada pelo profissional.</p>
+        <p><b>Selos que vêm do trabalho</b> (ninguém liga à mão):<br>
+        <b>⭐ Bem avaliado:</b> nota 4,5 ou mais com pelo menos 3 avaliações de clientes.<br>
+        <b>🏅 Experiente:</b> 10 ou mais pedidos atendidos pela plataforma.<br>
+        <b>📷 Perfil completo:</b> cidade, apresentação e pelo menos 3 fotos de obras.</p>
+        <p class="mini">Os selos mostram quem é o profissional e como ele trabalha na plataforma. Eles não garantem o resultado do serviço.</p>
         <h3>Regras que protegem você</h3>
-        <p>Cada pedido vai para no máximo 3 profissionais. Só quem fez o pedido avalia. Profissional que paga por contato falso recebe o crédito de volta. Qualquer problema vira uma ocorrência analisada pela equipe.</p>
+        <p>Cada pedido vai para no máximo 3 profissionais. Só quem fez o pedido avalia. O orçamento é aceito pelo app e fica registrado com data e hora.</p>
+        <h3>Se der problema</h3>
+        <p>A reclamação vai <b>direto ao profissional</b>, que tem 7 dias para responder, e o cliente marca se resolveu. Profissional com 3 reclamações sem resposta ou sem solução em 6 meses sai da busca automaticamente. Se não se resolver, o cliente gera o <b>Relatório do atendimento</b> com todos os registros para levar ao Procon, ao consumidor.gov.br ou ao Juizado Especial.</p>
+        <p class="mini">A Foster Central aproxima as partes e registra o que foi combinado. Ela não é parte do contrato de serviço, não recebe o pagamento e não executa a obra. Golpe, perfil falso e ameaça são analisados pela equipe.</p>
         <h3>Quem está por trás</h3>
         <p>Plataforma da <b>Foster Construções e Serviços</b> (CNPJ 16.588.130/0001-27), com supervisão técnica do engenheiro civil <b>José Wilson Pereira (Wilson Foster)</b>, CREA-SP 5071894914 (registro pessoal do engenheiro).</p>
         <div class="sobre-contact">
@@ -795,6 +840,15 @@ body { width: 100%; margin: 0 auto; }
         };
         const APP_URL = 'https://fosterfcs.github.io/foster-central/';
         const LIMITE_POR_PEDIDO = 3;
+        const VERSAO_TERMOS = '2026-10-29';
+        const CHECKLIST_HTML = '<ul class="pct-lista" style="margin-top:8px;">' +
+            '<li>📄 Peça o orçamento <b>pelo app</b>: itens, valor, prazo e pagamento ficam registrados e você aceita com um clique.</li>' +
+            '<li>🔎 Veja os selos, as fotos de obras e as avaliações do profissional.</li>' +
+            '<li>💸 Não pague tudo adiantado. Combine pagamento por etapas do serviço.</li>' +
+            '<li>📐 Estrutura, laje, demolição, projeto ou laudo pedem <b>ART/RRT</b> de engenheiro ou arquiteto.</li>' +
+            '<li>🧾 Peça nota fiscal ou recibo de cada pagamento.</li>' +
+            '<li>⏱️ Combine o prazo e o que acontece se atrasar.</li></ul>';
+        let meusOrcamentos = [], orcamentoSalvo = null, orcamentoAberto = null;
 
         let supabaseClient = null;
         let conta = null;            // resultado de minha_conta()
@@ -837,7 +891,10 @@ body { width: 100%; margin: 0 auto; }
             let h = '';
             if (p.selo_identidade) h += '<span class="selo selo-verde" title="Documento com foto e selfie conferidos">✓ Identidade verificada</span>';
             if (p.selo_registro) h += '<span class="selo selo-azul" title="Registro consultado no conselho">✓ ' + esc(p.registro_tipo || 'Registro') + ' conferido</span>';
-            if (p.selo_mei) h += '<span class="selo selo-cinza" title="CNPJ ativo na Receita Federal">✓ MEI/CNPJ ativo</span>';
+            if (p.selo_mei) h += '<span class="selo selo-cinza" title="CNPJ ativo e no nome do profissional, conferido na Receita Federal">✓ CNPJ ativo</span>';
+            if (p.bem_avaliado) h += '<span class="selo selo-ouro" title="Nota 4,5 ou mais com pelo menos 3 avaliações de clientes">⭐ Bem avaliado</span>';
+            if (p.experiente) h += '<span class="selo selo-azul" title="10 ou mais pedidos atendidos pela plataforma">🏅 Experiente</span>';
+            if (p.perfil_completo) h += '<span class="selo selo-verde" title="Cidade, apresentação e pelo menos 3 fotos de obras">📷 Perfil completo</span>';
             if (p.emite_nf) h += '<span class="selo selo-claro" title="Informação declarada pelo profissional">Emite NF</span>';
             return h ? '<div class="selos">' + h + '</div>' : '';
         }
@@ -853,23 +910,36 @@ body { width: 100%; margin: 0 auto; }
                 nao_autenticado: 'Entre na sua conta novamente.',
                 vagas_esgotadas: 'Este pedido já foi pego por 3 profissionais.',
                 pedido_encerrado: 'Este pedido foi encerrado pelo cliente ou expirou.',
+                perfil_suspenso: 'Seu perfil está fora da busca por reclamações sem solução. Responda e resolva as reclamações abertas ou fale com o suporte.',
                 prazo_encerrado: 'O prazo para reportar este contato (7 dias) já passou.',
                 ja_reportado: 'Você já reportou este contato.',
-                sem_desbloqueio: 'Você não pegou este contato.',
+                sem_desbloqueio: 'Você não pegou o contato deste pedido.',
                 ja_avaliado: 'Você já avaliou este profissional neste pedido.',
+                ja_reclamou: 'Você já registrou uma reclamação sobre este profissional neste pedido.',
                 nao_e_seu: 'Este pedido não está na sua conta.',
                 profissional_nao_atendeu: 'Este profissional não pegou o seu pedido.',
                 nota_invalida: 'Escolha de 1 a 5 estrelas.',
-                descreva: 'Conte com um pouco mais de detalhe o que aconteceu.',
-                documento_invalido: 'CPF ou CNPJ inválido.',
-                faltam_fotos: 'Envie a foto do documento e a selfie.',
+                descreva: 'Conte com um pouco mais de detalhe (mínimo de 10 letras).',
+                documento_invalido: 'CPF inválido. Confira os números.',
+                faltam_fotos: 'Envie a selfie segurando o documento.',
                 aceite_termos: 'Marque a declaração para continuar.',
                 ja_aprovada: 'Seu perfil já está verificado.',
                 admin: 'Conta de administrador não pode ser excluída por aqui.',
-                motivo_invalido: 'Escolha um motivo.'
+                motivo_invalido: 'Escolha um motivo.',
+                itens_invalidos: 'Confira os itens: use "descrição ; valor" em cada linha.',
+                orcamento_inexistente: 'Orçamento não encontrado. Confira o link.',
+                ja_aceito: 'Este orçamento já foi aceito.',
+                orcamento_expirado: 'A validade deste orçamento terminou. Peça um novo ao profissional.',
+                nome_completo: 'Digite seu nome completo.',
+                telefone_nao_confere: 'Os 4 últimos números não conferem com o telefone do pedido.',
+                reclamacao_inexistente: 'Reclamação não encontrada ou já encerrada.',
+                limite_portfolio: 'Seu portfólio já tem 12 fotos. Apague alguma para enviar outra.',
+                cnpj_invalido: 'CNPJ inválido. Confira os números.',
+                cnpj_em_uso: 'Este CNPJ já está verificado em outra conta.',
+                aguarde: 'Aguarde um minuto antes de consultar de novo.',
+                receita_indisponivel: 'A consulta da Receita não respondeu agora. Tente de novo em alguns minutos.'
             })[codigo] || 'Não foi possível concluir. Tente de novo.';
         }
-
         // ===== ESTATÍSTICAS REAIS =====
         async function carregarEstatisticas() {
             try {
@@ -897,10 +967,11 @@ body { width: 100%; margin: 0 auto; }
                     else if (['SIGNED_IN', 'SIGNED_OUT', 'USER_UPDATED'].includes(event)) setTimeout(carregarConta, 0);
                 });
                 abrirPerfilPelaUrl();
+                const orc = new URLSearchParams(location.search).get('orc');
+                if (orc && /^[0-9a-f-]{36}$/i.test(orc)) abrirOrcamentoPublico(orc);
                 if ('serviceWorker' in navigator) navigator.serviceWorker.register('service-worker.js').catch(() => {});
             } catch (err) { console.error('Erro init:', err); }
         }
-
         async function carregarConta() {
             const { data: { session } } = await supabaseClient.auth.getSession();
             if (!session) { conta = null; usuarioAtual = null; usuarioCliente = null; }
@@ -1102,7 +1173,7 @@ body { width: 100%; margin: 0 auto; }
             if (senha.length < 8) { alert('A senha precisa ter pelo menos 8 caracteres'); return; }
             if (!document.getElementById('aceiteCliente').checked) { alert('Aceite os Termos de Uso e a Política de Privacidade para continuar.'); return; }
             if (!checarRateLimit()) return;
-            const { error } = await supabaseClient.auth.signUp({ email, password: senha, options: { emailRedirectTo: APP_URL, data: { tipo: 'cliente', nome, telefone, cidade } } });
+            const { error } = await supabaseClient.auth.signUp({ email, password: senha, options: { emailRedirectTo: APP_URL, data: { tipo: 'cliente', nome, telefone, cidade, aceite_termos: VERSAO_TERMOS } } });
             if (error) { alert('Erro: ' + error.message); return; }
             alert('✅ Cadastro feito, ' + nome.split(' ')[0] + '!\nConfirme seu e-mail (veja também o spam) e depois entre aqui.');
             voltarLoginCliente(); document.getElementById('emailCliente').value = email;
@@ -1134,6 +1205,7 @@ body { width: 100%; margin: 0 auto; }
             if (error) { box.innerHTML = '<p style="text-align:center;color:red;">Erro ao carregar pedidos</p>'; return; }
             pedidosCliente = data || [];
             if (!pedidosCliente.length) { box.innerHTML = '<div class="card" style="text-align:center;"><p style="color:var(--linha);">Nenhum pedido encontrado.</p><p class="mini" style="margin-top:6px;">Pedidos feitos com o telefone da sua conta aparecem aqui sozinhos.</p></div>'; return; }
+            const statusRec = { aguardando_profissional: '⏳ Aguardando resposta do profissional', respondida: '💬 Profissional respondeu', resolvida: '✅ Você marcou como resolvida', nao_resolvida: '❌ Você marcou como não resolvida' };
             box.innerHTML = pedidosCliente.map(p => {
                 const inter = Array.isArray(p.interessados) ? p.interessados : [];
                 const statusTxt = { novo: '🟡 Aberto', atendido: '✅ Contratado', cancelado: '⚪ Cancelado', invalido: '⛔ Encerrado' }[p.status] || p.status;
@@ -1141,19 +1213,31 @@ body { width: 100%; margin: 0 auto; }
                     '<div class="chamado-info">📍 ' + esc(p.bairro) + ' · ' + dataBR(p.criado_em) + ' · #' + String(p.id).padStart(4, '0') + '</div>' +
                     '<div class="chamado-info" style="margin-top:4px;">📝 ' + esc(p.descricao) + '</div>';
                 if (p.status === 'novo') html += '<div class="vagas"><div class="vagas-bar">' + [0, 1, 2].map(i => '<i class="' + (i < inter.length ? 'usada' : '') + '"></i>').join('') + '</div>' + inter.length + ' de ' + LIMITE_POR_PEDIDO + ' profissionais pegaram seu contato</div>';
-                if (!inter.length) html += '<p class="mini" style="margin-top:6px;">Assim que um profissional pegar seu contato, ele aparece aqui com selos e avaliações.</p>';
+                if (!inter.length) html += '<p class="mini" style="margin-top:6px;">Assim que um profissional pegar seu contato, ele aparece aqui com selos, fotos de obras e avaliações.</p>';
                 inter.forEach(i => {
                     const w = linkWhats(i.telefone, 'Olá ' + (i.nome || '').split(' ')[0] + '! Fiz o pedido de ' + p.servico + ' na Foster Central.');
+                    const orcs = Array.isArray(i.orcamentos) ? i.orcamentos : [];
+                    const rec = i.reclamacao;
                     html += '<div class="interessado"><div style="display:flex;justify-content:space-between;gap:8px;"><a style="font-weight:800;cursor:pointer;color:var(--grafite);text-decoration:underline;" onclick="abrirPerfilPublico(\'' + i.id + '\')">' + esc(i.nome) + '</a><span>' + notaHTML(i.nota, i.total_avaliacoes) + '</span></div>' +
-                        '<div class="mini">' + esc(nomeCategoria(i.categoria)) + ' · pegou ' + tempoAtras(i.quando) + '</div>' + selosHTML(i) +
-                        (!i.selo_identidade ? '<div class="mini" style="margin-top:4px;color:#92400e;">Este profissional ainda não verificou a identidade.</div>' : '') +
-                        '<div class="linha-acoes">' +
+                        '<div class="mini">' + esc(nomeCategoria(i.categoria)) + ' · pegou ' + tempoAtras(i.quando) + (i.fotos ? ' · 📷 ' + i.fotos + ' fotos de obras' : '') + '</div>' + selosHTML(i) +
+                        (!i.selo_identidade && !i.selo_mei ? '<div class="mini" style="margin-top:4px;color:#92400e;">Ainda sem CNPJ ou identidade conferidos.</div>' : '');
+                    orcs.forEach(o => {
+                        html += '<div class="orc-linha" onclick="abrirOrcamentoPublico(\'' + o.id + '\')">📄 Orçamento ' + brl(o.total) + ' · ' + dataBR(o.criado_em) + ' — ' + (o.aceito_em ? '<b style="color:#15803d;">✅ você aceitou em ' + dataBR(o.aceito_em) + '</b>' : '<b style="color:var(--laranja);">ver e aceitar ›</b>') + '</div>';
+                    });
+                    if (rec) {
+                        html += '<div class="aviso' + (rec.status === 'resolvida' ? ' aviso-ok' : '') + '" style="margin-top:8px;"><b>Reclamação de ' + dataBR(rec.criado_em) + ':</b> ' + (statusRec[rec.status] || rec.status) +
+                            (rec.resposta_prof ? '<br><b>Resposta do profissional (' + dataBR(rec.respondido_em) + '):</b> ' + esc(rec.resposta_prof) : '') +
+                            (['aguardando_profissional', 'respondida'].includes(rec.status) ? '<div class="linha-acoes"><button class="btn-ok" onclick="concluirReclamacao(' + Number(rec.id) + ',true)">✅ FOI RESOLVIDO</button><button class="btn-out" onclick="concluirReclamacao(' + Number(rec.id) + ',false)">❌ NÃO RESOLVEU</button></div>' : '') + '</div>';
+                    }
+                    html += '<div class="linha-acoes">' +
                         (w ? '<a href="' + w + '" target="_blank" rel="noopener" style="text-decoration:none;"><button class="btn-whatsapp" style="margin:0;padding:11px;">💬 WHATSAPP</button></a>' : '') +
                         (i.ja_avaliei ? '<button class="btn-out" disabled>✓ AVALIADO</button>' : '<button class="btn-ok" onclick="abrirAvaliar(' + Number(p.id) + ',\'' + i.id + '\')">⭐ AVALIAR</button>') +
-                        (i.reclamei ? '<button class="btn-out" disabled>RECLAMAÇÃO ENVIADA</button>' : '<button class="btn-out" onclick="abrirReclamacao(' + Number(p.id) + ',\'' + i.id + '\')">⚠️ TEVE PROBLEMA</button>') +
+                        (!rec ? '<button class="btn-out" onclick="abrirReclamacao(' + Number(p.id) + ',\'' + i.id + '\')">⚠️ TEVE PROBLEMA</button>' : (!i.denunciei ? '<button class="btn-out" onclick="abrirReclamacao(' + Number(p.id) + ',\'' + i.id + '\',true)">🚨 DENUNCIAR GOLPE</button>' : '')) +
                         '</div></div>';
                 });
-                if (p.status === 'novo') html += '<div class="linha-acoes" style="margin-top:12px;"><button class="btn-ok" onclick="encerrarPedido(' + Number(p.id) + ',\'atendido\')">✅ JÁ CONTRATEI</button><button class="btn-out" onclick="encerrarPedido(' + Number(p.id) + ',\'cancelado\')">CANCELAR PEDIDO</button></div>';
+                html += '<div class="linha-acoes" style="margin-top:12px;">' +
+                    (p.status === 'novo' ? '<button class="btn-ok" onclick="encerrarPedido(' + Number(p.id) + ',\'atendido\')">✅ JÁ CONTRATEI</button><button class="btn-out" onclick="encerrarPedido(' + Number(p.id) + ',\'cancelado\')">CANCELAR PEDIDO</button>' : '') +
+                    (inter.length ? '<button class="btn-out" onclick="gerarRelatorio(' + Number(p.id) + ')">🗂️ RELATÓRIO DO ATENDIMENTO</button>' : '') + '</div>';
                 return html + '</div>';
             }).join('');
         }
@@ -1187,11 +1271,15 @@ body { width: 100%; margin: 0 auto; }
 
         // ocorrências (cliente reclama / profissional reporta contato)
         let ocorrenciaAtual = null;
-        function abrirReclamacao(chamadoId, profId) {
+        function abrirReclamacao(chamadoId, profId, soDenuncia) {
             ocorrenciaAtual = { tipo: 'cliente', chamadoId, profId };
-            document.getElementById('ocorrenciaTitulo').textContent = 'TEVE PROBLEMA?';
-            document.getElementById('ocorrenciaTexto').textContent = 'Conte o que aconteceu. A equipe da Foster Central entra em contato com você e com o profissional para mediar. Profissionais com reclamações confirmadas perdem o selo e podem ser removidos.';
-            document.getElementById('ocorrenciaMotivo').innerHTML = '<option value="nao_compareceu">Não compareceu / sumiu</option><option value="servico_ruim">Serviço mal feito</option><option value="cobranca_indevida">Cobrança diferente do combinado</option><option value="outro">Outro</option>';
+            document.getElementById('ocorrenciaTitulo').textContent = soDenuncia ? 'DENUNCIAR GOLPE' : 'TEVE PROBLEMA?';
+            document.getElementById('ocorrenciaTexto').innerHTML = soDenuncia
+                ? 'Use só para <b>golpe, perfil falso ou ameaça</b>. A equipe analisa e pode suspender o profissional. Em caso de crime, registre também um boletim de ocorrência.'
+                : '<b>Problema com o serviço</b> (atraso, qualidade, preço): a reclamação vai <b>direto para o profissional</b>, que tem 7 dias para responder. Tudo fica registrado com data e hora.<br><br>Profissional com 3 reclamações sem solução sai da busca automaticamente. Se não se resolver, use o <b>Relatório do atendimento</b> para levar ao Procon ou ao Juizado Especial.<br><br><b>Golpe, perfil falso ou ameaça</b> vão para a equipe da Foster Central.';
+            const rec = '<optgroup label="Problema com o serviço (vai para o profissional)"><option value="nao_compareceu">Não compareceu / sumiu</option><option value="servico_ruim">Serviço mal feito</option><option value="cobranca_indevida">Cobrança diferente do combinado</option><option value="outro">Outro problema</option></optgroup>';
+            const den = '<optgroup label="Denúncia (vai para a equipe)"><option value="golpe">Golpe: pediu dinheiro e sumiu</option><option value="perfil_falso">Perfil falso / não é quem diz ser</option><option value="ameaca">Ameaça ou ofensa</option></optgroup>';
+            document.getElementById('ocorrenciaMotivo').innerHTML = soDenuncia ? den : rec + den;
             document.getElementById('ocorrenciaDescricao').value = ''; abrirModal('modalOcorrencia');
         }
         function abrirReporte(chamadoId) {
@@ -1204,21 +1292,23 @@ body { width: 100%; margin: 0 auto; }
         async function enviarOcorrencia() {
             if (!ocorrenciaAtual) return;
             const motivo = document.getElementById('ocorrenciaMotivo').value, desc = document.getElementById('ocorrenciaDescricao').value.trim();
+            const denuncia = ['golpe', 'perfil_falso', 'ameaca'].includes(motivo);
             const btn = document.getElementById('btnOcorrencia'); btn.disabled = true;
             try {
                 let r;
-                if (ocorrenciaAtual.tipo === 'cliente') r = await supabaseClient.rpc('reclamar_profissional', { p_chamado_id: ocorrenciaAtual.chamadoId, p_prof_id: ocorrenciaAtual.profId, p_motivo: motivo, p_descricao: desc });
+                if (ocorrenciaAtual.tipo === 'cliente') r = await supabaseClient.rpc(denuncia ? 'denunciar_profissional' : 'reclamar_profissional', { p_chamado_id: ocorrenciaAtual.chamadoId, p_prof_id: ocorrenciaAtual.profId, p_motivo: motivo, p_descricao: desc });
                 else r = await supabaseClient.rpc('reportar_contato', { p_chamado_id: ocorrenciaAtual.chamadoId, p_motivo: motivo, p_descricao: desc });
                 if (r.error || !r.data || !r.data.ok) { alert(mensagemErro(r.data && r.data.erro)); return; }
                 fecharModal('modalOcorrencia');
-                if (ocorrenciaAtual.tipo === 'cliente') { toast('Recebemos. A equipe vai entrar em contato.'); carregarPedidosCliente(); }
-                else {
+                if (ocorrenciaAtual.tipo === 'cliente') {
+                    alert(denuncia ? '✅ Denúncia enviada à equipe da Foster Central.' : '✅ Reclamação registrada e enviada ao profissional.\nEle tem 7 dias para responder. Acompanhe aqui no seu pedido.');
+                    carregarPedidosCliente();
+                } else {
                     alert(r.data.automatico && r.data.devolvido ? '✅ Confirmado por outro profissional: ' + r.data.devolvido + ' crédito(s) devolvido(s) na sua conta.' : '✅ Recebemos. Se for confirmado, o crédito volta para a sua conta.');
                     await carregarConta();
                 }
             } finally { btn.disabled = false; }
         }
-
         // ===== ÁREA DO PROFISSIONAL =====
         function mostrarCadastro() { document.getElementById('loginArea').style.display = 'none'; document.getElementById('cadastroArea').style.display = 'block'; }
         function voltarLogin() { document.getElementById('cadastroArea').style.display = 'none'; document.getElementById('loginArea').style.display = 'block'; }
@@ -1248,9 +1338,9 @@ body { width: 100%; margin: 0 auto; }
             if (!checarRateLimit()) return;
             const { data: telExiste } = await supabaseClient.from('profissionais').select('id').eq('telefone', telefone).maybeSingle();
             if (telExiste) { alert('Este telefone já está cadastrado. Use "Esqueci minha senha" se precisar.'); return; }
-            const { error } = await supabaseClient.auth.signUp({ email, password: senha, options: { emailRedirectTo: APP_URL, data: { tipo: 'profissional', nome, telefone, categoria: categoriaCadastro, especialidades: especialidadesSelecionadas.join(',') } } });
+            const { error } = await supabaseClient.auth.signUp({ email, password: senha, options: { emailRedirectTo: APP_URL, data: { tipo: 'profissional', nome, telefone, categoria: categoriaCadastro, especialidades: especialidadesSelecionadas.join(','), aceite_termos: VERSAO_TERMOS } } });
             if (error) { alert('Erro: ' + error.message); return; }
-            alert('✅ Cadastro feito! Você ganhou 10 créditos.\nConfirme seu e-mail (veja também o spam) e entre aqui para enviar sua verificação.');
+            alert('✅ Cadastro feito! Você ganhou 10 créditos.\nConfirme seu e-mail (veja também o spam) e entre aqui.\n\nDepois, confirme seu CNPJ em 10 segundos e ganhe mais 5 créditos.');
             voltarLogin(); document.getElementById('emailProf').value = email;
         }
         async function loginProf() {
@@ -1274,7 +1364,9 @@ body { width: 100%; margin: 0 auto; }
             document.getElementById('saldoCreditos').textContent = conta.saldo_creditos || 0;
             document.getElementById('adminPanel').style.display = conta.is_admin ? 'block' : 'none';
             const chk = document.getElementById('chkAvisos'); if (chk) chk.checked = conta.recebe_avisos !== false;
-            renderMeuPerfil(); renderVerificacao(); avisarCompras(); carregarChamados();
+            document.getElementById('avisoSuspenso').innerHTML = conta.suspenso
+                ? '<div class="aviso" style="background:#fef2f2;border-color:#fecaca;color:#991b1b;"><b>⛔ Seu perfil está fora da busca e não pode pegar pedidos novos.</b><br>' + (conta.suspenso_motivo ? esc(conta.suspenso_motivo) : 'Motivo: 3 ou mais reclamações sem resposta ou sem solução nos últimos 6 meses (regra automática dos Termos de Uso).') + '<br>Responda as reclamações abaixo e combine a solução com os clientes. Se achar que alguma reclamação é injusta, fale com o suporte pelo WhatsApp.</div>' : '';
+            renderMeuPerfil(); renderVerificacao(); avisarCompras(); carregarChamados(); carregarMinhasReclamacoes(); carregarMeuPortfolio();
             if (conta.is_admin) contarPendenciasAdmin();
             const incompleto = !conta.nome || conta.nome === 'Profissional' || !conta.telefone || !conta.categoria || !conta.especialidades;
             let adiado = null; try { adiado = sessionStorage.getItem('fc_perfil_adiado'); } catch (e) {}
@@ -1282,26 +1374,39 @@ body { width: 100%; margin: 0 auto; }
         }
         function renderMeuPerfil() {
             const c = conta;
+            const itens = [
+                { ok: !!(c.nome && c.nome !== 'Profissional' && c.telefone && c.categoria && c.especialidades), txt: 'Dados e especialidades', acao: 'abrirModalPerfil()' },
+                { ok: !!c.cidade, txt: 'Cidade onde atende', acao: 'abrirModalPerfil()' },
+                { ok: String(c.bio || '').length >= 40, txt: 'Apresentação ("sobre você")', acao: 'abrirModalPerfil()' },
+                { ok: (c.fotos || 0) >= 3, txt: '3 fotos de obras no portfólio (' + Math.min(c.fotos || 0, 3) + '/3)', acao: "document.getElementById('portfolioArquivo').click()" },
+                { ok: !!(c.selo_mei || c.selo_identidade), txt: 'CNPJ ou identidade conferidos', acao: 'abrirVerificacao()' }
+            ];
+            const pct = Math.round(itens.filter(i => i.ok).length / itens.length * 100);
             document.getElementById('cardMeuPerfil').innerHTML =
                 '<div class="perfil-topo"><div class="prof-avatar">' + esc(iniciais(c.nome)) + '</div><div style="flex:1;min-width:0;"><div style="font-weight:800;font-size:15px;">' + esc(c.nome) + '</div><div class="mini">' + esc(nomeCategoria(c.categoria)) + (c.cidade ? ' · ' + esc(c.cidade) : '') + '</div>' + selosHTML(c) + '</div></div>' +
-                (!c.cidade || !c.bio ? '<div class="aviso">Perfis com <b>cidade</b> e <b>"sobre você"</b> preenchidos passam mais confiança. <a style="font-weight:700;cursor:pointer;text-decoration:underline;" onclick="abrirModalPerfil()">Completar agora</a></div>' : '') +
-                '<div class="linha-acoes"><button class="btn-out" onclick="abrirPerfilPublico(\'' + c.id + '\')">👁️ VER MEU PERFIL</button><button class="btn-out" onclick="compartilharPerfil(\'' + c.id + '\')">🔗 DIVULGAR MEU PERFIL</button><button class="btn-out" onclick="abrirModalPerfil()">✏️ EDITAR</button></div>';
+                '<div class="pct"><div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;"><span>Perfil ' + pct + '% completo</span><span class="mini">' + (pct === 100 ? 'Ótimo! Você aparece entre os primeiros' : 'Perfis completos aparecem primeiro') + '</span></div><div class="pct-bar"><i style="width:' + pct + '%;"></i></div>' +
+                (pct < 100 ? '<ul class="pct-lista">' + itens.map(i => '<li class="' + (i.ok ? 'ok' : '') + '">' + (i.ok ? '✓ ' : '○ ') + (i.ok ? esc(i.txt) : '<a onclick="' + i.acao + '">' + esc(i.txt) + '</a>') + '</li>').join('') + '</ul>' : '') + '</div>' +
+                '<div class="linha-acoes"><button class="btn-out" onclick="abrirPerfilPublico(\'' + c.id + '\')">👁️ VER MEU PERFIL</button><button class="btn-out" onclick="compartilharPerfil(\'' + c.id + '\')">🔗 DIVULGAR MEU PERFIL</button><button class="btn-out" onclick="abrirModalPerfil()">✏️ EDITAR</button></div>' +
+                '<h4 style="margin-top:16px;">📷 Portfólio de obras <span class="mini" id="portfolioContador"></span></h4><p class="mini" style="margin-bottom:8px;">Fotos de serviços que você já fez — antes e depois convencem mais que qualquer texto. Até 12 fotos.</p>' +
+                '<div class="galeria" id="meuPortfolio"></div>' +
+                '<input type="text" id="portfolioLegenda" maxlength="140" placeholder="Legenda (opcional). Ex: Muro de arrimo em Barueri" style="margin-top:8px;">' +
+                '<label class="btn-ok" style="display:flex;align-items:center;justify-content:center;margin-top:8px;cursor:pointer;">+ ADICIONAR FOTOS<input type="file" id="portfolioArquivo" accept="image/*" multiple style="display:none;" onchange="adicionarFotosPortfolio(this)"></label>';
         }
         function renderVerificacao() {
             const c = conta, box = document.getElementById('cardVerificacao');
             const s = c.verificacao_status;
-            if (s === 'aprovada') { box.innerHTML = ''; return; }
-            if (s === 'pendente') { box.innerHTML = '<div class="aviso aviso-info">⏳ <b>Verificação em análise.</b> Em até 2 dias úteis seu selo aparece no perfil.</div>'; return; }
+            if (s === 'pendente') { box.innerHTML = '<div class="aviso aviso-info">⏳ <b>Selfie em análise.</b> Em até 2 dias úteis o selo de identidade aparece no seu perfil.</div>'; return; }
+            if (c.selo_mei || c.selo_identidade) { box.innerHTML = ''; return; }
             const recusada = s === 'recusada';
-            box.innerHTML = '<div class="card" style="border:2px solid ' + (recusada ? '#fca5a5' : '#86efac') + ';"><h4>' + (recusada ? '⚠️ Verificação não aprovada' : '✅ Ganhe o selo de verificado') + '</h4>' +
-                '<p style="font-size:13px;line-height:1.5;color:#374151;">' + (recusada ? esc(c.verificacao_motivo || 'Algum documento não ficou legível.') + ' Envie de novo.' : 'Clientes escolhem quem tem selo. Perfis verificados aparecem primeiro na busca. Leva 2 minutos: documento com foto + selfie.') + '</p>' +
-                '<button class="btn-primary" style="margin-top:10px;" onclick="abrirVerificacao()">' + (recusada ? 'ENVIAR DE NOVO' : 'VERIFICAR MEU PERFIL') + '</button></div>';
+            box.innerHTML = '<div class="card" style="border:2px solid ' + (recusada ? '#fca5a5' : '#86efac') + ';"><h4>' + (recusada ? '⚠️ Verificação não aprovada' : '🎁 Ganhe o selo e +5 créditos') + '</h4>' +
+                '<p style="font-size:13px;line-height:1.5;color:#374151;">' + (recusada ? esc(c.verificacao_motivo || 'A foto não ficou legível.') + ' Tente pelo CNPJ ou envie outra selfie.' : 'Tem MEI ou CNPJ? Confirme <b>em 10 segundos</b>, sem foto nenhuma. Não tem? Uma selfie segurando o documento resolve.') + '</p>' +
+                '<button class="btn-primary" style="margin-top:10px;" onclick="abrirVerificacao()">VERIFICAR AGORA</button></div>';
         }
-
         async function carregarChamados() {
             const box = document.getElementById('listaChamados'); if (!box || !usuarioAtual) return;
-            const { data: lista, error } = await supabaseClient.rpc('pedidos_disponiveis');
+            const [{ data: lista, error }, { data: orcs }] = await Promise.all([supabaseClient.rpc('pedidos_disponiveis'), supabaseClient.rpc('meus_orcamentos')]);
             if (error) { box.innerHTML = '<p style="text-align:center;color:red;">Erro ao carregar pedidos</p>'; return; }
+            meusOrcamentos = orcs || [];
             if (!lista || !lista.length) { box.innerHTML = '<div class="card" style="text-align:center;"><p style="color:var(--linha);">Nenhum pedido aberto no momento.</p><p class="mini" style="margin-top:6px;">Deixe os avisos por e-mail ligados para saber na hora.</p></div>'; return; }
             const saldo = conta ? (conta.saldo_creditos || 0) : 0;
             box.innerHTML = lista.map(c => {
@@ -1309,18 +1414,20 @@ body { width: 100%; margin: 0 auto; }
                 const vagas = '<div class="vagas"><div class="vagas-bar">' + [0, 1, 2].map(i => '<i class="' + (i < usadas ? 'usada' : '') + '"></i>').join('') + '</div>' + (c.desbloqueado ? 'Você e mais ' + Math.max(usadas - 1, 0) + ' pegaram este contato' : (c.vagas_restantes === 1 ? 'Última vaga!' : c.vagas_restantes + ' de 3 vagas livres')) + '</div>';
                 let h = '<div class="chamado-card"' + (c.desbloqueado ? ' style="border-left-color:var(--verde);"' : '') + '><h4>' + esc(c.servico) + '</h4><div class="chamado-info">🏷️ ' + esc(nomeCategoria(c.categoria)) + ' · ' + tempoAtras(c.criado_em) + '</div><div class="chamado-info">📍 ' + esc(c.bairro) + '</div><div class="chamado-info">📝 ' + esc(c.descricao) + '</div>' + vagas;
                 if (c.desbloqueado) {
-                    const w = linkWhats(c.telefone_cliente, 'Olá ' + String(c.nome_cliente || '').split(' ')[0] + '! Sou ' + (conta.nome || '').split(' ')[0] + ', vi seu pedido de ' + c.servico + ' na Foster Central. Meu perfil verificado: ' + linkPerfil(conta.id));
+                    const w = linkWhats(c.telefone_cliente, 'Olá ' + String(c.nome_cliente || '').split(' ')[0] + '! Sou ' + (conta.nome || '').split(' ')[0] + ', vi seu pedido de ' + c.servico + ' na Foster Central. Meu perfil com fotos de obras: ' + linkPerfil(conta.id));
                     const podeReportar = !c.minha_ocorrencia && c.desbloqueado_em && (Date.now() - new Date(c.desbloqueado_em).getTime()) < 7 * 86400000;
                     const oc = c.minha_ocorrencia ? c.minha_ocorrencia.split(':')[0] : null;
+                    const meus = meusOrcamentos.filter(o => o.chamado_id === c.id);
                     h += '<div class="chamado-info" style="margin-top:6px;">👤 <b>' + esc(c.nome_cliente) + '</b> · 📱 ' + esc(c.telefone_cliente) + '</div>' +
                         (c.status !== 'novo' ? '<div class="mini" style="margin-top:4px;">Pedido ' + ({ atendido: 'marcado como contratado pelo cliente', cancelado: 'cancelado pelo cliente', invalido: 'encerrado (contato inválido)' }[c.status] || c.status) + '.</div>' : '') +
+                        meus.map(o => '<div class="orc-linha" onclick="abrirOrcamentoPublico(\'' + o.id + '\')">📄 Orçamento ' + brl(o.total) + ' · ' + dataBR(o.criado_em) + ' — ' + (o.aceito_em ? '<b style="color:#15803d;">✅ aceito por ' + esc(o.aceito_nome) + ' em ' + dataBR(o.aceito_em) + '</b>' : (o.expirado ? '<span class="mini">vencido</span>' : '<span class="mini">aguardando aceite do cliente</span>')) + '</div>').join('') +
                         (w ? '<a href="' + w + '" target="_blank" rel="noopener"><button class="btn-whatsapp">💬 CHAMAR NO WHATSAPP</button></a>' : '') +
-                        '<div class="linha-acoes"><button class="btn-out" onclick="abrirOrcamento(' + Number(c.id) + ')">📄 GERAR ORÇAMENTO</button>' +
+                        '<div class="linha-acoes"><button class="btn-out" onclick="abrirOrcamento(' + Number(c.id) + ')">📄 ' + (meus.length ? 'NOVO ORÇAMENTO' : 'ENVIAR ORÇAMENTO') + '</button>' +
                         (podeReportar ? '<button class="btn-out" onclick="abrirReporte(' + Number(c.id) + ')">⚠️ CONTATO INVÁLIDO</button>' : '') + '</div>' +
                         (oc ? '<div class="mini" style="margin-top:6px;">Reporte: ' + ({ aberta: '⏳ em análise', resolvida: '✅ resolvido', recusada: '❌ não confirmado' }[oc] || oc) + '</div>' : '');
                 } else {
                     const custo = c.custo || PRECOS_CATEGORIA[c.categoria] || 1, falta = saldo < custo;
-                    h += '<div class="contato-bloqueado">🔒 Contato do cliente — ' + custo + ' crédito' + (custo > 1 ? 's' : '') + '</div><button class="btn-desbloquear" onclick="' + (falta ? 'mudarAba(\'creditos\')' : 'desbloquearChamado(' + Number(c.id) + ',' + custo + ')') + '">' + (falta ? '💰 COMPRAR CRÉDITOS PARA LIBERAR' : '🔓 PEGAR CONTATO (' + custo + ' crédito' + (custo > 1 ? 's' : '') + ')') + '</button>';
+                    h += '<div class="contato-bloqueado">🔒 Contato do cliente — ' + custo + ' crédito' + (custo > 1 ? 's' : '') + '</div><button class="btn-desbloquear" onclick="' + (conta.suspenso ? 'alert(mensagemErro(\'perfil_suspenso\'))' : falta ? 'mudarAba(\'creditos\')' : 'desbloquearChamado(' + Number(c.id) + ',' + custo + ')') + '">' + (conta.suspenso ? '⛔ PERFIL FORA DA BUSCA' : falta ? '💰 COMPRAR CRÉDITOS PARA LIBERAR' : '🔓 PEGAR CONTATO (' + custo + ' crédito' + (custo > 1 ? 's' : '') + ')') + '</button>';
                 }
                 return h + '</div>';
             }).join('');
@@ -1396,15 +1503,14 @@ body { width: 100%; margin: 0 auto; }
         }
         async function excluirMinhaConta() {
             if (!conta) return;
-            if (!confirm('Excluir sua conta?\n\nSeus dados pessoais, seu perfil' + (conta.tipo === 'profissional' ? ', seus créditos e suas avaliações' : '') + ' serão apagados. Isso não pode ser desfeito.')) return;
+            if (!confirm('Excluir sua conta?\n\nSeus dados pessoais, seu perfil' + (conta.tipo === 'profissional' ? ', suas fotos, seus créditos e suas avaliações' : '') + ' serão apagados. Isso não pode ser desfeito.')) return;
             if (prompt('Para confirmar, digite EXCLUIR') !== 'EXCLUIR') return;
-            if (conta.tipo === 'profissional') await apagarArquivosVerificacao(conta.id);
+            if (conta.tipo === 'profissional') { await apagarArquivosVerificacao(conta.id); await apagarArquivosPortfolio(conta.id); }
             const { data, error } = await supabaseClient.rpc('excluir_minha_conta');
             if (error || !data || !data.ok) { alert(mensagemErro(data && data.erro)); return; }
             await supabaseClient.auth.signOut(); conta = null; fecharModal('modalPerfil');
             alert('Conta excluída. Obrigado por ter usado a Foster Central.'); location.href = APP_URL;
         }
-
         // documentos de verificação saem junto com a conta (LGPD)
         async function apagarArquivosVerificacao(id) {
             try {
@@ -1433,27 +1539,32 @@ body { width: 100%; margin: 0 auto; }
         }
         function marcarUpload(input, boxId) { document.getElementById(boxId).classList.toggle('ok', !!(input.files && input.files[0])); }
         function abrirVerificacao() {
-            ['verArqDocumento', 'verArqSelfie', 'verArqRegistro'].forEach(id => { const el = document.getElementById(id); el.value = ''; });
-            ['boxDocumento', 'boxSelfie', 'boxRegistro'].forEach(id => document.getElementById(id).classList.remove('ok'));
+            ['verArqSelfie', 'verArqRegistro'].forEach(id => { const el = document.getElementById(id); el.value = ''; });
+            ['boxSelfie', 'boxRegistro'].forEach(id => document.getElementById(id).classList.remove('ok'));
             document.getElementById('verRegistroTipo').value = conta.registro_tipo || '';
             document.getElementById('verRegistroNumero').value = conta.registro_numero || '';
             document.getElementById('verRegistroExtra').style.display = conta.registro_tipo ? 'block' : 'none';
             document.getElementById('verEmiteNf').checked = !!conta.emite_nf;
             document.getElementById('verAceite').checked = false;
+            document.getElementById('verCnpj').value = conta.cnpj ? fmtCnpj(conta.cnpj) : '';
+            document.getElementById('cnpjResultado').innerHTML = conta.selo_mei ? '<div class="aviso aviso-ok">✅ CNPJ ativo confirmado: ' + esc(conta.cnpj_razao || fmtCnpj(conta.cnpj)) + '</div>' : '';
+            document.getElementById('blocoSelfie').style.display = conta.selo_identidade || conta.verificacao_status === 'pendente' ? 'none' : 'block';
+            document.getElementById('verBonus').style.display = conta.bonus_verificacao ? 'none' : 'block';
             abrirModal('modalVerificacao');
         }
-        // reduz fotos para no máximo 1800 px em JPEG: sobe rápido no 4G e cabe no limite de 6 MB
-        async function prepararArquivo(file) {
+        // reduz fotos (padrão 1800 px) em JPEG: sobe rápido no 4G e cabe nos limites de tamanho
+        async function prepararArquivo(file, maximo) {
+            maximo = maximo || 1800;
             if (file.type === 'application/pdf') { if (file.size > 6e6) throw new Error('O PDF passa de 6 MB.'); return { blob: file, ext: 'pdf', tipo: 'application/pdf' }; }
             try {
                 const bmp = await createImageBitmap(file);
-                const fator = Math.min(1, 1800 / Math.max(bmp.width, bmp.height));
+                const fator = Math.min(1, maximo / Math.max(bmp.width, bmp.height));
                 const cv = document.createElement('canvas'); cv.width = Math.round(bmp.width * fator); cv.height = Math.round(bmp.height * fator);
                 cv.getContext('2d').drawImage(bmp, 0, 0, cv.width, cv.height);
-                const blob = await new Promise(r => cv.toBlob(r, 'image/jpeg', 0.85));
+                const blob = await new Promise(r => cv.toBlob(r, 'image/jpeg', 0.84));
                 if (blob) return { blob, ext: 'jpg', tipo: 'image/jpeg' };
             } catch (e) {}
-            if (file.size > 6e6) throw new Error('A foto passa de 6 MB. Tire outra com menos resolução.');
+            if (file.size > 3e6) throw new Error('A foto é grande demais. Tire outra com menos resolução.');
             const ext = (file.type.split('/')[1] || 'jpg').replace('jpeg', 'jpg');
             return { blob: file, ext, tipo: file.type || 'image/jpeg' };
         }
@@ -1468,42 +1579,43 @@ body { width: 100%; margin: 0 auto; }
         async function enviarVerificacao() {
             const doc = document.getElementById('verDocumento').value;
             const regTipo = document.getElementById('verRegistroTipo').value, regNum = document.getElementById('verRegistroNumero').value.trim();
-            if (!(cpfValido(doc) || cnpjValido(doc))) { alert('CPF ou CNPJ inválido. Confira os números.'); return; }
-            if (!document.getElementById('verArqDocumento').files[0]) { alert('Envie a foto do documento com foto.'); return; }
+            if (!cpfValido(doc)) { alert('CPF inválido. Confira os números.'); return; }
             if (!document.getElementById('verArqSelfie').files[0]) { alert('Envie a selfie segurando o documento.'); return; }
             if (regTipo && !regNum) { alert('Informe o número do registro (ou escolha "Não tenho").'); return; }
             if (!document.getElementById('verAceite').checked) { alert('Marque a declaração para continuar.'); return; }
             const btn = document.getElementById('btnEnviarVerificacao'); btn.disabled = true; btn.textContent = 'ENVIANDO...';
             try {
-                await subirArquivo('verArqDocumento', 'documento');
                 await subirArquivo('verArqSelfie', 'selfie');
-                if (regTipo) await subirArquivo('verArqRegistro', 'registro');
+                if (regTipo && document.getElementById('verArqRegistro').files[0]) await subirArquivo('verArqRegistro', 'registro');
                 const { data, error } = await supabaseClient.rpc('enviar_verificacao', { p_documento: doc, p_registro_tipo: regTipo || null, p_registro_numero: regTipo ? regNum : null, p_emite_nf: document.getElementById('verEmiteNf').checked, p_aceite: true });
                 if (error || !data || !data.ok) { alert(mensagemErro(data && data.erro)); return; }
                 fecharModal('modalVerificacao'); toast('✅ Enviado! Análise em até 2 dias úteis.', 4500); await carregarConta();
             } catch (e) { alert(e.message || 'Erro ao enviar. Tente de novo.'); }
-            finally { btn.disabled = false; btn.textContent = 'ENVIAR PARA ANÁLISE'; }
+            finally { btn.disabled = false; btn.textContent = 'ENVIAR SELFIE PARA ANÁLISE'; }
         }
-
         // ===== PERFIL PÚBLICO =====
         async function abrirPerfilPublico(id) {
             const box = document.getElementById('perfilPublicoConteudo');
             box.innerHTML = '<p style="text-align:center;color:var(--linha);">Carregando...</p>'; abrirModal('modalPerfilPublico');
-            const [{ data: perfis }, { data: avs }] = await Promise.all([
+            const [{ data: perfis }, { data: avs }, { data: fotos }] = await Promise.all([
                 supabaseClient.rpc('perfis_publicos', { p_id: id }),
-                supabaseClient.rpc('avaliacoes_publicas', { p_prof: id, p_limite: 30 })
+                supabaseClient.rpc('avaliacoes_publicas', { p_prof: id, p_limite: 30 }),
+                supabaseClient.from('portfolio').select('id,caminho,legenda').eq('prof_id', id).order('criado_em', { ascending: false })
             ]);
             const p = perfis && perfis[0];
-            if (!p) { box.innerHTML = '<p style="text-align:center;">Perfil não encontrado ou ainda incompleto.</p>'; return; }
+            if (!p) { box.innerHTML = '<p style="text-align:center;">Perfil não encontrado, incompleto ou fora da busca.</p>'; return; }
             const w = linkWhats(p.telefone, 'Olá ' + p.nome.split(' ')[0] + '! Vi seu perfil na Foster Central e gostaria de um orçamento.');
             const esp = String(p.especialidades || '').split(',').filter(Boolean).map(s => '<span class="chip">' + esc(s) + '</span>').join('');
+            const galeria = (fotos || []).map(f => '<div class="foto"><img src="' + urlFoto(f.caminho) + '" alt="' + esc(f.legenda || 'Foto de obra') + '" loading="lazy" onclick="window.open(this.src,\'_blank\')">' + (f.legenda ? '<span>' + esc(f.legenda) + '</span>' : '') + '</div>').join('');
             box.innerHTML =
                 '<div class="perfil-topo"><div class="prof-avatar">' + esc(iniciais(p.nome)) + '</div><div style="flex:1;min-width:0;"><div style="font-weight:800;font-size:17px;">' + esc(p.nome) + '</div><div class="mini">' + esc(nomeCategoria(p.categoria)) + (p.cidade ? ' · 📍 ' + esc(p.cidade) : '') + '</div><div style="margin-top:4px;">' + notaHTML(p.nota_media, p.total_avaliacoes) + '</div></div></div>' +
                 selosHTML(p) +
-                (!p.selo_identidade ? '<div class="mini" style="margin-top:8px;color:#92400e;">Identidade ainda não verificada pela Foster Central.</div>' : '') +
-                '<div class="mini" style="margin:10px 0;">Na Foster Central desde ' + mesAno(p.membro_desde) + (p.contatos ? ' · ' + p.contatos + ' pedido' + (p.contatos > 1 ? 's' : '') + ' atendido' + (p.contatos > 1 ? 's' : '') : '') + '</div>' +
+                (p.cnpj ? '<div class="mini" style="margin-top:6px;">CNPJ ' + esc(fmtCnpj(p.cnpj)) + (p.cnpj_razao ? ' · ' + esc(p.cnpj_razao) : '') + '</div>' : '') +
+                '<div class="mini" style="margin:10px 0;">Na Foster Central desde ' + mesAno(p.membro_desde) + (p.contatos ? ' · ' + p.contatos + ' pedido' + (p.contatos > 1 ? 's' : '') + ' atendido' + (p.contatos > 1 ? 's' : '') : '') +
+                (p.reclamacoes ? ' · ' + p.reclamacoes + ' reclamaç' + (p.reclamacoes > 1 ? 'ões' : 'ão') + ' em 6 meses, ' + p.reclamacoes_respondidas + ' respondida' + (p.reclamacoes_respondidas === 1 ? '' : 's') : '') + '</div>' +
                 (p.bio ? '<p style="font-size:13.5px;line-height:1.6;margin:10px 0;white-space:pre-line;">' + esc(p.bio) + '</p>' : '') +
                 (esp ? '<div style="margin:10px 0;">' + esp + '</div>' : '') +
+                (galeria ? '<h3 style="font-family:Oswald;margin:14px 0 8px;font-size:15px;">📷 OBRAS REALIZADAS</h3><div class="galeria">' + galeria + '</div>' : '') +
                 (w ? '<a href="' + w + '" target="_blank" rel="noopener"><button class="btn-whatsapp">💬 PEDIR ORÇAMENTO NO WHATSAPP</button></a>' : '') +
                 '<button class="btn-out" style="width:100%;margin-top:8px;" onclick="compartilharPerfil(\'' + p.id + '\')">🔗 COMPARTILHAR ESTE PERFIL</button>' +
                 '<h3 style="font-family:Oswald;margin:18px 0 10px;font-size:15px;">AVALIAÇÕES DE CLIENTES</h3>' +
@@ -1539,17 +1651,16 @@ body { width: 100%; margin: 0 auto; }
         function filtrarBusca() {
             const box = document.getElementById('resultadosBusca'); if (!perfisCache) return;
             const termo = semAcento(document.getElementById('buscaInput').value.trim()), cat = document.getElementById('filtroCategoriaSelect').value, so = document.getElementById('soVerificados').checked;
-            let r = perfisCache.filter(p => (!cat || p.categoria === cat) && (!so || p.selo_identidade));
+            let r = perfisCache.filter(p => (!cat || p.categoria === cat) && (!so || p.selo_identidade || p.selo_mei));
             if (termo) r = r.filter(p => semAcento([p.nome, p.especialidades, p.cidade, nomeCategoria(p.categoria)].join(' ')).includes(termo));
             if (!r.length) { box.innerHTML = '<p style="text-align:center;color:var(--linha);margin-top:20px;">' + (perfisCache.length ? 'Nenhum profissional encontrado com esse filtro' : 'Ainda não há profissionais cadastrados') + '</p>'; return; }
-            box.innerHTML = '<p class="mini" style="margin-bottom:8px;">' + r.length + ' profissiona' + (r.length > 1 ? 'is' : 'l') + ' · verificados aparecem primeiro</p>' + r.map(p =>
-                '<div class="prof-card" onclick="abrirPerfilPublico(\'' + p.id + '\')"><div class="prof-avatar"' + (p.selo_identidade ? ' style="background:var(--verde);"' : '') + '>' + esc(iniciais(p.nome)) + '</div><div style="flex:1;min-width:0;">' +
+            box.innerHTML = '<p class="mini" style="margin-bottom:8px;">' + r.length + ' profissiona' + (r.length > 1 ? 'is' : 'l') + ' · verificados e bem avaliados aparecem primeiro</p>' + r.map(p =>
+                '<div class="prof-card" onclick="abrirPerfilPublico(\'' + p.id + '\')"><div class="prof-avatar"' + (p.selo_identidade || p.selo_mei ? ' style="background:var(--verde);"' : '') + '>' + esc(iniciais(p.nome)) + '</div><div style="flex:1;min-width:0;">' +
                 '<div style="font-size:14px;font-weight:800;">' + esc(p.nome) + '</div>' +
-                '<div class="mini">' + esc(nomeCategoria(p.categoria)) + (p.cidade ? ' · ' + esc(p.cidade) : '') + '</div>' +
+                '<div class="mini">' + esc(nomeCategoria(p.categoria)) + (p.cidade ? ' · ' + esc(p.cidade) : '') + (p.fotos ? ' · 📷 ' + p.fotos + ' fotos' : '') + '</div>' +
                 '<div style="font-size:12px;margin-top:2px;">' + notaHTML(p.nota_media, p.total_avaliacoes) + '</div>' + selosHTML(p) +
                 '</div><span style="color:#E00000;font-size:22px;">›</span></div>').join('');
         }
-
         // ===== AVALIAÇÕES PÚBLICAS =====
         function cardAvaliacao(a) {
             return '<div class="chamado-card" style="border-left-color:#f59e0b;"><div style="display:flex;justify-content:space-between;gap:8px;"><a style="font-weight:800;cursor:pointer;color:var(--grafite);" onclick="abrirPerfilPublico(\'' + a.prof_id + '\')">' + esc(a.prof_nome) + '</a><span class="prof-stars" style="font-size:15px;">' + estrelas(a.nota) + '</span></div>' +
@@ -1567,7 +1678,7 @@ body { width: 100%; margin: 0 auto; }
         let orcamentoPedido = null;
         function abrirOrcamento(id) {
             const c = (window._pedidosProf || []).find(x => x.id === id); if (!c) return;
-            orcamentoPedido = c;
+            orcamentoPedido = c; orcamentoSalvo = null;
             document.getElementById('orcCliente').value = c.nome_cliente || '';
             document.getElementById('orcServico').value = c.servico || '';
             ['orcItens', 'orcPrazo', 'orcPagamento', 'orcObs'].forEach(i => document.getElementById(i).value = '');
@@ -1584,45 +1695,243 @@ body { width: 100%; margin: 0 auto; }
         }
         function brl(n) { return Number(n || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
         function previaTotalOrcamento() { const t = lerItensOrcamento().reduce((s, i) => s + i.valor, 0); document.getElementById('orcTotalPrevia').textContent = t ? 'Total: ' + brl(t) : ''; }
-        function gerarOrcamento() {
-            const itens = lerItensOrcamento(); if (!itens.length) { alert('Inclua pelo menos um item.'); return; }
-            const total = itens.reduce((s, i) => s + i.valor, 0), c = conta, hoje = new Date(), val = Math.max(1, Number(document.getElementById('orcValidade').value) || 15);
-            const numero = 'FC-' + String(orcamentoPedido ? orcamentoPedido.id : 0).padStart(4, '0') + '-' + hoje.toISOString().slice(2, 10).replace(/-/g, '');
-            const selos = [c.selo_identidade ? '✓ Identidade verificada' : '', c.selo_registro ? '✓ ' + (c.registro_tipo || 'Registro') + ' ' + (c.registro_numero || '') + ' conferido' : '', c.selo_mei ? '✓ MEI/CNPJ ativo' : '', c.emite_nf ? 'Emite nota fiscal' : ''].filter(Boolean).join(' · ');
-            const v = id => esc(document.getElementById(id).value.trim());
-            const html = '<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Orçamento ' + numero + '</title><style>' +
-                'body{font-family:Arial,sans-serif;color:#1F2328;max-width:780px;margin:0 auto;padding:28px;font-size:13px}h1{font-size:22px;margin:0}' +
-                '.topo{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:4px solid #E00000;padding-bottom:12px;margin-bottom:18px}' +
-                '.marca{font-weight:900;letter-spacing:1px;color:#E00000;font-size:12px}table{width:100%;border-collapse:collapse;margin:14px 0}th,td{border-bottom:1px solid #ddd;padding:8px;text-align:left}' +
-                'th{background:#F5EFE6;font-size:12px;text-transform:uppercase}td.v,th.v{text-align:right;white-space:nowrap}.tot td{font-weight:bold;font-size:15px;border-top:2px solid #1F2328}' +
-                '.bloco{margin:10px 0;line-height:1.6}.selos{color:#15803d;font-weight:bold;font-size:12px;margin-top:4px}.ass{display:flex;gap:40px;margin-top:60px}.ass div{flex:1;border-top:1px solid #1F2328;padding-top:6px;text-align:center;font-size:12px}' +
-                '.rod{margin-top:30px;font-size:11px;color:#666;border-top:1px solid #ddd;padding-top:10px}button{background:#E00000;color:#fff;border:0;padding:12px 20px;border-radius:6px;font-weight:bold;cursor:pointer;margin-bottom:18px}@media print{button{display:none}body{padding:0}}' +
-                '</style></head><body><button onclick="window.print()">SALVAR EM PDF / IMPRIMIR</button>' +
-                '<div class="topo"><div><h1>' + esc(c.nome) + '</h1><div>' + esc(nomeCategoria(c.categoria).replace(/^[^ ]+ /, '')) + (c.cidade ? ' · ' + esc(c.cidade) : '') + '</div><div>📱 ' + esc(c.telefone) + '</div>' + (selos ? '<div class="selos">' + esc(selos) + '</div>' : '') + '</div>' +
-                '<div style="text-align:right"><div class="marca">FOSTER CENTRAL</div><div style="font-size:18px;font-weight:bold;margin-top:4px">ORÇAMENTO</div><div>Nº ' + numero + '</div><div>' + hoje.toLocaleDateString('pt-BR') + '</div></div></div>' +
-                '<div class="bloco"><b>Cliente:</b> ' + v('orcCliente') + (orcamentoPedido && orcamentoPedido.bairro ? ' · ' + esc(orcamentoPedido.bairro) : '') + '<br><b>Serviço:</b> ' + v('orcServico') + '</div>' +
-                '<table><thead><tr><th>#</th><th>Descrição</th><th class="v">Valor</th></tr></thead><tbody>' + itens.map((i, n) => '<tr><td>' + (n + 1) + '</td><td>' + esc(i.desc) + '</td><td class="v">' + brl(i.valor) + '</td></tr>').join('') +
-                '<tr class="tot"><td></td><td>TOTAL</td><td class="v">' + brl(total) + '</td></tr></tbody></table>' +
-                '<div class="bloco">' + (v('orcPrazo') ? '<b>Prazo de execução:</b> ' + v('orcPrazo') + '<br>' : '') + (v('orcPagamento') ? '<b>Pagamento:</b> ' + v('orcPagamento') + '<br>' : '') + '<b>Validade da proposta:</b> ' + val + ' dias (até ' + new Date(hoje.getTime() + val * 86400000).toLocaleDateString('pt-BR') + ')</div>' +
-                (v('orcObs') ? '<div class="bloco"><b>Observações:</b><br>' + v('orcObs').replace(/\n/g, '<br>') + '</div>' : '') +
-                '<div class="ass"><div>' + esc(c.nome) + '<br>Profissional</div><div>' + v('orcCliente') + '<br>De acordo do cliente — data: ___/___/______</div></div>' +
-                '<div class="rod">Orçamento gerado pela Foster Central de Serviços. Confira o perfil, os selos e as avaliações deste profissional em ' + esc(linkPerfil(c.id)) + '<br>A Foster Central aproxima cliente e profissional; o contrato do serviço é entre as partes.</div></body></html>';
+        // grava o orçamento no banco (uma vez por versão do formulário) e devolve o link de aceite
+        async function salvarOrcamentoServidor() {
+            if (orcamentoSalvo) return orcamentoSalvo;
+            const itens = lerItensOrcamento();
+            if (!itens.length) { alert('Inclua pelo menos um item.'); return null; }
+            if (itens.some(i => !i.desc)) { alert('Cada linha precisa de uma descrição.'); return null; }
+            const v = id => document.getElementById(id).value.trim();
+            const { data, error } = await supabaseClient.rpc('salvar_orcamento', { p_chamado_id: orcamentoPedido ? orcamentoPedido.id : null, p_cliente: v('orcCliente'), p_servico: v('orcServico'), p_itens: itens, p_prazo: v('orcPrazo'), p_pagamento: v('orcPagamento'), p_validade: Number(v('orcValidade')) || 15, p_obs: v('orcObs') });
+            if (error || !data || !data.ok) { alert(mensagemErro(data && data.erro) + (error ? '\n' + error.message : '')); return null; }
+            orcamentoSalvo = data.id; carregarChamados();
+            return orcamentoSalvo;
+        }
+        async function gerarOrcamento() {
             const w = window.open('', '_blank');
             if (!w) { alert('Permita a abertura de janelas para gerar o orçamento.'); return; }
-            w.document.open(); w.document.write(html); w.document.close();
+            w.document.write('<p style="font-family:Arial;padding:20px;">Gerando orçamento...</p>');
+            const id = await salvarOrcamentoServidor(); if (!id) { w.close(); return; }
+            const { data } = await supabaseClient.rpc('ver_orcamento', { p_id: id });
+            if (!data) { w.close(); alert('Não foi possível abrir o orçamento.'); return; }
+            w.document.open(); w.document.write(htmlOrcamento(data)); w.document.close();
         }
-        function enviarResumoOrcamento() {
+        async function enviarResumoOrcamento() {
             if (!orcamentoPedido) return;
-            const itens = lerItensOrcamento(); if (!itens.length) { alert('Inclua pelo menos um item.'); return; }
-            const total = itens.reduce((s, i) => s + i.valor, 0);
+            const janela = window.open('', '_blank');
+            const id = await salvarOrcamentoServidor(); if (!id) { if (janela) janela.close(); return; }
+            const itens = lerItensOrcamento(), total = itens.reduce((s, i) => s + i.valor, 0);
             const txt = 'Olá ' + document.getElementById('orcCliente').value.trim().split(' ')[0] + '! Segue meu orçamento para ' + document.getElementById('orcServico').value.trim() + ':\n\n' +
                 itens.map(i => '• ' + i.desc + ': ' + brl(i.valor)).join('\n') + '\n\n*Total: ' + brl(total) + '*' +
                 (document.getElementById('orcPrazo').value.trim() ? '\nPrazo: ' + document.getElementById('orcPrazo').value.trim() : '') +
                 (document.getElementById('orcPagamento').value.trim() ? '\nPagamento: ' + document.getElementById('orcPagamento').value.trim() : '') +
-                '\nValidade: ' + (Number(document.getElementById('orcValidade').value) || 15) + ' dias\n\nMeu perfil verificado na Foster Central: ' + linkPerfil(conta.id);
-            const w = linkWhats(orcamentoPedido.telefone_cliente, txt); if (w) window.open(w, '_blank', 'noopener');
+                '\nValidade: ' + (Number(document.getElementById('orcValidade').value) || 15) + ' dias\n\n✅ Para ver o orçamento completo e aceitar com um clique: ' + APP_URL + '?orc=' + id;
+            const w = linkWhats(orcamentoPedido.telefone_cliente, txt);
+            if (w) { if (janela) janela.location.href = w; else location.href = w; } else if (janela) janela.close();
+            fecharModal('modalOrcamento'); toast('✅ Orçamento registrado. O cliente aceita pelo link.', 4500);
         }
-
+        async function concluirReclamacao(id, resolvida) {
+            const msg = resolvida ? 'Marcar a reclamação como resolvida?' : 'Marcar como NÃO resolvida?\n\nIsso conta na regra automática: profissional com 3 reclamações sem solução sai da busca. Depois, você pode gerar o Relatório do atendimento para o Procon ou o Juizado.';
+            if (!confirm(msg)) return;
+            const { data, error } = await supabaseClient.rpc('concluir_reclamacao', { p_id: id, p_resolvida: resolvida });
+            if (error || !data || !data.ok) { alert(mensagemErro(data && data.erro)); return; }
+            toast(resolvida ? '✅ Que bom que resolveu!' : 'Registrado. O relatório do atendimento está no fim do pedido.', 4500);
+            carregarPedidosCliente();
+        }
+        async function gerarRelatorio(chamadoId) {
+            const w = window.open('', '_blank');
+            if (!w) { alert('Permita a abertura de janelas para gerar o relatório.'); return; }
+            w.document.write('<p style="font-family:Arial;padding:20px;">Gerando relatório...</p>');
+            const { data, error } = await supabaseClient.rpc('relatorio_pedido', { p_chamado_id: chamadoId });
+            if (error || !data || !data.ok) { w.close(); alert(mensagemErro(data && data.erro)); return; }
+            const p = data.pedido, dt = iso => iso ? new Date(iso).toLocaleString('pt-BR') : '—';
+            const motivos = { servico_ruim: 'Serviço mal feito', nao_compareceu: 'Não compareceu', cobranca_indevida: 'Cobrança diferente do combinado', outro: 'Outro', golpe: 'Golpe', perfil_falso: 'Perfil falso', ameaca: 'Ameaça ou ofensa' };
+            const status = { aguardando_profissional: 'Aguardando resposta', respondida: 'Respondida pelo profissional', resolvida: 'Resolvida (segundo o cliente)', nao_resolvida: 'Não resolvida (segundo o cliente)', aberta: 'Em análise pela equipe', recusada: 'Não procedente' };
+            const profs = (data.profissionais || []).map(pr => {
+                const selos = [pr.selo_identidade ? 'Identidade verificada' : '', pr.selo_registro ? 'Registro conferido: ' + pr.registro : '', pr.cnpj ? 'CNPJ ' + fmtCnpj(pr.cnpj) + ' — ' + (pr.cnpj_razao || '') : ''].filter(Boolean).join(' · ') || 'Sem documentos conferidos pela plataforma';
+                const orcs = (pr.orcamentos || []).map(o => '<div class="box"><b>Orçamento de ' + dt(o.criado_em) + ' — ' + brl(o.total) + '</b><br>' + (o.itens || []).map(i => esc(i.desc) + ': ' + brl(i.valor)).join('<br>') +
+                    (o.prazo ? '<br>Prazo: ' + esc(o.prazo) : '') + (o.pagamento ? '<br>Pagamento: ' + esc(o.pagamento) : '') +
+                    '<br><b>' + (o.aceito_em ? 'Aceito digitalmente por ' + esc(o.aceito_nome) + ' em ' + dt(o.aceito_em) : 'Não aceito pelo cliente') + '</b><br><span class="mini">Código: ' + esc(o.id) + '</span></div>').join('') || '<p class="mini">Nenhum orçamento enviado pela plataforma.</p>';
+                const ocs = (pr.ocorrencias || []).map(o => '<div class="box"><b>' + (o.tipo === 'denuncia' ? 'Denúncia' : 'Reclamação') + ' em ' + dt(o.criado_em) + ':</b> ' + esc(motivos[o.motivo] || o.motivo) + '<br>' + esc(o.descricao || '') +
+                    (o.resposta_prof ? '<br><b>Resposta do profissional em ' + dt(o.respondido_em) + ':</b> ' + esc(o.resposta_prof) : '') + '<br><b>Situação:</b> ' + esc(status[o.status] || o.status) + (o.concluido_em ? ' em ' + dt(o.concluido_em) : '') + '</div>').join('') || '<p class="mini">Nenhuma reclamação registrada.</p>';
+                return '<h2>' + esc(pr.nome) + '</h2><p>Telefone: ' + esc(pr.telefone) + ' · ' + esc(nomeCategoria(pr.categoria).replace(/^[^ ]+ /, '')) + '<br>Pegou o contato em ' + dt(pr.pegou_em) + '<br>' + esc(selos) + '</p>' +
+                    '<h3>Orçamentos</h3>' + orcs + '<h3>Ocorrências</h3>' + ocs +
+                    (pr.avaliacao ? '<h3>Avaliação</h3><p>' + estrelas(pr.avaliacao.nota) + ' em ' + dt(pr.avaliacao.criado_em) + (pr.avaliacao.comentario ? ' — "' + esc(pr.avaliacao.comentario) + '"' : '') + '</p>' : '');
+            }).join('<hr>');
+            const html = '<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Relatório do atendimento #' + String(p.id).padStart(4, '0') + '</title><style>' +
+                'body{font-family:Arial,sans-serif;color:#1F2328;max-width:780px;margin:0 auto;padding:28px;font-size:13px;line-height:1.55}h1{font-size:20px;margin:0}h2{font-size:16px;margin:18px 0 4px}h3{font-size:13px;margin:12px 0 4px;text-transform:uppercase;color:#555}' +
+                '.topo{border-bottom:4px solid #E00000;padding-bottom:10px;margin-bottom:14px}.box{background:#F5EFE6;border-radius:6px;padding:10px;margin:6px 0}.mini{font-size:11px;color:#666}hr{border:0;border-top:1px solid #ddd;margin:20px 0}' +
+                '.orienta{border:2px solid #1F2328;border-radius:8px;padding:12px;margin-top:22px}button{background:#E00000;color:#fff;border:0;padding:12px 20px;border-radius:6px;font-weight:bold;cursor:pointer;margin-bottom:18px}@media print{button{display:none}body{padding:0}}' +
+                '</style></head><body><button onclick="window.print()">SALVAR EM PDF / IMPRIMIR</button>' +
+                '<div class="topo"><div style="color:#E00000;font-weight:900;letter-spacing:1px;font-size:12px;">FOSTER CENTRAL DE SERVIÇOS</div><h1>Relatório do atendimento — pedido #' + String(p.id).padStart(4, '0') + '</h1><div class="mini">Gerado em ' + dt(data.gerado_em) + ' a pedido do cliente</div></div>' +
+                '<h3>Pedido</h3><p><b>' + esc(p.servico) + '</b> · ' + esc(p.bairro || '') + '<br>Feito em ' + dt(p.criado_em) + ' por ' + esc(p.nome_cliente) + ' (' + esc(p.telefone_cliente) + ')<br>' + esc(p.descricao) + '<br><span class="mini">Termos aceitos no pedido: versão ' + esc(p.termos_versao || 'anterior a 29/10/2026') + '</span></p><hr>' + profs +
+                '<div class="orienta"><b>Onde buscar solução, se o problema não se resolveu com o profissional:</b><br>' +
+                '1. <b>consumidor.gov.br</b> — plataforma oficial e gratuita de reclamação entre consumidor e empresa.<br>' +
+                '2. <b>Procon</b> da sua cidade — leve este relatório e os comprovantes de pagamento.<br>' +
+                '3. <b>Juizado Especial Cível</b> — causas de até 20 salários mínimos podem ser abertas sem advogado.<br>' +
+                '<span class="mini">A Foster Central aproxima cliente e profissional e registra o que foi feito na plataforma. Ela não é parte do contrato de serviço, não recebe o pagamento e não executa a obra (Termos de Uso, item 4). Este relatório reúne os registros com data e hora para ajudar você e o profissional a resolverem a questão.</span></div>' +
+                '</body></html>';
+            w.document.open(); w.document.write(html); w.document.close();
+        }
+        async function carregarMinhasReclamacoes() {
+            const box = document.getElementById('minhasReclamacoes'); if (!box) return;
+            const { data } = await supabaseClient.rpc('minhas_reclamacoes');
+            const lista = data || [];
+            if (!lista.length) { box.innerHTML = ''; return; }
+            const mot = { servico_ruim: 'Serviço mal feito', nao_compareceu: 'Não compareceu', cobranca_indevida: 'Cobrança diferente do combinado', outro: 'Outro' };
+            const st = { aguardando_profissional: '⏳ Esperando sua resposta', respondida: '💬 Você respondeu — aguardando o cliente', resolvida: '✅ Cliente marcou como resolvida', nao_resolvida: '❌ Cliente marcou como não resolvida', recusada: '⚪ Arquivada pela equipe' };
+            box.innerHTML = '<h3 style="font-family:Oswald;margin:20px 0 6px;">RECLAMAÇÕES DE CLIENTES</h3><p class="mini" style="margin-bottom:10px;">Responda em até 7 dias e combine a solução direto com o cliente. Reclamações sem resposta ou sem solução contam na regra automática: 3 em 6 meses tiram seu perfil da busca.</p>' +
+                lista.map(r => {
+                    const atrasada = r.status === 'aguardando_profissional' && new Date(r.prazo) < new Date();
+                    return '<div class="card" style="border-left:4px solid ' + (r.status === 'aguardando_profissional' ? '#f59e0b' : '#9ca3af') + ';"><b>' + esc(r.servico || 'Pedido') + '</b> · ' + esc(r.cliente) + ' · ' + dataBR(r.criado_em) + '<br><span class="mini">' + esc(mot[r.motivo] || r.motivo) + ' · ' + (st[r.status] || r.status) + (r.status === 'aguardando_profissional' ? ' · prazo ' + dataBR(r.prazo) + (atrasada ? ' <b style="color:#b91c1c;">(vencido)</b>' : '') : '') + '</span>' +
+                        '<p style="font-size:13px;margin:8px 0;">"' + esc(r.descricao) + '"</p>' +
+                        (r.resposta_prof ? '<div class="aviso aviso-info"><b>Sua resposta:</b> ' + esc(r.resposta_prof) + '</div>' : '') +
+                        (['aguardando_profissional', 'respondida'].includes(r.status) ? '<textarea id="resp_' + r.id + '" maxlength="1500" placeholder="Explique o que aconteceu e o que você propõe para resolver (ex.: volto na segunda para refazer sem custo).">' + '</textarea><button class="btn-ok" style="width:100%;margin-top:6px;" onclick="responderReclamacao(' + Number(r.id) + ')">' + (r.resposta_prof ? 'ATUALIZAR RESPOSTA' : 'RESPONDER AO CLIENTE') + '</button>' : '') + '</div>';
+                }).join('');
+        }
+        async function responderReclamacao(id) {
+            const t = document.getElementById('resp_' + id).value.trim();
+            const { data, error } = await supabaseClient.rpc('responder_reclamacao', { p_id: id, p_resposta: t });
+            if (error || !data || !data.ok) { alert(mensagemErro(data && data.erro)); return; }
+            toast('✅ Resposta enviada ao cliente.'); carregarMinhasReclamacoes();
+        }
+        async function carregarMeuPortfolio() {
+            const box = document.getElementById('meuPortfolio'); if (!box || !usuarioAtual) return;
+            const { data } = await supabaseClient.from('portfolio').select('id,caminho,legenda').eq('prof_id', usuarioAtual.id).order('criado_em', { ascending: false });
+            const fotos = data || [];
+            document.getElementById('portfolioContador').textContent = '(' + fotos.length + '/12)';
+            box.innerHTML = fotos.length ? fotos.map(f => '<div class="foto"><img src="' + urlFoto(f.caminho) + '" alt="' + esc(f.legenda || 'Foto de obra') + '" loading="lazy" onclick="window.open(this.src,\'_blank\')"><button title="Apagar" onclick="removerFotoPortfolio(' + Number(f.id) + ',\'' + esc(f.caminho) + '\')">×</button>' + (f.legenda ? '<span>' + esc(f.legenda) + '</span>' : '') + '</div>').join('') : '<p class="mini" style="grid-column:1/-1;">Nenhuma foto ainda.</p>';
+        }
+        async function adicionarFotosPortfolio(input) {
+            const arquivos = Array.from(input.files || []); input.value = ''; if (!arquivos.length) return;
+            const legenda = document.getElementById('portfolioLegenda').value.trim() || null;
+            let enviadas = 0;
+            toast('Enviando ' + arquivos.length + ' foto(s)...', 8000);
+            for (const f of arquivos) {
+                try {
+                    const a = await prepararArquivo(f, 1400);
+                    if (a.tipo === 'application/pdf') continue;
+                    const caminho = usuarioAtual.id + '/' + Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.' + a.ext;
+                    const up = await supabaseClient.storage.from('portfolio').upload(caminho, a.blob, { contentType: a.tipo });
+                    if (up.error) { alert(/row-level|policy/i.test(up.error.message) ? mensagemErro('limite_portfolio') : 'Erro ao enviar: ' + up.error.message); break; }
+                    const ins = await supabaseClient.from('portfolio').insert({ prof_id: usuarioAtual.id, caminho, legenda });
+                    if (ins.error) { await supabaseClient.storage.from('portfolio').remove([caminho]); alert(/limite_portfolio/.test(ins.error.message) ? mensagemErro('limite_portfolio') : 'Erro: ' + ins.error.message); break; }
+                    enviadas++;
+                } catch (e) { alert(e.message || 'Erro ao preparar a foto.'); }
+            }
+            document.getElementById('portfolioLegenda').value = '';
+            if (enviadas) { toast('✅ ' + enviadas + ' foto(s) no portfólio'); perfisCache = null; await carregarConta(); }
+        }
+        async function removerFotoPortfolio(id, caminho) {
+            if (!confirm('Apagar esta foto do portfólio?')) return;
+            const { error } = await supabaseClient.from('portfolio').delete().eq('id', id);
+            if (error) { alert('Erro: ' + error.message); return; }
+            await supabaseClient.storage.from('portfolio').remove([caminho]);
+            perfisCache = null; await carregarConta();
+        }
+        function urlFoto(caminho) { return SUPABASE_URL + '/storage/v1/object/public/portfolio/' + String(caminho).split('/').map(encodeURIComponent).join('/'); }
+        function fmtCnpj(c) { c = soDigitos(c); return c.length === 14 ? c.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5') : c; }
+        async function apagarArquivosPortfolio(id) {
+            try {
+                const { data } = await supabaseClient.storage.from('portfolio').list(id, { limit: 100 });
+                const nomes = (data || []).map(f => id + '/' + f.name);
+                if (nomes.length) await supabaseClient.storage.from('portfolio').remove(nomes);
+            } catch (e) { console.warn('portfolio', e); }
+        }
+        async function verificarCnpj() {
+            const cnpj = soDigitos(document.getElementById('verCnpj').value), box = document.getElementById('cnpjResultado');
+            if (!cnpjValido(cnpj)) { box.innerHTML = '<div class="aviso">' + mensagemErro('cnpj_invalido') + '</div>'; return; }
+            const btn = document.getElementById('btnCnpj'); btn.disabled = true; btn.textContent = 'CONSULTANDO A RECEITA...';
+            try {
+                const { data, error } = await supabaseClient.functions.invoke('verificar-cnpj', { body: { cnpj } });
+                if (error && !data) { box.innerHTML = '<div class="aviso">' + mensagemErro('receita_indisponivel') + '</div>'; return; }
+                if (!data.ok) { box.innerHTML = '<div class="aviso">' + mensagemErro(data.erro) + '</div>'; return; }
+                if (data.selo) {
+                    box.innerHTML = '<div class="aviso aviso-ok">✅ <b>CNPJ ativo confirmado</b>' + (data.razao ? ': ' + esc(data.razao) : '') + '.<br>O selo já aparece no seu perfil.' + (data.bonus ? '<br>🎁 <b>+' + data.bonus + ' créditos</b> na sua conta.' : '') + '</div>';
+                    perfisCache = null; await carregarConta();
+                } else if (data.motivo === 'inativo') {
+                    box.innerHTML = '<div class="aviso">Na Receita, este CNPJ está como <b>' + esc(data.situacao || 'não ativo') + '</b>. O selo só vale para CNPJ ativo.</div>';
+                } else {
+                    box.innerHTML = '<div class="aviso">O CNPJ está ativo, mas a razão social (<b>' + esc(data.razao || '') + '</b>) não tem o nome do seu perfil (<b>' + esc(conta.nome) + '</b>).<br>Ajuste seu nome no perfil igual ao do CNPJ e tente de novo daqui a 1 minuto, ou verifique pela selfie abaixo.</div>';
+                }
+            } catch (e) { box.innerHTML = '<div class="aviso">' + mensagemErro('receita_indisponivel') + '</div>'; }
+            finally { btn.disabled = false; btn.textContent = 'CONFERIR CNPJ'; }
+        }
+        function htmlOrcamento(o) {
+            const p = o.prof || {}, criado = new Date(o.criado_em);
+            const numero = 'FC-' + String(o.chamado_id || 0).padStart(4, '0') + '-' + String(o.id).slice(0, 6).toUpperCase();
+            const selos = [p.selo_identidade ? '✓ Identidade verificada' : '', p.selo_registro ? '✓ ' + (p.registro_tipo || 'Registro') + ' ' + (p.registro_numero || '') + ' conferido' : '', p.selo_mei ? '✓ CNPJ ' + fmtCnpj(p.cnpj) + ' ativo' : '', p.emite_nf ? 'Emite nota fiscal' : ''].filter(Boolean).join(' · ');
+            const link = APP_URL + '?orc=' + o.id;
+            return '<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Orçamento ' + numero + '</title><style>' +
+                'body{font-family:Arial,sans-serif;color:#1F2328;max-width:780px;margin:0 auto;padding:28px;font-size:13px}h1{font-size:22px;margin:0}' +
+                '.topo{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:4px solid #E00000;padding-bottom:12px;margin-bottom:18px;gap:12px}' +
+                '.marca{font-weight:900;letter-spacing:1px;color:#E00000;font-size:12px}table{width:100%;border-collapse:collapse;margin:14px 0}th,td{border-bottom:1px solid #ddd;padding:8px;text-align:left}' +
+                'th{background:#F5EFE6;font-size:12px;text-transform:uppercase}td.v,th.v{text-align:right;white-space:nowrap}.tot td{font-weight:bold;font-size:15px;border-top:2px solid #1F2328}' +
+                '.bloco{margin:10px 0;line-height:1.6}.selos{color:#15803d;font-weight:bold;font-size:12px;margin-top:4px}.aceite{border:2px solid ' + (o.aceito_em ? '#15803d' : '#d1d5db') + ';border-radius:8px;padding:12px;margin-top:24px}' +
+                '.rod{margin-top:24px;font-size:11px;color:#666;border-top:1px solid #ddd;padding-top:10px;line-height:1.5}button{background:#E00000;color:#fff;border:0;padding:12px 20px;border-radius:6px;font-weight:bold;cursor:pointer;margin-bottom:18px}@media print{button{display:none}body{padding:0}}' +
+                '</style></head><body><button onclick="window.print()">SALVAR EM PDF / IMPRIMIR</button>' +
+                '<div class="topo"><div><h1>' + esc(p.nome) + '</h1><div>' + esc(nomeCategoria(p.categoria).replace(/^[^ ]+ /, '')) + (p.cidade ? ' · ' + esc(p.cidade) : '') + '</div><div>📱 ' + esc(p.telefone) + '</div>' + (p.cnpj_razao ? '<div>' + esc(p.cnpj_razao) + '</div>' : '') + (selos ? '<div class="selos">' + esc(selos) + '</div>' : '') + '</div>' +
+                '<div style="text-align:right"><div class="marca">FOSTER CENTRAL</div><div style="font-size:18px;font-weight:bold;margin-top:4px">ORÇAMENTO</div><div>Nº ' + numero + '</div><div>' + criado.toLocaleDateString('pt-BR') + '</div></div></div>' +
+                '<div class="bloco"><b>Cliente:</b> ' + esc(o.cliente_nome || '') + (o.bairro ? ' · ' + esc(o.bairro) : '') + '<br><b>Serviço:</b> ' + esc(o.servico || '') + '</div>' +
+                '<table><thead><tr><th>#</th><th>Descrição</th><th class="v">Valor</th></tr></thead><tbody>' + (o.itens || []).map((i, n) => '<tr><td>' + (n + 1) + '</td><td>' + esc(i.desc) + '</td><td class="v">' + brl(i.valor) + '</td></tr>').join('') +
+                '<tr class="tot"><td></td><td>TOTAL</td><td class="v">' + brl(o.total) + '</td></tr></tbody></table>' +
+                '<div class="bloco">' + (o.prazo ? '<b>Prazo de execução:</b> ' + esc(o.prazo) + '<br>' : '') + (o.pagamento ? '<b>Pagamento:</b> ' + esc(o.pagamento) + '<br>' : '') + '<b>Validade da proposta:</b> ' + o.validade_dias + ' dias (até ' + new Date(o.valido_ate).toLocaleDateString('pt-BR') + ')</div>' +
+                (o.obs ? '<div class="bloco"><b>Observações:</b><br>' + esc(o.obs).replace(/\n/g, '<br>') + '</div>' : '') +
+                '<div class="aceite">' + (o.aceito_em ? '<b style="color:#15803d;">✅ ACEITO DIGITALMENTE</b> por <b>' + esc(o.aceito_nome) + '</b> em ' + new Date(o.aceito_em).toLocaleString('pt-BR') + ', pelo link do orçamento na Foster Central.' : '<b>Aceite do cliente:</b> pendente. O cliente aceita pelo link: ' + esc(link)) + '<br><span style="font-size:11px;color:#666;">Código de verificação: ' + esc(o.id) + '</span></div>' +
+                '<div class="rod">Orçamento registrado na Foster Central de Serviços em ' + criado.toLocaleString('pt-BR') + '. Confira o perfil, os selos e as avaliações do profissional em ' + esc(linkPerfil(p.id)) + '.<br>O contrato do serviço é entre cliente e profissional. A Foster Central registra o orçamento e o aceite com data e hora; ela não executa o serviço nem recebe o pagamento.</div></body></html>';
+        }
+        async function abrirOrcamentoPublico(id) {
+            const box = document.getElementById('orcPublicoConteudo');
+            box.innerHTML = '<p style="text-align:center;color:var(--linha);">Carregando...</p>'; abrirModal('modalOrcPublico');
+            const { data: o } = await supabaseClient.rpc('ver_orcamento', { p_id: id });
+            if (!o) { box.innerHTML = '<p style="text-align:center;">' + mensagemErro('orcamento_inexistente') + '</p>'; return; }
+            orcamentoAberto = o;
+            const p = o.prof || {}, souProf = conta && conta.id === p.id;
+            box.innerHTML =
+                '<div class="perfil-topo"><div class="prof-avatar">' + esc(iniciais(p.nome)) + '</div><div style="flex:1;min-width:0;"><div style="font-weight:800;font-size:16px;"><a style="cursor:pointer;color:var(--grafite);text-decoration:underline;" onclick="abrirPerfilPublico(\'' + p.id + '\')">' + esc(p.nome) + '</a></div><div class="mini">' + esc(nomeCategoria(p.categoria)) + (p.cidade ? ' · ' + esc(p.cidade) : '') + '</div>' + selosHTML(p) + '</div></div>' +
+                '<div class="card" style="background:var(--papel);box-shadow:none;"><b>' + esc(o.servico || '') + '</b>' + (o.cliente_nome ? '<div class="mini">Para: ' + esc(o.cliente_nome) + (o.bairro ? ' · ' + esc(o.bairro) : '') + '</div>' : '') +
+                '<table class="orc-tab">' + (o.itens || []).map(i => '<tr><td>' + esc(i.desc) + '</td><td>' + brl(i.valor) + '</td></tr>').join('') + '<tr class="tot"><td>TOTAL</td><td>' + brl(o.total) + '</td></tr></table>' +
+                (o.prazo ? '<div class="mini">⏱️ Prazo: ' + esc(o.prazo) + '</div>' : '') + (o.pagamento ? '<div class="mini">💳 Pagamento: ' + esc(o.pagamento) + '</div>' : '') +
+                '<div class="mini">📅 Válido até ' + dataBR(o.valido_ate) + '</div>' + (o.obs ? '<p style="font-size:12.5px;margin-top:8px;white-space:pre-line;">' + esc(o.obs) + '</p>' : '') + '</div>' +
+                (o.aceito_em ? '<div class="aviso aviso-ok">✅ <b>Aceito digitalmente</b> por ' + esc(o.aceito_nome) + ' em ' + new Date(o.aceito_em).toLocaleString('pt-BR') + '.</div>'
+                 : o.expirado ? '<div class="aviso">' + mensagemErro('orcamento_expirado') + '</div>'
+                 : souProf ? '<div class="aviso aviso-info">Aguardando o aceite do cliente. Ele aceita por este link: <b>' + esc(APP_URL + '?orc=' + o.id) + '</b></div>'
+                 : '<details class="checklist"><summary>✅ Antes de aceitar, confira</summary>' + CHECKLIST_HTML + '</details>' +
+                   '<div class="form-group" style="margin-top:12px;"><label>Seu nome completo</label><input type="text" id="aceiteNome" maxlength="120" value="' + esc(conta && conta.tipo === 'cliente' ? conta.nome : '') + '"></div>' +
+                   (o.pede_telefone ? '<div class="form-group"><label>4 últimos números do seu telefone</label><input type="tel" id="aceiteTel" maxlength="4" inputmode="numeric" placeholder="Ex: 7777"><small class="mini">Para confirmar que é você quem fez o pedido.</small></div>' : '') +
+                   '<button class="btn-primary" id="btnAceitar" onclick="aceitarOrcamento()">✅ ACEITAR ESTE ORÇAMENTO</button>' +
+                   '<p class="mini" style="margin-top:8px;">Ao aceitar, fica registrado com data e hora que você concorda com os itens, o valor, o prazo e a forma de pagamento acima. O acordo é entre você e o profissional; a Foster Central só registra.</p>') +
+                '<button class="btn-out" style="width:100%;margin-top:10px;" onclick="baixarOrcamentoAberto()">📄 BAIXAR EM PDF</button>';
+            try { if (new URLSearchParams(location.search).get('orc')) history.replaceState(null, '', location.pathname); } catch (e) {}
+        }
+        async function aceitarOrcamento() {
+            if (!orcamentoAberto) return;
+            const nome = document.getElementById('aceiteNome').value.trim(), telEl = document.getElementById('aceiteTel');
+            if (nome.split(' ').filter(Boolean).length < 2) { alert(mensagemErro('nome_completo')); return; }
+            if (!confirm('Confirmar o aceite do orçamento de ' + brl(orcamentoAberto.total) + '?')) return;
+            const btn = document.getElementById('btnAceitar'); btn.disabled = true;
+            const { data, error } = await supabaseClient.rpc('aceitar_orcamento', { p_id: orcamentoAberto.id, p_nome: nome, p_tel_final: telEl ? telEl.value : null });
+            btn.disabled = false;
+            if (error || !data || !data.ok) { alert(mensagemErro(data && data.erro)); return; }
+            toast('✅ Orçamento aceito e registrado!', 4000);
+            abrirOrcamentoPublico(orcamentoAberto.id);
+            if (usuarioCliente) carregarPedidosCliente();
+        }
+        async function baixarOrcamentoAberto() {
+            if (!orcamentoAberto) return;
+            const { data } = await supabaseClient.rpc('ver_orcamento', { p_id: orcamentoAberto.id });
+            const w = window.open('', '_blank'); if (!w) { alert('Permita a abertura de janelas.'); return; }
+            w.document.open(); w.document.write(htmlOrcamento(data || orcamentoAberto)); w.document.close();
+        }
+        async function admSuspender(profId, suspender, ocorrenciaId) {
+            let motivo = null;
+            if (suspender) { motivo = prompt('Motivo da suspensão (o profissional vai ver):', ocorrenciaId ? 'Denúncia de cliente em análise.' : ''); if (!motivo) return; }
+            else if (!confirm('Reativar este profissional?')) return;
+            const { error } = await supabaseClient.rpc('admin_suspender', { p_prof_id: profId, p_suspender: suspender, p_motivo: motivo });
+            if (error) { alert('Erro: ' + error.message); return; }
+            if (ocorrenciaId) await supabaseClient.rpc('admin_resolver_ocorrencia', { p_id: ocorrenciaId, p_devolver: false, p_resposta: 'Profissional suspenso: ' + motivo, p_status: 'resolvida' });
+            toast(suspender ? 'Profissional suspenso' : 'Profissional reativado'); perfisCache = null; abrirModalAdmin(); contarPendenciasAdmin();
+        }
         // ===== CRÉDITOS =====
         const PACOTES_CREDITO = [
             { creditos: 5, preco: 'R$ 9,90', descricao: 'Pacote Básico', link: 'https://www.asaas.com/c/eqgs12tszbk96gti' },
@@ -1651,7 +1960,7 @@ body { width: 100%; margin: 0 auto; }
         let admDados = { profs: [], ocorrencias: [], chamados: [] }, admAba = 'verificacoes';
         async function contarPendenciasAdmin() {
             const [{ data: profs }, { data: ocs }] = await Promise.all([supabaseClient.rpc('admin_profissionais'), supabaseClient.rpc('admin_ocorrencias')]);
-            const n = (profs || []).filter(p => p.verificacao_status === 'pendente').length + (ocs || []).filter(o => o.status === 'aberta').length;
+            const n = (profs || []).filter(p => p.verificacao_status === 'pendente').length + (ocs || []).filter(o => o.status === 'aberta' && o.tipo !== 'reclamacao').length;
             document.getElementById('admPendentes').textContent = n ? '(' + n + ' pendente' + (n > 1 ? 's' : '') + ')' : '';
         }
         async function abrirModalAdmin() {
@@ -1662,11 +1971,15 @@ body { width: 100%; margin: 0 auto; }
             renderAdmin();
         }
         function renderAdmin() {
-            const pend = admDados.profs.filter(p => p.verificacao_status === 'pendente'), ocAb = admDados.ocorrencias.filter(o => o.status === 'aberta');
-            const abas = [['verificacoes', 'VERIFICAÇÕES (' + pend.length + ')'], ['ocorrencias', 'OCORRÊNCIAS (' + ocAb.length + ')'], ['profissionais', 'PROFISSIONAIS (' + admDados.profs.length + ')'], ['chamados', 'PEDIDOS']];
+            const pend = admDados.profs.filter(p => p.verificacao_status === 'pendente');
+            const precisa = admDados.ocorrencias.filter(o => o.tipo !== 'reclamacao' && o.status === 'aberta');
+            const entrePartes = admDados.ocorrencias.filter(o => o.tipo === 'reclamacao');
+            const outras = admDados.ocorrencias.filter(o => o.tipo !== 'reclamacao' && o.status !== 'aberta');
+            const abas = [['verificacoes', 'SELFIES (' + pend.length + ')'], ['ocorrencias', 'DENÚNCIAS E REPORTES (' + precisa.length + ')'], ['reclamacoes', 'RECLAMAÇÕES (' + entrePartes.length + ')'], ['profissionais', 'PROFISSIONAIS (' + admDados.profs.length + ')'], ['chamados', 'PEDIDOS']];
             let h = '<div class="adm-tabs">' + abas.map(([k, t]) => '<button class="' + (admAba === k ? 'ativo' : '') + '" onclick="admAba=\'' + k + '\';renderAdmin()">' + t + '</button>').join('') + '</div>';
-            if (admAba === 'verificacoes') h += pend.length ? pend.map(admCardVerificacao).join('') : '<p class="mini">Nenhuma verificação esperando análise.</p>';
-            if (admAba === 'ocorrencias') h += admDados.ocorrencias.length ? admDados.ocorrencias.map(admCardOcorrencia).join('') : '<p class="mini">Nenhuma ocorrência.</p>';
+            if (admAba === 'verificacoes') h += (pend.length ? pend.map(admCardVerificacao).join('') : '<p class="mini">Nenhuma selfie esperando análise. O CNPJ é conferido sozinho, sem você.</p>');
+            if (admAba === 'ocorrencias') h += '<p class="mini" style="margin-bottom:10px;">Só chega aqui o que precisa de você: denúncia de golpe/perfil falso/ameaça e reporte de contato inválido que não foi confirmado por outro profissional.</p>' + (precisa.length ? precisa.map(admCardOcorrencia).join('') : '<p class="mini">Nada pendente. 👍</p>') + (outras.length ? '<h4 style="margin:16px 0 8px;">Já tratadas</h4>' + outras.slice(0, 30).map(admCardOcorrencia).join('') : '');
+            if (admAba === 'reclamacoes') h += '<div class="aviso aviso-info">Reclamações sobre o serviço são resolvidas <b>entre cliente e profissional</b>: o profissional responde, o cliente marca se resolveu e a regra automática tira da busca quem acumula 3 sem solução. Você só acompanha. Use "Não procede" apenas se a reclamação for claramente falsa (ex.: cliente nunca contratou).</div>' + (entrePartes.length ? entrePartes.map(admCardOcorrencia).join('') : '<p class="mini">Nenhuma reclamação.</p>');
             if (admAba === 'profissionais') h += admDados.profs.map(admCardProf).join('');
             if (admAba === 'chamados') h += admDados.chamados.slice(0, 80).map(c => '<div class="adm-item"><b>#' + c.id + ' · ' + esc(c.servico) + '</b> <span class="selo selo-cinza">' + esc(c.status) + '</span><br>' + esc(c.nome_cliente) + ' · ' + esc(c.telefone_cliente) + '<br>📍 ' + esc(c.bairro) + ' · ' + dataBR(c.criado_em) + '<br>📝 ' + esc(c.descricao) +
                 '<div class="linha-acoes">' + (c.status !== 'invalido' ? '<button class="btn-out" onclick="admMarcarPedido(' + c.id + ',\'invalido\')">MARCAR FALSO/INVÁLIDO</button>' : '') + (c.status !== 'novo' ? '<button class="btn-out" onclick="admMarcarPedido(' + c.id + ',\'novo\')">REABRIR</button>' : '') + '</div></div>').join('');
@@ -1676,37 +1989,39 @@ body { width: 100%; margin: 0 auto; }
             return (p.arquivos || []).map(a => '<button class="btn-out" style="flex:0 1 auto;" onclick="admVerArquivo(\'' + esc(a) + '\')">📎 ' + esc(a.split('/').pop()) + '</button>').join('') || '<span class="mini">Sem arquivos</span>';
         }
         function admCardVerificacao(p) {
-            const doc = String(p.documento || ''), cnpj = doc.length === 14;
             return '<div class="adm-item pend"><b>' + esc(p.nome) + '</b> · ' + esc(p.email || '') + '<br>' +
-                (cnpj ? 'CNPJ' : 'CPF') + ': <b>' + esc(doc) + '</b>' + (cnpj ? ' · <a href="https://solucoes.receita.fazenda.gov.br/Servicos/cnpjreva/Cnpjreva_Solicitacao.asp?cnpj=' + doc + '" target="_blank" rel="noopener">consultar na Receita</a>' : '') + '<br>' +
+                'CPF: <b>' + esc(p.documento || '') + '</b><br>' +
                 (p.registro_tipo ? 'Registro: <b>' + esc(p.registro_tipo) + ' ' + esc(p.registro_numero || '') + '</b>' + (p.registro_tipo === 'CREA' ? ' · <a href="https://www.confea.org.br/servicos-prestados/consulta-profissional" target="_blank" rel="noopener">consultar no Confea</a>' : p.registro_tipo === 'CAU' ? ' · <a href="https://siccau.caubr.gov.br/app/view/sight/externo?form=Servicos" target="_blank" rel="noopener">consultar no CAU</a>' : '') + '<br>' : 'Sem registro profissional<br>') +
                 'Enviado ' + tempoAtras(p.verificacao_enviada_em) + (p.emite_nf ? ' · declara emitir NF' : '') +
                 '<div class="linha-acoes" style="margin:8px 0;">' + admArquivos(p) + '</div>' +
-                '<label class="ck"><input type="checkbox" id="vi_' + p.id + '" checked> Identidade confere (documento + selfie + nome)</label>' +
+                '<label class="ck"><input type="checkbox" id="vi_' + p.id + '" checked> Selfie com documento confere com o nome do perfil</label>' +
                 (p.registro_tipo ? '<label class="ck"><input type="checkbox" id="vr_' + p.id + '"> ' + esc(p.registro_tipo) + ' ativo e no nome dele</label>' : '') +
-                (cnpj ? '<label class="ck"><input type="checkbox" id="vm_' + p.id + '"> CNPJ/MEI ativo</label>' : '') +
                 '<input type="text" id="vmot_' + p.id + '" placeholder="Motivo (obrigatório se recusar)" style="margin-top:6px;">' +
-                '<div class="linha-acoes"><button class="btn-ok" onclick="admDecidir(\'' + p.id + '\',true)">APROVAR SELOS</button><button class="btn-out" onclick="admDecidir(\'' + p.id + '\',false)">RECUSAR</button></div></div>';
+                '<div class="linha-acoes"><button class="btn-ok" onclick="admDecidir(\'' + p.id + '\',true)">APROVAR (+5 créditos)</button><button class="btn-out" onclick="admDecidir(\'' + p.id + '\',false)">RECUSAR</button></div></div>';
         }
         function admCardOcorrencia(o) {
-            const mot = { telefone_invalido: 'Telefone inválido', pedido_falso: 'Pedido falso', nao_responde: 'Cliente não responde', ja_contratou: 'Cliente já contratou', servico_ruim: 'Serviço mal feito', nao_compareceu: 'Não compareceu', cobranca_indevida: 'Cobrança indevida', outro: 'Outro' }[o.motivo] || o.motivo;
-            return '<div class="adm-item' + (o.status === 'aberta' ? ' pend' : '') + '"><b>' + (o.autor_tipo === 'cliente' ? '👤 Cliente reclama' : '🔧 Profissional reporta') + ': ' + esc(mot) + '</b> <span class="selo selo-cinza">' + esc(o.status) + '</span><br>' +
+            const mot = { telefone_invalido: 'Telefone inválido', pedido_falso: 'Pedido falso', nao_responde: 'Cliente não responde', ja_contratou: 'Cliente já contratou', servico_ruim: 'Serviço mal feito', nao_compareceu: 'Não compareceu', cobranca_indevida: 'Cobrança indevida', outro: 'Outro', golpe: 'GOLPE', perfil_falso: 'PERFIL FALSO', ameaca: 'AMEAÇA' }[o.motivo] || o.motivo;
+            const titulo = o.tipo === 'denuncia' ? '🚨 Denúncia do cliente' : o.tipo === 'reclamacao' ? '👤 Reclamação do cliente' : '🔧 Profissional reporta contato';
+            const aberta = o.status === 'aberta' || (o.tipo === 'reclamacao' && ['aguardando_profissional', 'respondida', 'nao_resolvida'].includes(o.status));
+            let acoes = '';
+            if (o.tipo === 'reporte' && o.status === 'aberta') acoes = '<button class="btn-ok" onclick="admResolver(' + o.id + ',true,\'resolvida\')">DEVOLVER CRÉDITO</button><button class="btn-out" onclick="admResolver(' + o.id + ',false,\'recusada\')">NÃO PROCEDE</button>';
+            if (o.tipo === 'denuncia' && o.status === 'aberta') acoes = '<button class="btn-ok" style="background:#b91c1c;" onclick="admSuspender(\'' + o.prof_id + '\',true,' + o.id + ')">SUSPENDER PROFISSIONAL</button><button class="btn-out" onclick="admResolver(' + o.id + ',false,\'recusada\')">ARQUIVAR</button>';
+            if (o.tipo === 'reclamacao' && aberta) acoes = '<button class="btn-out" onclick="admResolver(' + o.id + ',false,\'recusada\')">NÃO PROCEDE (tirar da contagem)</button>';
+            return '<div class="adm-item' + (o.status === 'aberta' ? ' pend' : '') + '"><b>' + titulo + ': ' + esc(mot) + '</b> <span class="selo selo-cinza">' + esc(o.status) + '</span><br>' +
                 'Pedido #' + esc(o.chamado_id) + ' · ' + esc(o.servico || '') + ' · ' + dataBR(o.criado_em) + '<br>' +
-                'Cliente: ' + esc(o.cliente || '') + ' · ' + esc(o.telefone_cliente || '') + '<br>Profissional: ' + esc(o.prof_nome || '') + ' · ' + esc(o.prof_telefone || '') + '<br>' +
-                (o.descricao ? '📝 ' + esc(o.descricao) + '<br>' : '') + (o.resposta ? '💬 ' + esc(o.resposta) + '<br>' : '') + (o.creditos_devolvidos ? '↩️ ' + o.creditos_devolvidos + ' crédito(s) devolvido(s)<br>' : '') +
-                (o.status === 'aberta' ? '<input type="text" id="ores_' + o.id + '" placeholder="Resposta / o que foi feito" style="margin-top:6px;"><div class="linha-acoes">' +
-                    (o.autor_tipo === 'profissional' ? '<button class="btn-ok" onclick="admResolver(' + o.id + ',true,\'resolvida\')">DEVOLVER CRÉDITO</button>' : '<button class="btn-ok" onclick="admResolver(' + o.id + ',false,\'resolvida\')">MARCAR RESOLVIDA</button>') +
-                    '<button class="btn-out" onclick="admResolver(' + o.id + ',false,\'recusada\')">NÃO PROCEDE</button></div>' : '') + '</div>';
+                'Cliente: ' + esc(o.cliente || '') + ' · ' + esc(o.telefone_cliente || '') + '<br>Profissional: ' + esc(o.prof_nome || '') + ' · ' + esc(o.prof_telefone || '') + (o.prof_suspenso ? ' <span class="selo selo-pendente">SUSPENSO</span>' : '') + '<br>' +
+                (o.descricao ? '📝 ' + esc(o.descricao) + '<br>' : '') + (o.resposta_prof ? '💬 Profissional: ' + esc(o.resposta_prof) + '<br>' : '') + (o.resposta ? '🗒️ Equipe: ' + esc(o.resposta) + '<br>' : '') + (o.creditos_devolvidos ? '↩️ ' + o.creditos_devolvidos + ' crédito(s) devolvido(s)<br>' : '') +
+                (acoes ? '<input type="text" id="ores_' + o.id + '" placeholder="Anotação (opcional)" style="margin-top:6px;"><div class="linha-acoes">' + acoes + '</div>' : '') + '</div>';
         }
         function admCardProf(p) {
             const completo = !!(p.nome && p.telefone && p.categoria && p.especialidades);
             const nomeSafe = esc(String(p.nome || 'este cadastro').replace(/['"\\]/g, ''));
-            return '<div class="adm-item" style="border-left-color:' + (completo ? '#2E7D5B' : '#e74c3c') + ';"><b>' + esc(p.nome || '— sem nome —') + '</b> ' + (completo ? '' : '<span class="selo selo-pendente">INCOMPLETO</span>') + selosHTML(p) +
-                '📱 ' + esc(p.telefone || '—') + ' · ✉️ ' + esc(p.email || '') + '<br>🏷️ ' + esc(nomeCategoria(p.categoria)) + (p.cidade ? ' · ' + esc(p.cidade) : '') + '<br>💰 ' + (p.saldo_creditos || 0) + ' créditos · verificação: ' + esc(p.verificacao_status) +
+            return '<div class="adm-item" style="border-left-color:' + (p.bloqueado ? '#b91c1c' : completo ? '#2E7D5B' : '#e74c3c') + ';"><b>' + esc(p.nome || '— sem nome —') + '</b> ' + (completo ? '' : '<span class="selo selo-pendente">INCOMPLETO</span>') + (p.bloqueado ? ' <span class="selo selo-pendente">' + (p.suspenso ? 'SUSPENSO' : 'FORA DA BUSCA (regra automática)') + '</span>' : '') + selosHTML(p) +
+                '📱 ' + esc(p.telefone || '—') + ' · ✉️ ' + esc(p.email || '') + '<br>🏷️ ' + esc(nomeCategoria(p.categoria)) + (p.cidade ? ' · ' + esc(p.cidade) : '') + (p.fotos ? ' · 📷 ' + p.fotos : '') + '<br>💰 ' + (p.saldo_creditos || 0) + ' créditos · selfie: ' + esc(p.verificacao_status) + (p.cnpj ? ' · CNPJ ' + esc(fmtCnpj(p.cnpj)) + (p.selo_mei ? ' ✓' : ' (não confere)') : '') +
                 ((p.arquivos || []).length ? '<div class="linha-acoes" style="margin:6px 0;">' + admArquivos(p) + '</div>' : '') +
                 '<div class="linha-acoes"><input type="number" id="credInput_' + p.id + '" placeholder="Qtd" style="flex:0 0 80px;padding:8px;"><button class="btn-ok" onclick="adicionarCreditos(\'' + p.id + '\',\'' + nomeSafe + '\')">+ CRÉDITOS</button>' +
                 (p.verificacao_status === 'aprovada' ? '<button class="btn-out" onclick="admRevogarSelos(\'' + p.id + '\')">REVOGAR SELOS</button>' : '') +
-                (!p.is_admin ? '<button class="btn-out" onclick="tornarAdmin(\'' + p.id + '\',\'' + nomeSafe + '\')">⭐ ADMIN</button><button class="btn-out" style="flex:0 0 50px;" onclick="excluirProfissional(\'' + p.id + '\',\'' + nomeSafe + '\')">🗑️</button>' : '') + '</div></div>';
+                (!p.is_admin ? (p.suspenso ? '<button class="btn-out" onclick="admSuspender(\'' + p.id + '\',false)">REATIVAR</button>' : '<button class="btn-out" onclick="admSuspender(\'' + p.id + '\',true)">SUSPENDER</button>') + '<button class="btn-out" onclick="tornarAdmin(\'' + p.id + '\',\'' + nomeSafe + '\')">⭐ ADMIN</button><button class="btn-out" style="flex:0 0 50px;" onclick="excluirProfissional(\'' + p.id + '\',\'' + nomeSafe + '\')">🗑️</button>' : '') + '</div></div>';
         }
         async function admVerArquivo(caminho) {
             const { data, error } = await supabaseClient.storage.from('verificacoes').createSignedUrl(caminho, 600);
@@ -1717,9 +2032,9 @@ body { width: 100%; margin: 0 auto; }
             const motivo = document.getElementById('vmot_' + id).value.trim();
             if (!aprovar && !motivo) { alert('Escreva o motivo da recusa — o profissional vai ver.'); return; }
             const ck = s => { const el = document.getElementById(s + id); return !!(el && el.checked); };
-            const { error } = await supabaseClient.rpc('admin_decidir_verificacao', { p_prof_id: id, p_identidade: aprovar && ck('vi_'), p_registro: aprovar && ck('vr_'), p_mei: aprovar && ck('vm_'), p_motivo: motivo || null });
+            const { data, error } = await supabaseClient.rpc('admin_decidir_verificacao', { p_prof_id: id, p_identidade: aprovar && ck('vi_'), p_registro: aprovar && ck('vr_'), p_mei: false, p_motivo: motivo || null });
             if (error) { alert('Erro: ' + error.message); return; }
-            toast(aprovar ? '✅ Selos aplicados' : 'Verificação recusada'); perfisCache = null; abrirModalAdmin(); contarPendenciasAdmin();
+            toast(aprovar ? '✅ Selo aplicado' + (data && data.bonus ? ' · +' + data.bonus + ' créditos' : '') : 'Verificação recusada'); perfisCache = null; abrirModalAdmin(); contarPendenciasAdmin();
         }
         async function admRevogarSelos(id) {
             const motivo = prompt('Motivo da revogação (o profissional vai ver):'); if (!motivo) return;
@@ -1754,12 +2069,13 @@ body { width: 100%; margin: 0 auto; }
         }
         async function excluirProfissional(profId, nome) {
             if (!confirm('Excluir ' + nome + '? Esta ação não pode ser desfeita.')) return;
-            await apagarArquivosVerificacao(profId);
+            await apagarArquivosVerificacao(profId); await apagarArquivosPortfolio(profId);
             const { error } = await supabaseClient.rpc('admin_excluir_profissional', { p_prof_id: profId });
             if (error) { alert('Erro: ' + error.message); return; }
             perfisCache = null; abrirModalAdmin();
         }
-
+        ['checklistCliente', 'checklistConfirmacao'].forEach(id => { const el = document.getElementById(id); if (el) el.innerHTML = CHECKLIST_HTML; });
+        document.getElementById('modalOrcamento').addEventListener('input', () => { orcamentoSalvo = null; });
         document.querySelectorAll('.modal').forEach(m => m.addEventListener('click', e => { if (e.target === m) m.classList.remove('active'); }));
         window.addEventListener('load', inicializar);
 
