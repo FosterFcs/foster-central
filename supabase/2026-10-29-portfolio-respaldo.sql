@@ -658,3 +658,18 @@ language sql stable security definer set search_path = public as $$
 $$;
 revoke execute on function public.pedidos_encerrados(integer) from public, anon;
 grant execute on function public.pedidos_encerrados(integer) to authenticated;
+
+-- admin apaga um pedido de vez (anúncio de profissional no formulário, teste, spam)
+create or replace function public.admin_excluir_pedido(p_chamado_id bigint)
+returns json language plpgsql security definer set search_path = public as $$
+begin
+  if not public.e_admin() then raise exception 'acesso negado'; end if;
+  update public.transacoes_credito set referencia_chamado = null where referencia_chamado = p_chamado_id;
+  delete from public.avaliacoes where chamado_id = p_chamado_id;
+  delete from public.desbloqueios where chamado_id = p_chamado_id;
+  delete from public.chamados where id = p_chamado_id;
+  if not found then return json_build_object('ok', false, 'erro', 'chamado_inexistente'); end if;
+  return json_build_object('ok', true);
+end $$;
+revoke execute on function public.admin_excluir_pedido(bigint) from public, anon;
+grant execute on function public.admin_excluir_pedido(bigint) to authenticated;

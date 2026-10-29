@@ -316,6 +316,43 @@ body { width: 100%; margin: 0 auto; }
 .estrelas-sel span { min-width: 36px; text-align: center; }
 .modal-content { max-height: 88vh; }
 .selo-ouro { background: #fef3c7; color: #92400e; }
+.pc { background: #fff; border-radius: 14px; padding: 16px 16px 16px 20px; margin-bottom: 14px; box-shadow: 0 1px 2px rgba(0,0,0,.05), 0 6px 18px rgba(31,35,40,.07); border: 1px solid #ece7df; position: relative; overflow: hidden; }
+.pc::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--laranja); }
+.pc-meu::before { background: var(--verde); }
+.pc-fechado { background: #fbfaf8; }
+.pc-fechado::before { background: #cbd5e1; }
+.pc-vazio { text-align: center; padding: 26px 16px; }
+.pc-vazio::before { display: none; }
+.pc-topo { display: flex; gap: 12px; align-items: flex-start; }
+.pc-icone { width: 46px; height: 46px; border-radius: 12px; background: #fff1f1; display: flex; align-items: center; justify-content: center; font-size: 23px; flex: none; }
+.pc-meu .pc-icone { background: #ecfdf5; }
+.pc-fechado .pc-icone { background: #f1f5f9; filter: grayscale(1); opacity: .8; }
+.pc-tit { flex: 1; min-width: 0; }
+.pc-tit h4 { font-size: 16px; font-weight: 800; margin: 1px 0 3px; line-height: 1.25; }
+.pc-cat { font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: .5px; font-weight: 700; }
+.pc-badge { font-size: 10.5px; font-weight: 800; padding: 5px 9px; border-radius: 20px; white-space: nowrap; letter-spacing: .3px; flex: none; }
+.pc-badge.aberto { background: #dcfce7; color: #15803d; }
+.pc-badge.meu { background: var(--verde); color: #fff; }
+.pc-badge.fechado { background: #e5e7eb; color: #4b5563; }
+.pc-badge.ultima { background: #fee2e2; color: #b91c1c; }
+.pc-meta { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12.5px; color: #4b5563; margin: 12px 0 10px; }
+.pc-num { color: #9ca3af; }
+.pc-desc { background: var(--papel); border-radius: 10px; padding: 11px 13px; font-size: 13.5px; line-height: 1.55; color: #1f2937; white-space: pre-line; word-break: break-word; }
+.pc-fechado .pc-desc { color: #4b5563; }
+.pc-rodape { margin-top: 12px; padding-top: 12px; border-top: 1px dashed #e5e0d8; }
+.pc-rodape .vagas { margin: 0 0 10px; }
+.pc-bloq { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 12.5px; color: #4b5563; margin-bottom: 10px; }
+.pc-bloq b { font-family: Oswald, sans-serif; font-size: 18px; color: var(--grafite); white-space: nowrap; }
+.pc-contato { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; }
+.pc-contato small { display: block; font-size: 10px; letter-spacing: .6px; color: #15803d; font-weight: 800; margin-bottom: 2px; }
+.pc-contato b { font-size: 14px; word-break: break-word; }
+.btn-pegar { width: 100%; min-height: 50px; border: 0; border-radius: 10px; background: var(--verde); color: #fff; font-family: Oswald, sans-serif; font-size: 15px; letter-spacing: 1px; cursor: pointer; font-weight: 700; box-shadow: 0 3px 0 #1f5c42; transition: transform .1s; }
+.btn-pegar:active { transform: translateY(2px); box-shadow: 0 1px 0 #1f5c42; }
+.btn-pegar.falta { background: var(--laranja); box-shadow: 0 3px 0 #a00000; }
+.btn-perigo { color: #b91c1c !important; border-color: #fecaca !important; }
+.btn-perigo:hover { background: #fef2f2; }
+@media (max-width: 380px) { .pc-contato { grid-template-columns: 1fr; } .pc-badge { font-size: 9.5px; padding: 4px 7px; } }
+
 .pct { background: var(--papel); border-radius: 8px; padding: 10px 12px; margin: 10px 0; }
 .pct-bar { height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; margin-top: 6px; }
 .pct-bar i { display: block; height: 100%; background: var(--verde); border-radius: 4px; transition: width .4s; }
@@ -1427,29 +1464,38 @@ details.checklist summary { font-weight: 700; font-size: 13px; cursor: pointer; 
             const [{ data: lista, error }, { data: orcs }] = await Promise.all([supabaseClient.rpc('pedidos_disponiveis'), supabaseClient.rpc('meus_orcamentos')]);
             if (error) { box.innerHTML = '<p style="text-align:center;color:red;">Erro ao carregar pedidos</p>'; return; }
             meusOrcamentos = orcs || [];
-            if (!lista || !lista.length) { box.innerHTML = '<div class="card" style="text-align:center;"><p style="color:var(--linha);">Nenhum pedido aberto no momento.</p><p class="mini" style="margin-top:6px;">Deixe os avisos por e-mail ligados para saber na hora.</p></div>'; return; }
+            if (!lista || !lista.length) { box.innerHTML = '<div class="pc pc-vazio"><div style="font-size:34px;">📭</div><p style="font-weight:700;margin-top:6px;">Nenhum pedido aberto agora</p><p class="mini" style="margin-top:4px;">Deixe os avisos por e-mail ligados para saber na hora que chegar.</p></div>'; return; }
             const saldo = conta ? (conta.saldo_creditos || 0) : 0;
             box.innerHTML = lista.map(c => {
                 const usadas = LIMITE_POR_PEDIDO - (c.vagas_restantes || 0);
-                const vagas = '<div class="vagas"><div class="vagas-bar">' + [0, 1, 2].map(i => '<i class="' + (i < usadas ? 'usada' : '') + '"></i>').join('') + '</div>' + (c.desbloqueado ? 'Você e mais ' + Math.max(usadas - 1, 0) + ' pegaram este contato' : (c.vagas_restantes === 1 ? 'Última vaga!' : c.vagas_restantes + ' de 3 vagas livres')) + '</div>';
-                let h = '<div class="chamado-card"' + (c.desbloqueado ? ' style="border-left-color:var(--verde);"' : '') + '><h4>' + esc(c.servico) + '</h4><div class="chamado-info">🏷️ ' + esc(nomeCategoria(c.categoria)) + ' · ' + tempoAtras(c.criado_em) + '</div><div class="chamado-info">📍 ' + esc(c.bairro) + '</div><div class="chamado-info">📝 ' + esc(c.descricao) + '</div>' + vagas;
+                const barra = '<div class="vagas"><div class="vagas-bar">' + [0, 1, 2].map(i => '<i class="' + (i < usadas ? 'usada' : '') + '"></i>').join('') + '</div>' + (c.desbloqueado ? 'Você e mais ' + Math.max(usadas - 1, 0) + ' pegaram este contato' : (c.vagas_restantes === 1 ? '<b style="color:#b91c1c;">Última vaga!</b>' : c.vagas_restantes + ' de 3 vagas livres')) + '</div>';
                 if (c.desbloqueado) {
                     const w = linkWhats(c.telefone_cliente, 'Olá ' + String(c.nome_cliente || '').split(' ')[0] + '! Sou ' + (conta.nome || '').split(' ')[0] + ', vi seu pedido de ' + c.servico + ' na Foster Central. Meu perfil com fotos de obras: ' + linkPerfil(conta.id));
                     const podeReportar = !c.minha_ocorrencia && c.desbloqueado_em && (Date.now() - new Date(c.desbloqueado_em).getTime()) < 7 * 86400000;
                     const oc = c.minha_ocorrencia ? c.minha_ocorrencia.split(':')[0] : null;
                     const meus = meusOrcamentos.filter(o => o.chamado_id === c.id);
-                    h += '<div class="chamado-info" style="margin-top:6px;">👤 <b>' + esc(c.nome_cliente) + '</b> · 📱 ' + esc(c.telefone_cliente) + '</div>' +
-                        (c.status !== 'novo' ? '<div class="mini" style="margin-top:4px;">Pedido ' + ({ atendido: 'marcado como contratado pelo cliente', cancelado: 'cancelado pelo cliente', invalido: 'encerrado (contato inválido)' }[c.status] || c.status) + '.</div>' : '') +
+                    const encerrado = c.status !== 'novo';
+                    return '<div class="pc pc-meu">' + cardPedidoTopo(c, '<span class="pc-badge meu">✓ SEU CONTATO</span>') +
+                        '<div class="pc-rodape">' + barra +
+                        '<div class="pc-contato"><div><small>CLIENTE</small><b>' + esc(c.nome_cliente) + '</b></div><div><small>TELEFONE</small><b>' + esc(c.telefone_cliente) + '</b></div></div>' +
+                        (encerrado ? '<div class="mini" style="margin:4px 0 8px;">Pedido ' + ({ atendido: 'marcado como contratado pelo cliente', cancelado: 'cancelado pelo cliente', invalido: 'encerrado (contato inválido)' }[c.status] || c.status) + '.</div>' : '') +
                         meus.map(o => '<div class="orc-linha" onclick="abrirOrcamentoPublico(\'' + o.id + '\')">📄 Orçamento ' + brl(o.total) + ' · ' + dataBR(o.criado_em) + ' — ' + (o.aceito_em ? '<b style="color:#15803d;">✅ aceito por ' + esc(o.aceito_nome) + ' em ' + dataBR(o.aceito_em) + '</b>' : (o.expirado ? '<span class="mini">vencido</span>' : '<span class="mini">aguardando aceite do cliente</span>')) + '</div>').join('') +
-                        (w ? '<a href="' + w + '" target="_blank" rel="noopener"><button class="btn-whatsapp">💬 CHAMAR NO WHATSAPP</button></a>' : '') +
+                        (w ? '<a href="' + w + '" target="_blank" rel="noopener" style="text-decoration:none;"><button class="btn-whatsapp" style="border-radius:10px;min-height:48px;">💬 CHAMAR NO WHATSAPP</button></a>' : '') +
                         '<div class="linha-acoes"><button class="btn-out" onclick="abrirOrcamento(' + Number(c.id) + ')">📄 ' + (meus.length ? 'NOVO ORÇAMENTO' : 'ENVIAR ORÇAMENTO') + '</button>' +
                         (podeReportar ? '<button class="btn-out" onclick="abrirReporte(' + Number(c.id) + ')">⚠️ CONTATO INVÁLIDO</button>' : '') + '</div>' +
-                        (oc ? '<div class="mini" style="margin-top:6px;">Reporte: ' + ({ aberta: '⏳ em análise', resolvida: '✅ resolvido', recusada: '❌ não confirmado' }[oc] || oc) + '</div>' : '');
-                } else {
-                    const custo = c.custo || PRECOS_CATEGORIA[c.categoria] || 1, falta = saldo < custo;
-                    h += '<div class="contato-bloqueado">🔒 Contato do cliente — ' + custo + ' crédito' + (custo > 1 ? 's' : '') + '</div><button class="btn-desbloquear" onclick="' + (conta.suspenso ? 'alert(mensagemErro(\'perfil_suspenso\'))' : falta ? 'mudarAba(\'creditos\')' : 'desbloquearChamado(' + Number(c.id) + ',' + custo + ')') + '">' + (conta.suspenso ? '⛔ PERFIL FORA DA BUSCA' : falta ? '💰 COMPRAR CRÉDITOS PARA LIBERAR' : '🔓 PEGAR CONTATO (' + custo + ' crédito' + (custo > 1 ? 's' : '') + ')') + '</button>';
+                        (oc ? '<div class="mini" style="margin-top:8px;">Reporte: ' + ({ aberta: '⏳ em análise', resolvida: '✅ resolvido', recusada: '❌ não confirmado' }[oc] || oc) + '</div>' : '') +
+                        '</div></div>';
                 }
-                return h + '</div>';
+                const custo = c.custo || PRECOS_CATEGORIA[c.categoria] || 1, falta = saldo < custo;
+                const selo = c.vagas_restantes === 1 ? '<span class="pc-badge ultima">ÚLTIMA VAGA</span>' : '<span class="pc-badge aberto">● ABERTO</span>';
+                const acao = conta.suspenso ? 'alert(mensagemErro(\'perfil_suspenso\'))' : falta ? 'mudarAba(\'creditos\')' : 'desbloquearChamado(' + Number(c.id) + ',' + custo + ')';
+                const texto = conta.suspenso ? '⛔ PERFIL FORA DA BUSCA' : falta ? '💰 COMPRAR CRÉDITOS PARA LIBERAR' : '🔓 PEGAR CONTATO';
+                return '<div class="pc">' + cardPedidoTopo(c, selo) +
+                    '<div class="pc-rodape">' + barra +
+                    '<div class="pc-bloq"><span>🔒 Nome e telefone do cliente</span><b>' + custo + ' crédito' + (custo > 1 ? 's' : '') + '</b></div>' +
+                    '<button class="btn-pegar' + (falta || conta.suspenso ? ' falta' : '') + '" onclick="' + acao + '">' + texto + '</button>' +
+                    '<div class="mini" style="text-align:center;margin-top:6px;">Telefone inválido ou pedido falso? O crédito volta.</div>' +
+                    '</div></div>';
             }).join('');
             window._pedidosProf = lista;
         }
@@ -1959,13 +2005,33 @@ details.checklist summary { font-weight: 700; font-size: 13px; cursor: pointer; 
             if (!lista.length) { box.innerHTML = ''; return; }
             const sit = { contratado: '✅ Cliente já contratou', cancelado: '⚪ Cancelado pelo cliente', prazo_encerrado: '⏱️ Prazo de 30 dias encerrado' };
             const mostrar = todos ? lista : lista.slice(0, 8);
-            box.innerHTML = '<h3 style="font-family:Oswald;margin:24px 0 6px;">PEDIDOS JÁ ENCERRADOS</h3><p class="mini" style="margin-bottom:12px;">Pedidos que já foram atendidos ou passaram do prazo. Ficam aqui para você ver o tipo de serviço que chega pela plataforma — <b>não dá para pegar o contato nem gastar crédito</b> com eles.</p>' +
-                mostrar.map(c => '<div class="chamado-card" style="border-left-color:#9ca3af;opacity:.8;"><div style="display:flex;justify-content:space-between;gap:8px;"><h4>' + esc(c.servico) + '</h4><span class="selo selo-cinza">ENCERRADO</span></div>' +
-                    '<div class="chamado-info">🏷️ ' + esc(nomeCategoria(c.categoria)) + ' · ' + dataBR(c.criado_em) + '</div><div class="chamado-info">📍 ' + esc(c.bairro) + '</div><div class="chamado-info">📝 ' + esc(c.descricao) + '</div>' +
-                    '<div class="contato-bloqueado">🔒 ' + (sit[c.situacao] || 'Encerrado') + (c.interessados ? ' · ' + c.interessados + ' profissiona' + (c.interessados > 1 ? 'is atenderam' : 'l atendeu') : '') + '</div></div>').join('') +
+            box.innerHTML = '<h3 style="font-family:Oswald;margin:28px 0 6px;">PEDIDOS JÁ ENCERRADOS</h3><p class="mini" style="margin-bottom:12px;">Pedidos que já foram atendidos ou passaram do prazo. Ficam aqui para você ver o tipo de serviço que chega pela plataforma — <b>não dá para pegar o contato nem gastar crédito</b> com eles.</p>' +
+                mostrar.map(c => '<div class="pc pc-fechado">' + cardPedidoTopo(c, '<span class="pc-badge fechado">ENCERRADO</span>') +
+                    '<div class="pc-rodape"><div class="pc-bloq" style="margin:0;"><span>🔒 ' + (sit[c.situacao] || 'Encerrado') + '</span>' + (c.interessados ? '<span class="mini">' + c.interessados + ' profissiona' + (c.interessados > 1 ? 'is atenderam' : 'l atendeu') + '</span>' : '') + '</div></div></div>').join('') +
                 (!todos && lista.length > 8 ? '<button class="btn-out" style="width:100%;" onclick="carregarEncerrados(true)">VER MAIS ' + (lista.length - 8) + ' ENCERRADOS</button>' : '');
         }
-
+        // topo comum dos cartões de pedido: ícone da categoria, título, selo de situação, local/tempo e descrição
+        function cardPedidoTopo(c, selo) {
+            const icone = CATEGORIAS[c.categoria] ? CATEGORIAS[c.categoria].icone : '🔧';
+            return '<div class="pc-topo"><div class="pc-icone">' + icone + '</div><div class="pc-tit"><h4>' + esc(c.servico) + '</h4>' + (CATEGORIAS[c.categoria] ? '<div class="pc-cat">' + esc(nomeCategoria(c.categoria).replace(/^[^ ]+ /, '')) + '</div>' : '') + '</div>' + (selo || '') + '</div>' +
+                '<div class="pc-meta"><span>📍 ' + esc(c.bairro || 'Local não informado') + '</span><span>🕒 ' + tempoAtras(c.criado_em) + '</span><span class="pc-num">#' + String(c.id).padStart(4, '0') + '</span></div>' +
+                (c.descricao ? '<div class="pc-desc">' + esc(c.descricao) + '</div>' : '');
+        }
+        function admCardPedido(c) {
+            const st = { novo: '<span class="pc-badge aberto">● ABERTO</span>', atendido: '<span class="pc-badge meu">CONTRATADO</span>', cancelado: '<span class="pc-badge fechado">CANCELADO</span>', invalido: '<span class="pc-badge ultima">FALSO/INVÁLIDO</span>' }[c.status] || '<span class="pc-badge fechado">' + esc(c.status) + '</span>';
+            const velho = c.status === 'novo' && new Date(c.criado_em) < new Date(Date.now() - 30 * 86400000);
+            return '<div class="pc' + (c.status === 'novo' && !velho ? '' : ' pc-fechado') + '">' + cardPedidoTopo(c, st) +
+                '<div class="pc-rodape"><div class="pc-contato" style="background:#f8fafc;border-color:#e2e8f0;"><div><small style="color:#475569;">CLIENTE</small><b>' + esc(c.nome_cliente) + '</b></div><div><small style="color:#475569;">TELEFONE</small><b>' + esc(c.telefone_cliente) + '</b></div></div>' +
+                (velho ? '<div class="mini" style="margin-bottom:8px;">⏱️ Mais de 30 dias: já não aparece para profissionais pegarem.</div>' : '') +
+                '<div class="linha-acoes">' + (c.status !== 'invalido' ? '<button class="btn-out" onclick="admMarcarPedido(' + c.id + ',\'invalido\')">🚫 MARCAR FALSO/INVÁLIDO</button>' : '') + (c.status !== 'novo' ? '<button class="btn-out" onclick="admMarcarPedido(' + c.id + ',\'novo\')">↩️ REABRIR</button>' : '') +
+                '<button class="btn-out btn-perigo" onclick="admExcluirPedido(' + c.id + ')">🗑️ EXCLUIR</button></div></div></div>';
+        }
+        async function admExcluirPedido(id) {
+            if (!confirm('Excluir de vez o pedido #' + String(id).padStart(4, '0') + '?\n\nEle some do sistema, inclusive do histórico do cliente e dos profissionais que pegaram o contato. Os créditos já gastos não voltam automaticamente. Não dá para desfazer.')) return;
+            const { data, error } = await supabaseClient.rpc('admin_excluir_pedido', { p_chamado_id: id });
+            if (error || !data || !data.ok) { alert(error ? 'Erro: ' + error.message : mensagemErro(data && data.erro)); return; }
+            toast('🗑️ Pedido excluído'); abrirModalAdmin();
+        }
         // ===== CRÉDITOS =====
         const PACOTES_CREDITO = [
             { creditos: 5, preco: 'R$ 9,90', descricao: 'Pacote Básico', link: 'https://www.asaas.com/c/eqgs12tszbk96gti' },
@@ -2015,8 +2081,7 @@ details.checklist summary { font-weight: 700; font-size: 13px; cursor: pointer; 
             if (admAba === 'ocorrencias') h += '<p class="mini" style="margin-bottom:10px;">Só chega aqui o que precisa de você: denúncia de golpe/perfil falso/ameaça e reporte de contato inválido que não foi confirmado por outro profissional.</p>' + (precisa.length ? precisa.map(admCardOcorrencia).join('') : '<p class="mini">Nada pendente. 👍</p>') + (outras.length ? '<h4 style="margin:16px 0 8px;">Já tratadas</h4>' + outras.slice(0, 30).map(admCardOcorrencia).join('') : '');
             if (admAba === 'reclamacoes') h += '<div class="aviso aviso-info">Reclamações sobre o serviço são resolvidas <b>entre cliente e profissional</b>: o profissional responde, o cliente marca se resolveu e a regra automática tira da busca quem acumula 3 sem solução. Você só acompanha. Use "Não procede" apenas se a reclamação for claramente falsa (ex.: cliente nunca contratou).</div>' + (entrePartes.length ? entrePartes.map(admCardOcorrencia).join('') : '<p class="mini">Nenhuma reclamação.</p>');
             if (admAba === 'profissionais') h += admDados.profs.map(admCardProf).join('');
-            if (admAba === 'chamados') h += admDados.chamados.slice(0, 80).map(c => '<div class="adm-item"><b>#' + c.id + ' · ' + esc(c.servico) + '</b> <span class="selo selo-cinza">' + esc(c.status) + '</span><br>' + esc(c.nome_cliente) + ' · ' + esc(c.telefone_cliente) + '<br>📍 ' + esc(c.bairro) + ' · ' + dataBR(c.criado_em) + '<br>📝 ' + esc(c.descricao) +
-                '<div class="linha-acoes">' + (c.status !== 'invalido' ? '<button class="btn-out" onclick="admMarcarPedido(' + c.id + ',\'invalido\')">MARCAR FALSO/INVÁLIDO</button>' : '') + (c.status !== 'novo' ? '<button class="btn-out" onclick="admMarcarPedido(' + c.id + ',\'novo\')">REABRIR</button>' : '') + '</div></div>').join('');
+            if (admAba === 'chamados') h += '<p class="mini" style="margin-bottom:10px;">Use <b>Falso/inválido</b> para tirar o pedido de circulação mantendo o registro, ou <b>Excluir</b> para apagar de vez (anúncio de profissional, teste, spam).</p>' + admDados.chamados.slice(0, 80).map(admCardPedido).join('');
             document.getElementById('adminContent').innerHTML = h;
         }
         function admArquivos(p) {
