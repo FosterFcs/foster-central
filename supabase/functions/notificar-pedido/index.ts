@@ -5,7 +5,7 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
 
-const APP = "https://fosterfcs.github.io/foster-central/";
+const APP = "https://central.engfoster.com.br/";
 const FUNCAO = "https://prxasqrilvqhenvmmeov.supabase.co/functions/v1/notificar-pedido";
 const REMETENTE = "Foster Central <avisos@fostercalc.com.br>";
 const RESPONDER_PARA = "comercial@fosterconstrucoes.com.br";
