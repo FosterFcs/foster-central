@@ -496,6 +496,7 @@ details.checklist summary { font-weight: 700; font-size: 13px; cursor: pointer; 
             <details class="checklist"><summary>✅ Antes de contratar, confira (6 dicas rápidas)</summary><div id="checklistCliente"></div></details>
             <div id="listaPedidosCliente"><p style="text-align:center;color:var(--linha);">Carregando seus pedidos...</p></div>
             <button class="btn-out" style="width:100%;margin-top:10px;" onclick="mudarAba('pedido')">+ FAZER NOVO PEDIDO</button>
+            <button class="btn-out" style="width:100%;margin-top:8px;" onclick="definirNovaSenha()">🔑 TROCAR MINHA SENHA</button>
             <p style="text-align:center;margin-top:18px;"><a onclick="excluirMinhaConta()" style="color:#9ca3af;font-size:11px;cursor:pointer;text-decoration:underline;">Excluir minha conta e meus dados</a></p>
         </div>
     </div>
@@ -634,6 +635,7 @@ details.checklist summary { font-weight: 700; font-size: 13px; cursor: pointer; 
     <div class="form-group"><label>Sobre você (aparece no seu perfil)</label><textarea id="perfilBio" maxlength="600" placeholder="Ex: 12 anos de experiência em alvenaria e reformas. Atendo Barueri, Santana de Parnaíba e Cajamar. Trabalho com equipe própria."></textarea></div>
     <label class="check-termos" style="margin-top:0;"><input type="checkbox" id="perfilEmiteNf"> <span>Emito nota fiscal</span></label>
     <button class="btn-primary" onclick="salvarPerfil()">SALVAR PERFIL</button>
+    <button class="btn-out" style="width:100%;margin-top:8px;" onclick="fecharModal('modalPerfil');definirNovaSenha()">🔑 TROCAR MINHA SENHA</button>
     <p style="text-align:center;margin-top:16px;"><a onclick="excluirMinhaConta()" style="color:#9ca3af;font-size:11px;cursor:pointer;text-decoration:underline;">Excluir minha conta e meus dados</a></p>
 </div></div>
 
@@ -711,6 +713,14 @@ details.checklist summary { font-weight: 700; font-size: 13px; cursor: pointer; 
 <div id="modalOrcPublico" class="modal"><div class="modal-content">
     <div class="modal-header"><h2>ORÇAMENTO</h2><button class="btn-close" onclick="fecharModal('modalOrcPublico')">×</button></div>
     <div id="orcPublicoConteudo"></div>
+</div></div>
+
+<!-- MODAL NOVA SENHA -->
+<div id="modalSenha" class="modal"><div class="modal-content">
+    <div class="modal-header"><h2>DEFINIR NOVA SENHA</h2><button class="btn-close" onclick="fecharModal('modalSenha')">×</button></div>
+    <div class="form-group"><label>Nova senha (mín. 8 caracteres)</label><input type="password" id="novaSenha" autocomplete="new-password"></div>
+    <div class="form-group"><label>Repita a nova senha</label><input type="password" id="novaSenha2" autocomplete="new-password" onkeydown="if(event.key==='Enter')salvarNovaSenha()"></div>
+    <button class="btn-primary" id="btnSalvarSenha" onclick="salvarNovaSenha()">SALVAR NOVA SENHA</button>
 </div></div>
 
 <!-- MODAL SOBRE -->
@@ -955,17 +965,20 @@ details.checklist summary { font-weight: 700; font-size: 13px; cursor: pointer; 
         // ===== INICIALIZAÇÃO =====
         async function inicializar() {
             try {
+                // o link de "esqueci minha senha" chega com type=recovery: guarda antes que o cliente do Supabase limpe o endereço
+                const veioRecuperar = /type=recovery/.test(location.hash + location.search);
                 supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                supabaseClient.auth.onAuthStateChange((event) => {
+                    if (event === 'PASSWORD_RECOVERY') setTimeout(definirNovaSenha, 300);
+                    else if (['SIGNED_IN', 'SIGNED_OUT', 'USER_UPDATED'].includes(event)) setTimeout(carregarConta, 0);
+                });
+                if (veioRecuperar) setTimeout(definirNovaSenha, 600);
                 renderizarCategoriasPedido();
                 renderizarCategoriasCadastro();
                 carregarPacotesCredito();
                 carregarEstatisticas();
                 preencherPedidoPelaUrl();
                 await carregarConta();
-                supabaseClient.auth.onAuthStateChange((event) => {
-                    if (event === 'PASSWORD_RECOVERY') setTimeout(definirNovaSenha, 300);
-                    else if (['SIGNED_IN', 'SIGNED_OUT', 'USER_UPDATED'].includes(event)) setTimeout(carregarConta, 0);
-                });
                 abrirPerfilPelaUrl();
                 const orc = new URLSearchParams(location.search).get('orc');
                 if (orc && /^[0-9a-f-]{36}$/i.test(orc)) abrirOrcamentoPublico(orc);
@@ -1153,13 +1166,19 @@ details.checklist summary { font-weight: 700; font-size: 13px; cursor: pointer; 
         }
 
         // link de "esqueci minha senha": pede a nova senha na hora
-        async function definirNovaSenha() {
-            const s = prompt('Digite sua nova senha (mínimo 8 caracteres):');
-            if (!s) return;
-            if (s.length < 8) { alert('A senha precisa ter pelo menos 8 caracteres.'); return definirNovaSenha(); }
-            const { error } = await supabaseClient.auth.updateUser({ password: s });
-            alert(error ? 'Erro: ' + error.message : '✅ Senha alterada! Você já está conectado.');
-            carregarConta();
+        function definirNovaSenha() {
+            document.getElementById('novaSenha').value = ''; document.getElementById('novaSenha2').value = '';
+            abrirModal('modalSenha'); setTimeout(() => document.getElementById('novaSenha').focus(), 100);
+        }
+        async function salvarNovaSenha() {
+            const a = document.getElementById('novaSenha').value, b = document.getElementById('novaSenha2').value;
+            if (a.length < 8) { alert('A senha precisa ter pelo menos 8 caracteres.'); return; }
+            if (a !== b) { alert('As duas senhas não são iguais.'); return; }
+            const btn = document.getElementById('btnSalvarSenha'); btn.disabled = true;
+            const { error } = await supabaseClient.auth.updateUser({ password: a });
+            btn.disabled = false;
+            if (error) { alert(/different from the old/i.test(error.message) ? 'A nova senha precisa ser diferente da anterior.' : /session/i.test(error.message) ? 'Sua sessão expirou. Use "Esqueci minha senha" de novo.' : 'Erro: ' + error.message); return; }
+            fecharModal('modalSenha'); toast('✅ Senha alterada! Use a nova senha nos próximos acessos.', 4500);
         }
 
         // ===== ÁREA DO CLIENTE =====
