@@ -639,3 +639,22 @@ grant execute on function public.salvar_orcamento(bigint, text, text, jsonb, tex
   to authenticated;
 grant execute on function public.ver_orcamento(uuid), public.aceitar_orcamento(uuid, text, text), public.perfis_publicos(uuid), public.versao_termos()
   to anon, authenticated;
+
+-- vitrine de pedidos já encerrados (contratados, cancelados ou com prazo de 30 dias vencido): só leitura, sem contato, sem desbloqueio
+create or replace function public.pedidos_encerrados(p_limite integer default 30)
+returns table (id bigint, servico text, categoria text, bairro text, descricao text, criado_em timestamptz, situacao text, interessados integer)
+language sql stable security definer set search_path = public as $$
+  select c.id, c.servico, c.categoria, c.bairro, left(c.descricao, 160), c.criado_em,
+         case when c.status = 'atendido' then 'contratado' when c.status = 'cancelado' then 'cancelado' else 'prazo_encerrado' end,
+         (select count(*) from public.desbloqueios d where d.chamado_id = c.id)::int
+  from public.chamados c
+  where auth.uid() is not null
+    and exists (select 1 from public.profissionais p where p.id = auth.uid())
+    and c.status <> 'invalido'
+    and (c.status in ('atendido', 'cancelado') or c.criado_em < now() - interval '30 days')
+    and not exists (select 1 from public.desbloqueios d where d.chamado_id = c.id and d.prof_id = auth.uid())
+  order by c.criado_em desc
+  limit least(greatest(coalesce(p_limite, 30), 1), 60)
+$$;
+revoke execute on function public.pedidos_encerrados(integer) from public, anon;
+grant execute on function public.pedidos_encerrados(integer) to authenticated;

@@ -374,8 +374,8 @@ details.checklist summary { font-weight: 700; font-size: 13px; cursor: pointer; 
 
 <div class="tabs">
     <button class="tab active" data-aba="pedido" onclick="mudarAba('pedido')">🏗️ PEDIR SERVIÇO</button>
-    <button class="tab" data-aba="cliente" onclick="mudarAba('cliente')">👤 SOU CLIENTE</button>
-    <button class="tab" data-aba="painel" onclick="mudarAba('painel')">🔧 SOU PROF.</button>
+    <button class="tab" data-aba="cliente" onclick="mudarAba('cliente')">👤 CLIENTE</button>
+    <button class="tab" data-aba="painel" onclick="mudarAba('painel')">🔧 PROFISSIONAL</button>
     <button class="tab" data-aba="buscar" onclick="mudarAba('buscar')">🔍 BUSCAR</button>
     <button class="tab" data-aba="avaliacoes" onclick="mudarAba('avaliacoes')">⭐ AVALIAÇÕES</button>
     <button class="tab" data-aba="creditos" onclick="mudarAba('creditos')">💰 CRÉDITOS</button>
@@ -559,6 +559,7 @@ details.checklist summary { font-weight: 700; font-size: 13px; cursor: pointer; 
             <h3 style="font-family:Oswald;margin-top:20px;margin-bottom:6px;">PEDIDOS DISPONÍVEIS</h3>
             <p class="mini" style="margin-bottom:12px;">Pedidos dos últimos 30 dias, com no máximo 3 profissionais por pedido. Os da sua categoria aparecem primeiro.</p>
             <div id="listaChamados"></div>
+            <div id="pedidosEncerrados"></div>
         </div>
     </div>
 
@@ -1385,7 +1386,7 @@ details.checklist summary { font-weight: 700; font-size: 13px; cursor: pointer; 
             const chk = document.getElementById('chkAvisos'); if (chk) chk.checked = conta.recebe_avisos !== false;
             document.getElementById('avisoSuspenso').innerHTML = conta.suspenso
                 ? '<div class="aviso" style="background:#fef2f2;border-color:#fecaca;color:#991b1b;"><b>⛔ Seu perfil está fora da busca e não pode pegar pedidos novos.</b><br>' + (conta.suspenso_motivo ? esc(conta.suspenso_motivo) : 'Motivo: 3 ou mais reclamações sem resposta ou sem solução nos últimos 6 meses (regra automática dos Termos de Uso).') + '<br>Responda as reclamações abaixo e combine a solução com os clientes. Se achar que alguma reclamação é injusta, fale com o suporte pelo WhatsApp.</div>' : '';
-            renderMeuPerfil(); renderVerificacao(); avisarCompras(); carregarChamados(); carregarMinhasReclamacoes(); carregarMeuPortfolio();
+            renderMeuPerfil(); renderVerificacao(); avisarCompras(); carregarChamados(); carregarMinhasReclamacoes(); carregarMeuPortfolio(); carregarEncerrados();
             if (conta.is_admin) contarPendenciasAdmin();
             const incompleto = !conta.nome || conta.nome === 'Profissional' || !conta.telefone || !conta.categoria || !conta.especialidades;
             let adiado = null; try { adiado = sessionStorage.getItem('fc_perfil_adiado'); } catch (e) {}
@@ -1951,6 +1952,20 @@ details.checklist summary { font-weight: 700; font-size: 13px; cursor: pointer; 
             if (ocorrenciaId) await supabaseClient.rpc('admin_resolver_ocorrencia', { p_id: ocorrenciaId, p_devolver: false, p_resposta: 'Profissional suspenso: ' + motivo, p_status: 'resolvida' });
             toast(suspender ? 'Profissional suspenso' : 'Profissional reativado'); perfisCache = null; abrirModalAdmin(); contarPendenciasAdmin();
         }
+        async function carregarEncerrados(todos) {
+            const box = document.getElementById('pedidosEncerrados'); if (!box || !usuarioAtual) return;
+            const { data } = await supabaseClient.rpc('pedidos_encerrados', { p_limite: 60 });
+            const lista = data || [];
+            if (!lista.length) { box.innerHTML = ''; return; }
+            const sit = { contratado: '✅ Cliente já contratou', cancelado: '⚪ Cancelado pelo cliente', prazo_encerrado: '⏱️ Prazo de 30 dias encerrado' };
+            const mostrar = todos ? lista : lista.slice(0, 8);
+            box.innerHTML = '<h3 style="font-family:Oswald;margin:24px 0 6px;">PEDIDOS JÁ ENCERRADOS</h3><p class="mini" style="margin-bottom:12px;">Pedidos que já foram atendidos ou passaram do prazo. Ficam aqui para você ver o tipo de serviço que chega pela plataforma — <b>não dá para pegar o contato nem gastar crédito</b> com eles.</p>' +
+                mostrar.map(c => '<div class="chamado-card" style="border-left-color:#9ca3af;opacity:.8;"><div style="display:flex;justify-content:space-between;gap:8px;"><h4>' + esc(c.servico) + '</h4><span class="selo selo-cinza">ENCERRADO</span></div>' +
+                    '<div class="chamado-info">🏷️ ' + esc(nomeCategoria(c.categoria)) + ' · ' + dataBR(c.criado_em) + '</div><div class="chamado-info">📍 ' + esc(c.bairro) + '</div><div class="chamado-info">📝 ' + esc(c.descricao) + '</div>' +
+                    '<div class="contato-bloqueado">🔒 ' + (sit[c.situacao] || 'Encerrado') + (c.interessados ? ' · ' + c.interessados + ' profissiona' + (c.interessados > 1 ? 'is atenderam' : 'l atendeu') : '') + '</div></div>').join('') +
+                (!todos && lista.length > 8 ? '<button class="btn-out" style="width:100%;" onclick="carregarEncerrados(true)">VER MAIS ' + (lista.length - 8) + ' ENCERRADOS</button>' : '');
+        }
+
         // ===== CRÉDITOS =====
         const PACOTES_CREDITO = [
             { creditos: 5, preco: 'R$ 9,90', descricao: 'Pacote Básico', link: 'https://www.asaas.com/c/eqgs12tszbk96gti' },
