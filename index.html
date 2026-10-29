@@ -316,6 +316,39 @@ body { width: 100%; margin: 0 auto; }
 .estrelas-sel span { min-width: 36px; text-align: center; }
 .modal-content { max-height: 88vh; }
 .selo-ouro { background: #fef3c7; color: #92400e; }
+
+.como { background: #fff; border-radius: 14px; margin-top: 16px; padding: 16px; box-shadow: 0 1px 2px rgba(0,0,0,.05), 0 6px 18px rgba(31,35,40,.07); border: 1px solid #ece7df; }
+.como-topo { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.como-tag { font-family: Oswald, sans-serif; font-weight: 700; letter-spacing: 1px; font-size: 13px; color: #E00000; }
+.como-passos { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.como-passos li { display: flex; gap: 12px; align-items: flex-start; }
+.como-passos i { font-style: normal; flex: none; width: 30px; height: 30px; border-radius: 50%; background: #E00000; color: #fff; font-family: Oswald, sans-serif; font-weight: 700; display: flex; align-items: center; justify-content: center; font-size: 14px; box-shadow: 0 0 0 4px #fff1f1; }
+.como-passos b { display: block; font-size: 14px; color: var(--grafite); }
+.como-passos span { display: block; font-size: 12.5px; color: #6b7280; line-height: 1.45; margin-top: 1px; }
+@media (min-width: 700px) { .como-passos { grid-template-columns: 1fr 1fr; gap: 14px 18px; } }
+/* ===== HERO ===== */
+.hero { position: relative; overflow: hidden; background: radial-gradient(120% 90% at 50% 0%, #1d3a6e 0%, #16213e 45%, #0d1428 100%); border-bottom: 3px solid #E00000; text-align: center; color: #fff; }
+.hero-grade { position: absolute; inset: 0; background-image: linear-gradient(rgba(147,197,253,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(147,197,253,.07) 1px, transparent 1px); background-size: 22px 22px; mask-image: linear-gradient(to bottom, #000 0%, transparent 85%); -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 85%); pointer-events: none; }
+.hero-conteudo { position: relative; z-index: 2; padding: 26px 18px 6px; max-width: 620px; margin: 0 auto; }
+.hero-kicker { display: inline-block; font-family: Oswald, sans-serif; font-size: 11px; letter-spacing: 2px; font-weight: 700; color: #ffb3b3; background: rgba(224,0,0,.18); border: 1px solid rgba(255,77,77,.45); padding: 5px 12px; border-radius: 20px; margin-bottom: 12px; }
+.hero-titulo { font-family: Oswald, sans-serif; font-size: 23px; line-height: 1.2; font-weight: 700; letter-spacing: .5px; margin-bottom: 10px; text-shadow: 0 2px 12px rgba(0,0,0,.45); }
+.hero-titulo span { color: #fff; background: linear-gradient(transparent 62%, rgba(224,0,0,.55) 62%); padding: 0 2px; }
+.hero-sub { font-size: 13px; line-height: 1.6; color: rgba(255,255,255,.85); margin: 0 auto 16px; max-width: 460px; }
+.hero-botoes { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.hero-btn { font-family: Oswald, sans-serif; font-size: 13.5px; font-weight: 700; letter-spacing: 1px; border-radius: 8px; padding: 13px 20px; min-height: 48px; cursor: pointer; transition: transform .1s; }
+.hero-btn:active { transform: translateY(2px); }
+.hero-btn-pri { background: #E00000; color: #fff; border: 0; box-shadow: 0 4px 0 #9a0000, 0 8px 20px rgba(224,0,0,.35); }
+.hero-btn-sec { background: rgba(255,255,255,.08); color: #fff; border: 2px solid rgba(255,255,255,.45); backdrop-filter: blur(2px); }
+.hero-figuras { position: relative; z-index: 1; margin: 14px auto 0; max-width: 520px; padding: 0 6px; }
+.hero-ilustra { display: block; width: 100%; height: auto; }
+.hero-base { position: relative; z-index: 2; background: rgba(8,13,28,.75); border-top: 1px solid rgba(255,255,255,.08); padding: 12px 14px 14px; }
+.hero-base .trust-bar { margin-top: 0; }
+.hero-stats { display: flex; justify-content: center; gap: 10px; margin-top: 12px; }
+.hero-stats div { flex: 0 1 110px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); border-radius: 10px; padding: 8px 6px; }
+.hero-stats b { display: block; font-family: Oswald, sans-serif; font-size: 20px; color: #ff4d4d; }
+.hero-stats small { font-size: 9.5px; letter-spacing: 1px; color: rgba(255,255,255,.65); }
+@media (min-width: 700px) { .hero-titulo { font-size: 30px; } .hero-sub { font-size: 14px; } }
+
 .pc { background: #fff; border-radius: 14px; padding: 16px 16px 16px 20px; margin-bottom: 14px; box-shadow: 0 1px 2px rgba(0,0,0,.05), 0 6px 18px rgba(31,35,40,.07); border: 1px solid #ece7df; position: relative; overflow: hidden; }
 .pc::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--laranja); }
 .pc-meu::before { background: var(--verde); }
@@ -391,23 +424,29 @@ details.checklist summary { font-weight: 700; font-size: 13px; cursor: pointer; 
     </header>
 
 <!-- HERO -->
-<div id="heroSection" style="background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);padding:26px 18px 22px;text-align:center;border-bottom:3px solid #E00000;">
-  <p style="font-size:11px;letter-spacing:2px;color:#ff4d4d;font-weight:700;font-family:Oswald,sans-serif;margin-bottom:8px;">PROFISSIONAIS DE OBRA VERIFICADOS</p>
-  <h2 style="font-size:21px;font-weight:900;color:white;font-family:Oswald,sans-serif;letter-spacing:1px;margin-bottom:6px;">Outros apps te dão um contato.<br>A Foster te dá um profissional verificado.</h2>
-  <p style="font-size:12.5px;color:rgba(255,255,255,0.75);margin-bottom:16px;line-height:1.6;">Engenheiros, arquitetos, pedreiros, eletricistas e mais —<br>com documento conferido e um engenheiro civil por trás da plataforma.</p>
-  <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
-    <button onclick="mudarAba('pedido')" style="background:#E00000;color:white;border:none;border-radius:6px;padding:12px 20px;font-family:Oswald,sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;cursor:pointer;min-height:44px;">🏗️ PEDIR ORÇAMENTO GRÁTIS</button>
-    <button onclick="mudarAba('buscar')" style="background:transparent;color:white;border:2px solid rgba(255,255,255,0.4);border-radius:6px;padding:12px 20px;font-family:Oswald,sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;cursor:pointer;min-height:44px;">🔍 VER PROFISSIONAIS</button>
+<section id="heroSection" class="hero">
+  <div class="hero-grade" aria-hidden="true"></div>
+  <div class="hero-conteudo">
+    <span class="hero-kicker">✓ PROFISSIONAIS DE OBRA VERIFICADOS</span>
+    <h2 class="hero-titulo">Outros apps te dão um contato.<br><span>A Foster te dá um profissional verificado.</span></h2>
+    <p class="hero-sub">Engenheiros, arquitetos, pedreiros, eletricistas, pintores e encanadores — com CNPJ conferido na Receita e um engenheiro civil por trás da plataforma.</p>
+    <div class="hero-botoes">
+      <button class="hero-btn hero-btn-pri" onclick="mudarAba('pedido')">🏗️ PEDIR ORÇAMENTO GRÁTIS</button>
+      <button class="hero-btn hero-btn-sec" onclick="mudarAba('buscar')">🔍 VER PROFISSIONAIS</button>
+    </div>
   </div>
-  <div class="trust-bar">
-    <span>CNPJ conferido na Receita</span><span>Fotos de obras reais</span><span>Avaliação só de quem contratou</span><span>Máx. 3 profissionais por pedido</span>
+  <div class="hero-figuras"><svg class="hero-ilustra" viewBox="0 0 366 132" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ilustração de profissionais da construção: engenheiro, arquiteto, pedreiro, eletricista, pintor e encanador"><g opacity=".22" fill="#93c5fd"><rect x="0" y="66" width="26" height="60"/><rect x="30" y="41" width="22" height="85"/><rect x="56" y="76" width="30" height="50"/><rect x="92" y="26" width="24" height="100"/><rect x="120" y="56" width="28" height="70"/><rect x="152" y="34" width="20" height="92"/><rect x="176" y="71" width="32" height="55"/><rect x="212" y="16" width="26" height="110"/><rect x="242" y="51" width="22" height="75"/><rect x="268" y="31" width="28" height="95"/><rect x="300" y="66" width="24" height="60"/><rect x="328" y="38" width="32" height="88"/></g><g stroke="#93c5fd" stroke-width="2" opacity=".28" fill="none"><line x1="250" y1="126" x2="250" y2="6"/><line x1="200" y1="10" x2="345" y2="10"/><line x1="250" y1="10" x2="335" y2="40"/><line x1="320" y1="10" x2="320" y2="34"/><rect x="314" y="34" width="12" height="8" fill="#93c5fd"/></g><rect x="0" y="125" width="366" height="7" fill="#0b1223" opacity=".6"/><g transform="translate(38,0)"><rect x="-11" y="98" width="9" height="26" rx="3" fill="#334155"/><rect x="2" y="98" width="9" height="26" rx="3" fill="#334155"/><rect x="-13" y="121" width="12" height="5" rx="2" fill="#1f2328"/><rect x="1" y="121" width="12" height="5" rx="2" fill="#1f2328"/><path d="M-17 66 Q-17 58 -9 57 L9 57 Q17 58 17 66 L16 100 L-16 100 Z" fill="#1e3a8a"/><rect x="-24" y="60" width="8" height="30" rx="4" fill="#1e3a8a"/><rect x="16" y="60" width="8" height="30" rx="4" fill="#1e3a8a"/><circle cx="-20" cy="91" r="4.5" fill="#f1c27d"/><circle cx="20" cy="91" r="4.5" fill="#f1c27d"/><rect x="-16" y="80" width="32" height="4" fill="#ffffff" opacity=".55"/><rect x="-4" y="50" width="8" height="8" fill="#f1c27d"/><circle cx="0" cy="42" r="11" fill="#f1c27d"/><circle cx="-4" cy="43" r="1.4" fill="#1f2328"/><circle cx="4" cy="43" r="1.4" fill="#1f2328"/><path d="M-3.5 47 Q0 49.5 3.5 47" stroke="#1f2328" stroke-width="1.2" fill="none" stroke-linecap="round"/><path d="M-13 39 Q-13 25 0 25 Q13 25 13 39 Z" fill="#ffffff"/><rect x="-15" y="37" width="30" height="4" rx="2" fill="#ffffff"/><rect x="-2" y="25" width="4" height="12" fill="#000" opacity=".12"/><rect x="20" y="70" width="8" height="34" rx="3" fill="#dbeafe" transform="rotate(-18 24 87)"/><line x1="18" y1="76" x2="30" y2="72" stroke="#1d4ed8" stroke-width="1.5" transform="rotate(-18 24 87)"/></g><g transform="translate(96,0)"><rect x="-11" y="98" width="9" height="26" rx="3" fill="#1f2937"/><rect x="2" y="98" width="9" height="26" rx="3" fill="#1f2937"/><rect x="-13" y="121" width="12" height="5" rx="2" fill="#1f2328"/><rect x="1" y="121" width="12" height="5" rx="2" fill="#1f2328"/><path d="M-17 66 Q-17 58 -9 57 L9 57 Q17 58 17 66 L16 100 L-16 100 Z" fill="#0f766e"/><rect x="-24" y="60" width="8" height="30" rx="4" fill="#0f766e"/><rect x="16" y="60" width="8" height="30" rx="4" fill="#0f766e"/><circle cx="-20" cy="91" r="4.5" fill="#c68642"/><circle cx="20" cy="91" r="4.5" fill="#c68642"/><rect x="-16" y="80" width="32" height="4" fill="#ffffff" opacity=".55"/><rect x="-4" y="50" width="8" height="8" fill="#c68642"/><circle cx="0" cy="42" r="11" fill="#c68642"/><circle cx="-4" cy="43" r="1.4" fill="#1f2328"/><circle cx="4" cy="43" r="1.4" fill="#1f2328"/><path d="M-3.5 47 Q0 49.5 3.5 47" stroke="#1f2328" stroke-width="1.2" fill="none" stroke-linecap="round"/><path d="M-12 38 Q-12 27 0 27 Q12 27 12 38 Z" fill="#2563eb"/><rect x="0" y="35" width="17" height="4" rx="2" fill="#2563eb"/><path d="M22 72 L22 102 L44 102 Z" fill="none" stroke="#fde68a" stroke-width="3" stroke-linejoin="round"/></g><g transform="translate(154,0)"><rect x="-11" y="98" width="9" height="26" rx="3" fill="#374151"/><rect x="2" y="98" width="9" height="26" rx="3" fill="#374151"/><rect x="-13" y="121" width="12" height="5" rx="2" fill="#1f2328"/><rect x="1" y="121" width="12" height="5" rx="2" fill="#1f2328"/><path d="M-17 66 Q-17 58 -9 57 L9 57 Q17 58 17 66 L16 100 L-16 100 Z" fill="#9a3412"/><rect x="-24" y="60" width="8" height="30" rx="4" fill="#9a3412"/><rect x="16" y="60" width="8" height="30" rx="4" fill="#9a3412"/><circle cx="-20" cy="91" r="4.5" fill="#8d5524"/><circle cx="20" cy="91" r="4.5" fill="#8d5524"/><rect x="-16" y="80" width="32" height="4" fill="#ffffff" opacity=".55"/><rect x="-4" y="50" width="8" height="8" fill="#8d5524"/><circle cx="0" cy="42" r="11" fill="#8d5524"/><circle cx="-4" cy="43" r="1.4" fill="#1f2328"/><circle cx="4" cy="43" r="1.4" fill="#1f2328"/><path d="M-3.5 47 Q0 49.5 3.5 47" stroke="#1f2328" stroke-width="1.2" fill="none" stroke-linecap="round"/><path d="M-13 39 Q-13 25 0 25 Q13 25 13 39 Z" fill="#f97316"/><rect x="-15" y="37" width="30" height="4" rx="2" fill="#f97316"/><rect x="-2" y="25" width="4" height="12" fill="#000" opacity=".12"/><rect x="19" y="80" width="3" height="10" fill="#7c4a1e"/><path d="M14 91 L28 91 L21 106 Z" fill="#cbd5e1"/></g><g transform="translate(212,0)"><rect x="-11" y="98" width="9" height="26" rx="3" fill="#1e293b"/><rect x="2" y="98" width="9" height="26" rx="3" fill="#1e293b"/><rect x="-13" y="121" width="12" height="5" rx="2" fill="#1f2328"/><rect x="1" y="121" width="12" height="5" rx="2" fill="#1f2328"/><path d="M-17 66 Q-17 58 -9 57 L9 57 Q17 58 17 66 L16 100 L-16 100 Z" fill="#1d4ed8"/><rect x="-24" y="60" width="8" height="30" rx="4" fill="#1d4ed8"/><rect x="16" y="60" width="8" height="30" rx="4" fill="#1d4ed8"/><circle cx="-20" cy="91" r="4.5" fill="#e0ac69"/><circle cx="20" cy="91" r="4.5" fill="#e0ac69"/><rect x="-16" y="80" width="32" height="4" fill="#ffffff" opacity=".55"/><rect x="-4" y="50" width="8" height="8" fill="#e0ac69"/><circle cx="0" cy="42" r="11" fill="#e0ac69"/><circle cx="-4" cy="43" r="1.4" fill="#1f2328"/><circle cx="4" cy="43" r="1.4" fill="#1f2328"/><path d="M-3.5 47 Q0 49.5 3.5 47" stroke="#1f2328" stroke-width="1.2" fill="none" stroke-linecap="round"/><path d="M-13 39 Q-13 25 0 25 Q13 25 13 39 Z" fill="#facc15"/><rect x="-15" y="37" width="30" height="4" rx="2" fill="#facc15"/><rect x="-2" y="25" width="4" height="12" fill="#000" opacity=".12"/><path d="M28 66 L20 84 L27 84 L22 100 L35 78 L28 78 L33 66 Z" fill="#facc15" stroke="#a16207" stroke-width="1"/></g><g transform="translate(270,0)"><rect x="-11" y="98" width="9" height="26" rx="3" fill="#94a3b8"/><rect x="2" y="98" width="9" height="26" rx="3" fill="#94a3b8"/><rect x="-13" y="121" width="12" height="5" rx="2" fill="#1f2328"/><rect x="1" y="121" width="12" height="5" rx="2" fill="#1f2328"/><path d="M-17 66 Q-17 58 -9 57 L9 57 Q17 58 17 66 L16 100 L-16 100 Z" fill="#f8fafc"/><rect x="-24" y="60" width="8" height="30" rx="4" fill="#f8fafc"/><rect x="16" y="60" width="8" height="30" rx="4" fill="#f8fafc"/><circle cx="-20" cy="91" r="4.5" fill="#a0663a"/><circle cx="20" cy="91" r="4.5" fill="#a0663a"/><rect x="-16" y="80" width="32" height="4" fill="#ffffff" opacity=".55"/><rect x="-4" y="50" width="8" height="8" fill="#a0663a"/><circle cx="0" cy="42" r="11" fill="#a0663a"/><circle cx="-4" cy="43" r="1.4" fill="#1f2328"/><circle cx="4" cy="43" r="1.4" fill="#1f2328"/><path d="M-3.5 47 Q0 49.5 3.5 47" stroke="#1f2328" stroke-width="1.2" fill="none" stroke-linecap="round"/><path d="M-12 38 Q-12 27 0 27 Q12 27 12 38 Z" fill="#e5e7eb"/><rect x="0" y="35" width="17" height="4" rx="2" fill="#e5e7eb"/><rect x="19" y="62" width="3" height="30" fill="#78350f"/><rect x="14" y="55" width="20" height="9" rx="3" fill="#ef4444"/><path d="M22 62 L30 62" stroke="#64748b" stroke-width="2"/></g><g transform="translate(328,0)"><rect x="-11" y="98" width="9" height="26" rx="3" fill="#1f2937"/><rect x="2" y="98" width="9" height="26" rx="3" fill="#1f2937"/><rect x="-13" y="121" width="12" height="5" rx="2" fill="#1f2328"/><rect x="1" y="121" width="12" height="5" rx="2" fill="#1f2328"/><path d="M-17 66 Q-17 58 -9 57 L9 57 Q17 58 17 66 L16 100 L-16 100 Z" fill="#15803d"/><rect x="-24" y="60" width="8" height="30" rx="4" fill="#15803d"/><rect x="16" y="60" width="8" height="30" rx="4" fill="#15803d"/><circle cx="-20" cy="91" r="4.5" fill="#f5d0a9"/><circle cx="20" cy="91" r="4.5" fill="#f5d0a9"/><rect x="-16" y="80" width="32" height="4" fill="#ffffff" opacity=".55"/><rect x="-4" y="50" width="8" height="8" fill="#f5d0a9"/><circle cx="0" cy="42" r="11" fill="#f5d0a9"/><circle cx="-4" cy="43" r="1.4" fill="#1f2328"/><circle cx="4" cy="43" r="1.4" fill="#1f2328"/><path d="M-3.5 47 Q0 49.5 3.5 47" stroke="#1f2328" stroke-width="1.2" fill="none" stroke-linecap="round"/><path d="M-13 39 Q-13 25 0 25 Q13 25 13 39 Z" fill="#22c55e"/><rect x="-15" y="37" width="30" height="4" rx="2" fill="#22c55e"/><rect x="-2" y="25" width="4" height="12" fill="#000" opacity=".12"/><path d="M20 70 L30 100" stroke="#94a3b8" stroke-width="5" stroke-linecap="round"/><circle cx="19" cy="68" r="6" fill="none" stroke="#94a3b8" stroke-width="4"/></g></svg></div>
+  <div class="hero-base">
+    <div class="trust-bar">
+      <span>CNPJ conferido na Receita</span><span>Fotos de obras reais</span><span>Avaliação só de quem contratou</span><span>Máx. 3 profissionais por pedido</span>
+    </div>
+    <div id="heroStats" class="hero-stats" style="display:none;">
+      <div><b id="heroProfs">–</b><small>PROFISSIONAIS</small></div>
+      <div><b id="heroVerificados" style="color:#4ade80;">–</b><small>VERIFICADOS</small></div>
+      <div><b id="heroPedidos">–</b><small>PEDIDOS</small></div>
+    </div>
   </div>
-  <div id="heroStats" style="display:none;justify-content:center;gap:24px;margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.1);">
-    <div style="text-align:center;"><div style="font-size:18px;font-weight:900;color:#ff4d4d;font-family:Oswald,sans-serif;" id="heroProfs">–</div><div style="font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:1px;">PROFISSIONAIS</div></div>
-    <div style="text-align:center;"><div style="font-size:18px;font-weight:900;color:#4ade80;font-family:Oswald,sans-serif;" id="heroVerificados">–</div><div style="font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:1px;">VERIFICADOS</div></div>
-    <div style="text-align:center;"><div style="font-size:18px;font-weight:900;color:#ff4d4d;font-family:Oswald,sans-serif;" id="heroPedidos">–</div><div style="font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:1px;">PEDIDOS</div></div>
-  </div>
-</div>
+</section>
 
 <div class="tabs">
     <button class="tab active" data-aba="pedido" onclick="mudarAba('pedido')">🏗️ PEDIR SERVIÇO</button>
@@ -422,14 +461,14 @@ details.checklist summary { font-weight: 700; font-size: 13px; cursor: pointer; 
 
     <!-- ABA: PEDIR SERVIÇO -->
     <div id="pedido" class="tab-content active">
-        <div class="descricao-app" style="margin-top:16px;background:linear-gradient(135deg,#fff5f5,#fff);border:2px solid #E00000;border-radius:10px;padding:14px;">
-            <strong style="color:#E00000;font-family:Oswald,sans-serif;letter-spacing:0.5px;">COMO FUNCIONA:</strong>
-            <div style="margin-top:8px;font-size:13px;line-height:1.8;color:#374151;">
-            1️⃣ Descreva o serviço — é grátis para você<br>
-            2️⃣ No máximo <b>3 profissionais</b> recebem seu contato (nada de 20 ligações)<br>
-            3️⃣ Você vê quem pegou, com selos e avaliações, e escolhe<br>
-            4️⃣ Depois do serviço, você avalia — só quem contratou avalia
-            </div>
+        <div class="como">
+            <div class="como-topo"><span class="como-tag">COMO FUNCIONA</span><span class="mini">Grátis para quem pede</span></div>
+            <ol class="como-passos">
+                <li><i>1</i><div><b>Descreva o serviço</b><span>Escolha a categoria e conte o que precisa.</span></div></li>
+                <li><i>2</i><div><b>Até 3 profissionais te chamam</b><span>Nada de 20 ligações: no máximo 3 recebem seu contato.</span></div></li>
+                <li><i>3</i><div><b>Compare e aceite pelo app</b><span>Veja selos, fotos de obras e avaliações. O orçamento fica registrado.</span></div></li>
+                <li><i>4</i><div><b>Avalie depois do serviço</b><span>Só quem contratou avalia — por isso dá para confiar.</span></div></li>
+            </ol>
         </div>
 
         <div class="progress-bar" id="progressBar" style="display:none;">
