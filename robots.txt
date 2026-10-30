@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://central.engfoster.com.br/sitemap.xml
