@@ -612,6 +612,7 @@ details.checklist summary { font-weight: 700; font-size: 13px; cursor: pointer; 
             <h3 style="font-family:Oswald;margin-bottom:16px;">CRIAR CONTA DE PROFISSIONAL</h3>
             <div class="form-group"><label>Nome completo (igual ao documento)</label><input type="text" id="nomeProf" placeholder="Seu nome completo" maxlength="120" autocomplete="name"></div>
             <div class="form-group"><label>Telefone / WhatsApp</label><input type="tel" id="telefoneProf" placeholder="(11) 99999-9999" oninput="formatarTelefone(this)" autocomplete="tel"></div>
+            <div class="form-group"><label>Cidade onde atende</label><input type="text" id="cidadeProf" placeholder="Ex: Barueri/SP" maxlength="80" autocomplete="address-level2"><small class="mini">Os clientes da sua cidade vão ver seu perfil primeiro.</small></div>
             <div class="form-group"><label>E-mail</label><input type="email" id="emailCadastro" placeholder="seu@email.com" autocomplete="email"></div>
             <div class="form-group">
                 <label>Senha <small style="font-weight:400;text-transform:none;">(mín. 8 caracteres)</small></label>
@@ -1074,6 +1075,7 @@ details.checklist summary { font-weight: 700; font-size: 13px; cursor: pointer; 
                 preencherPedidoPelaUrl();
                 await carregarConta();
                 abrirPerfilPelaUrl();
+                abrirConvitePeloUrl();
                 const orc = new URLSearchParams(location.search).get('orc');
                 if (orc && /^[0-9a-f-]{36}$/i.test(orc)) abrirOrcamentoPublico(orc);
                 if ('serviceWorker' in navigator) navigator.serviceWorker.register('service-worker.js').catch(() => {});
@@ -1423,6 +1425,19 @@ details.checklist summary { font-weight: 700; font-size: 13px; cursor: pointer; 
             } finally { btn.disabled = false; }
         }
         // ===== ÁREA DO PROFISSIONAL =====
+        // convite para profissional: ?sou=profissional&cidade=Barueri/SP&origem=convite-barueri-sp
+        let origemCadastro = '';
+        function abrirConvitePeloUrl() {
+            const q = new URLSearchParams(location.search); if (q.get('sou') !== 'profissional') return;
+            origemCadastro = (q.get('origem') || 'convite').toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 60);
+            const cidade = (q.get('cidade') || '').slice(0, 80);
+            try { history.replaceState(null, '', location.pathname); } catch (e) {}
+            mudarAba('painel');
+            if (usuarioAtual) return;
+            mostrarCadastro();
+            if (cidade) document.getElementById('cidadeProf').value = cidade;
+            setTimeout(() => { const f = document.getElementById('cadastroArea'); if (f) f.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 200);
+        }
         function mostrarCadastro() { document.getElementById('loginArea').style.display = 'none'; document.getElementById('cadastroArea').style.display = 'block'; }
         function voltarLogin() { document.getElementById('cadastroArea').style.display = 'none'; document.getElementById('loginArea').style.display = 'block'; }
         function renderizarCategoriasCadastro() {
@@ -1442,8 +1457,9 @@ details.checklist summary { font-weight: 700; font-size: 13px; cursor: pointer; 
         function atualizarEspecialidades() { especialidadesSelecionadas = Array.from(document.querySelectorAll('#especialidades input:checked')).map(el => el.value); }
         async function cadastrarProf() {
             if (!supabaseOK()) return;
-            const nome = document.getElementById('nomeProf').value.trim(), telefone = document.getElementById('telefoneProf').value.trim(), email = document.getElementById('emailCadastro').value.trim(), senha = document.getElementById('senhaCadastro').value;
+            const nome = document.getElementById('nomeProf').value.trim(), telefone = document.getElementById('telefoneProf').value.trim(), email = document.getElementById('emailCadastro').value.trim(), senha = document.getElementById('senhaCadastro').value, cidade = document.getElementById('cidadeProf').value.trim();
             if (!nome || !telefone || !email || !senha || !categoriaCadastro || !especialidadesSelecionadas.length) { alert('Preencha todos os campos e selecione suas especialidades'); return; }
+            if (cidade.length < 3) { alert('Informe a cidade onde você atende'); return; }
             if (nome.split(' ').filter(Boolean).length < 2) { alert('Digite seu nome completo, igual ao documento'); return; }
             if (soDigitos(telefone).length < 10) { alert('Telefone inválido'); return; }
             if (senha.length < 8) { alert('A senha precisa ter pelo menos 8 caracteres'); return; }
@@ -1451,7 +1467,7 @@ details.checklist summary { font-weight: 700; font-size: 13px; cursor: pointer; 
             if (!checarRateLimit()) return;
             const { data: telExiste } = await supabaseClient.from('profissionais').select('id').eq('telefone', telefone).maybeSingle();
             if (telExiste) { alert('Este telefone já está cadastrado. Use "Esqueci minha senha" se precisar.'); return; }
-            const { error } = await supabaseClient.auth.signUp({ email, password: senha, options: { emailRedirectTo: APP_URL, data: { tipo: 'profissional', nome, telefone, categoria: categoriaCadastro, especialidades: especialidadesSelecionadas.join(','), aceite_termos: VERSAO_TERMOS } } });
+            const { error } = await supabaseClient.auth.signUp({ email, password: senha, options: { emailRedirectTo: APP_URL, data: { tipo: 'profissional', nome, telefone, categoria: categoriaCadastro, especialidades: especialidadesSelecionadas.join(','), cidade, origem: origemCadastro, aceite_termos: VERSAO_TERMOS } } });
             if (error) { alert('Erro: ' + error.message); return; }
             alert('✅ Cadastro feito! Você ganhou 10 créditos.\nConfirme seu e-mail (veja também o spam) e entre aqui.\n\nDepois, confirme seu CNPJ em 10 segundos e ganhe mais 5 créditos.');
             voltarLogin(); document.getElementById('emailProf').value = email;
@@ -2143,9 +2159,9 @@ details.checklist summary { font-weight: 700; font-size: 13px; cursor: pointer; 
         }
         async function abrirModalAdmin() {
             document.getElementById('adminContent').innerHTML = '<p style="text-align:center;">Carregando...</p>'; abrirModal('modalAdmin');
-            const [p, o, c] = await Promise.all([supabaseClient.rpc('admin_profissionais'), supabaseClient.rpc('admin_ocorrencias'), supabaseClient.rpc('admin_chamados')]);
+            const [p, o, c, pc] = await Promise.all([supabaseClient.rpc('admin_profissionais'), supabaseClient.rpc('admin_ocorrencias'), supabaseClient.rpc('admin_chamados'), supabaseClient.rpc('admin_profissionais_por_cidade')]);
             if (p.error) { document.getElementById('adminContent').innerHTML = '<p style="color:red;">' + esc(p.error.message) + '</p>'; return; }
-            admDados = { profs: p.data || [], ocorrencias: o.data || [], chamados: c.data || [] };
+            admDados = { profs: p.data || [], ocorrencias: o.data || [], chamados: c.data || [], cidades: pc.data || [] };
             renderAdmin();
         }
         function renderAdmin() {
@@ -2158,7 +2174,7 @@ details.checklist summary { font-weight: 700; font-size: 13px; cursor: pointer; 
             if (admAba === 'verificacoes') h += (pend.length ? pend.map(admCardVerificacao).join('') : '<p class="mini">Nenhuma selfie esperando análise. O CNPJ é conferido sozinho, sem você.</p>');
             if (admAba === 'ocorrencias') h += '<p class="mini" style="margin-bottom:10px;">Só chega aqui o que precisa de você: denúncia de golpe/perfil falso/ameaça e reporte de contato inválido que não foi confirmado por outro profissional.</p>' + (precisa.length ? precisa.map(admCardOcorrencia).join('') : '<p class="mini">Nada pendente. 👍</p>') + (outras.length ? '<h4 style="margin:16px 0 8px;">Já tratadas</h4>' + outras.slice(0, 30).map(admCardOcorrencia).join('') : '');
             if (admAba === 'reclamacoes') h += '<div class="aviso aviso-info">Reclamações sobre o serviço são resolvidas <b>entre cliente e profissional</b>: o profissional responde, o cliente marca se resolveu e a regra automática tira da busca quem acumula 3 sem solução. Você só acompanha. Use "Não procede" apenas se a reclamação for claramente falsa (ex.: cliente nunca contratou).</div>' + (entrePartes.length ? entrePartes.map(admCardOcorrencia).join('') : '<p class="mini">Nenhuma reclamação.</p>');
-            if (admAba === 'profissionais') h += admDados.profs.map(admCardProf).join('');
+            if (admAba === 'profissionais') h += ((admDados.cidades || []).length ? '<div class="card" style="padding:12px 14px;margin-bottom:12px;"><b style="font-family:Oswald;">POR CIDADE</b><table style="width:100%;font-size:13px;margin-top:6px;border-collapse:collapse;"><tr style="text-align:left;color:#64748b;"><th>Cidade</th><th>Total</th><th>Verificados</th><th>Por convite</th></tr>' + admDados.cidades.map(r => '<tr style="border-top:1px solid #eee;"><td>' + esc(r.cidade) + '</td><td>' + r.total + '</td><td>' + r.verificados + '</td><td>' + r.por_convite + '</td></tr>').join('') + '</table></div>' : '') + admDados.profs.map(admCardProf).join('');
             if (admAba === 'chamados') h += '<p class="mini" style="margin-bottom:10px;">Use <b>Falso/inválido</b> para tirar o pedido de circulação mantendo o registro, ou <b>Excluir</b> para apagar de vez (anúncio de profissional, teste, spam).</p>' + admDados.chamados.slice(0, 80).map(admCardPedido).join('');
             document.getElementById('adminContent').innerHTML = h;
         }

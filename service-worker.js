@@ -1,4 +1,4 @@
-const CACHE_NAME = 'fcs-central-v12';
+const CACHE_NAME = 'fcs-central-v13';
 const ASSETS_TO_CACHE = [
   './index.html',
   './termos.html',
