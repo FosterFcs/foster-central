@@ -1211,6 +1211,7 @@ details.checklist summary { font-weight: 700; font-size: 13px; cursor: pointer; 
             const btn = document.getElementById('btnEnviarPedido'); btn.disabled = true;
             try {
                 const payload = { nome_cliente: nome, telefone_cliente: telefone, servico: subcategoriaAtual, categoria: categoriaAtual, bairro, descricao, status: 'novo', aceite_termos: true };
+                if (origemPedido) payload.origem = origemPedido;
                 if (usuarioCliente) payload.cliente_id = usuarioCliente.id;
                 const { data, error } = await supabaseClient.from('chamados').insert(payload).select('id');
                 if (error) {
@@ -1229,9 +1230,17 @@ details.checklist summary { font-weight: 700; font-size: 13px; cursor: pointer; 
             finally { btn.disabled = false; }
         }
         // pedido pré-preenchido vindo das calculadoras do Foster Calc: ?cat=hidraulica&servico=...&desc=...
+        // Página de captação de clientes: ?cidade=Barueri/SP&origem=cliente-lp-barueri[&cat=..&servico=..]
+        let origemPedido = null;
         function preencherPedidoPelaUrl() {
             const q = new URLSearchParams(location.search), key = q.get('cat'), servico = q.get('servico'), desc = q.get('desc');
-            const cat = CATEGORIAS[key]; if (!cat) return;
+            const og = (q.get('origem') || '').toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 60);
+            if (og && q.get('sou') !== 'profissional') { origemPedido = og; try { sessionStorage.setItem('fc_origem_pedido', og); } catch (e) {} }
+            else { try { origemPedido = sessionStorage.getItem('fc_origem_pedido'); } catch (e) {} }
+            const cidadeUrl = q.get('sou') !== 'profissional' ? (q.get('cidade') || '').slice(0, 120) : '';
+            if (cidadeUrl) { const b = document.getElementById('bairroCliente'); if (b && !b.value) { b.value = cidadeUrl; verificarRegiao(cidadeUrl); } mudarAba('pedido'); }
+            const cat = CATEGORIAS[key];
+            if (!cat) { if (cidadeUrl || og) { try { history.replaceState(null, '', location.pathname); } catch (e) {} setTimeout(() => { const g = document.getElementById('catGrid'); if (g) g.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 250); } return; }
             const catBtn = [...document.querySelectorAll('#catGrid .cat-btn')][Object.keys(CATEGORIAS).indexOf(key)]; if (!catBtn) return;
             selecionarCategoriaPedido(key, cat, catBtn);
             const i = cat.servicos.indexOf(servico);
@@ -2139,6 +2148,7 @@ details.checklist summary { font-weight: 700; font-size: 13px; cursor: pointer; 
             return '<div class="pc' + (c.status === 'novo' && !velho ? '' : ' pc-fechado') + '">' + cardPedidoTopo(c, st) +
                 '<div class="pc-rodape"><div class="pc-contato" style="background:#f8fafc;border-color:#e2e8f0;"><div><small style="color:#475569;">CLIENTE</small><b>' + esc(c.nome_cliente) + '</b></div><div><small style="color:#475569;">TELEFONE</small><b>' + esc(c.telefone_cliente) + '</b></div></div>' +
                 (velho ? '<div class="mini" style="margin-bottom:8px;">⏱️ Mais de 30 dias: já não aparece para profissionais pegarem.</div>' : '') +
+                (c.origem ? '<div class="mini" style="margin-bottom:8px;">📣 Origem: <b>' + esc(c.origem) + '</b></div>' : '') +
                 '<div class="linha-acoes">' + (c.status !== 'invalido' ? '<button class="btn-out" onclick="admMarcarPedido(' + c.id + ',\'invalido\')">🚫 MARCAR FALSO/INVÁLIDO</button>' : '') + (c.status !== 'novo' ? '<button class="btn-out" onclick="admMarcarPedido(' + c.id + ',\'novo\')">↩️ REABRIR</button>' : '') +
                 '<button class="btn-out btn-perigo" onclick="admExcluirPedido(' + c.id + ')">🗑️ EXCLUIR</button></div></div></div>';
         }
