@@ -1,0 +1,8 @@
+-- Região de atendimento (aplicado em 02/11/2026 no projeto FosterFcs's Project).
+-- regiao_de(texto): transforma a cidade digitada em região (grande-sp, sorocaba, ribeirao-preto, campinas,
+--   vale-paraiba, sul-fluminense, rio, alagoas) ou estado (uf-xx); sem pista, null.
+-- mesma_regiao(a,b): true se iguais, se um dos lados é null (não dá para saber) ou se é o estado da região.
+-- chamados.regiao e profissionais.regiao: colunas geradas a partir de bairro / cidade.
+-- pedidos_disponiveis(): devolve na_regiao e regiao_conhecida; pedidos da região do profissional vêm primeiro.
+-- preparar_aviso(): o e-mail de pedido novo vai só para a mesma categoria E a mesma região; não avisa suspensos.
+-- (definições completas nas migrations "regiao_ordem_cidades" e "pedidos_e_avisos_por_regiao")

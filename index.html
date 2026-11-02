@@ -378,6 +378,9 @@ body { width: 100%; margin: 0 auto; }
 .pc-badge { font-size: 10.5px; font-weight: 800; padding: 5px 9px; border-radius: 20px; white-space: nowrap; letter-spacing: .3px; flex: none; }
 .pc-badge.aberto { background: #dcfce7; color: #15803d; }
 .pc-badge.meu { background: var(--verde); color: #fff; }
+.pc-regiao { font-size: 12px; font-weight: 700; padding: 6px 10px; border-radius: 8px; margin: 8px 0 0; }
+.pc-regiao.dentro { background: #dcfce7; color: #15803d; }
+.pc-regiao.fora { background: #fef3c7; color: #92400e; }
 .pc-badge.fechado { background: #e5e7eb; color: #4b5563; }
 .pc-badge.ultima { background: #fee2e2; color: #b91c1c; }
 .pc-meta { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12.5px; color: #4b5563; margin: 12px 0 10px; }
@@ -716,7 +719,7 @@ details.checklist summary { font-weight: 700; font-size: 13px; cursor: pointer; 
 <!-- MODAL EDITAR PERFIL -->
 <div id="modalPerfil" class="modal"><div class="modal-content">
     <div class="modal-header"><h2>MEU PERFIL</h2><button class="btn-close" onclick="fecharModalPerfil()">×</button></div>
-    <p id="perfilAvisoIncompleto" style="font-size:13px;margin-bottom:14px;display:none;">Complete seu perfil para aparecer na busca de clientes e receber pedidos da sua área.</p>
+    <p id="perfilAvisoIncompleto" style="font-size:13px;margin-bottom:14px;display:none;"><b>Informe a cidade onde atende e a sua área.</b> Com isso você recebe os pedidos da sua região por e-mail e aparece na busca dos clientes de lá.</p>
     <div class="form-group"><label>Nome completo</label><input type="text" id="perfilNome" placeholder="Seu nome" maxlength="120"><small class="mini" id="perfilNomeTravado" style="display:none;">Nome conferido no documento. Para alterar, fale com o suporte.</small></div>
     <div class="form-group"><label>Telefone / WhatsApp</label><input type="tel" id="perfilTelefone" placeholder="(11) 99999-9999" oninput="formatarTelefone(this)"></div>
     <div class="form-group"><label>Cidade onde atende</label><input type="text" id="perfilCidade" placeholder="Ex: Santana de Parnaíba e região" maxlength="80"></div>
@@ -1093,6 +1096,13 @@ details.checklist summary { font-weight: 700; font-size: 13px; cursor: pointer; 
             atualizarCabecalho();
             atualizarPainelProf();
             atualizarPainelCliente();
+            pedirPerfilBasico();
+        }
+        // Profissional sem cidade ou categoria não recebe os pedidos certos: pede para completar ao entrar (uma vez por sessão).
+        function pedirPerfilBasico() {
+            if (!conta || conta.tipo !== 'profissional' || (conta.cidade && conta.categoria)) return;
+            try { if (sessionStorage.getItem('fc_pedi_perfil')) return; sessionStorage.setItem('fc_pedi_perfil', '1'); } catch (e) {}
+            setTimeout(() => { if (typeof abrirModalPerfil === 'function') abrirModalPerfil(true); }, 700);
         }
 
         function atualizarCabecalho() {
@@ -1560,9 +1570,11 @@ details.checklist summary { font-weight: 700; font-size: 13px; cursor: pointer; 
                 }
                 const custo = c.custo || PRECOS_CATEGORIA[c.categoria] || 1, falta = saldo < custo;
                 const selo = c.vagas_restantes === 1 ? '<span class="pc-badge ultima">ÚLTIMA VAGA</span>' : '<span class="pc-badge aberto">● ABERTO</span>';
-                const acao = conta.suspenso ? 'alert(mensagemErro(\'perfil_suspenso\'))' : falta ? 'mudarAba(\'creditos\')' : 'desbloquearChamado(' + Number(c.id) + ',' + custo + ')';
+                const acao = conta.suspenso ? 'alert(mensagemErro(\'perfil_suspenso\'))' : falta ? 'mudarAba(\'creditos\')' : 'desbloquearChamado(' + Number(c.id) + ',' + custo + ',' + (c.regiao_conhecida && !c.na_regiao ? 1 : 0) + ')';
                 const texto = conta.suspenso ? '⛔ PERFIL FORA DA BUSCA' : falta ? '💰 COMPRAR CRÉDITOS PARA LIBERAR' : '🔓 PEGAR CONTATO';
-                return '<div class="pc">' + cardPedidoTopo(c, selo) +
+                const fora = c.regiao_conhecida && !c.na_regiao;
+                const reg = c.regiao_conhecida ? (fora ? '<div class="pc-regiao fora">📍 Fora da sua região' + (conta.cidade ? ' (' + esc(conta.cidade) + ')' : '') + '. Confira se você atende lá antes de pegar o contato.</div>' : '<div class="pc-regiao dentro">📍 Na sua região</div>') : '';
+                return '<div class="pc' + (fora ? ' pc-longe' : '') + '">' + cardPedidoTopo(c, selo) + reg +
                     '<div class="pc-rodape">' + barra +
                     '<div class="pc-bloq"><span>🔒 Nome e telefone do cliente</span><b>' + custo + ' crédito' + (custo > 1 ? 's' : '') + '</b></div>' +
                     '<button class="btn-pegar' + (falta || conta.suspenso ? ' falta' : '') + '" onclick="' + acao + '">' + texto + '</button>' +
@@ -1571,8 +1583,9 @@ details.checklist summary { font-weight: 700; font-size: 13px; cursor: pointer; 
             }).join('');
             window._pedidosProf = lista;
         }
-        async function desbloquearChamado(chamadoId, custo) {
+        async function desbloquearChamado(chamadoId, custo, fora) {
             if (!usuarioAtual) return;
+            if (fora) { const ped = (window._pedidosProf || []).find(x => x.id === chamadoId); if (!confirm('⚠️ Este pedido é de ' + ((ped && ped.bairro) || 'outra região') + ', fora da região onde você atende.\n\nSó pegue o contato se você realmente atende lá. Continuar?')) return; }
             if (!confirm('Pegar o contato deste cliente por ' + custo + ' crédito' + (custo > 1 ? 's' : '') + '?\n\nSe o telefone não existir ou o pedido for falso, você pode reportar em até 7 dias e recebe o crédito de volta.')) return;
             const { data, error } = await supabaseClient.rpc('desbloquear_chamado', { p_chamado_id: chamadoId });
             if (error) { alert('Erro: ' + error.message); return; }
