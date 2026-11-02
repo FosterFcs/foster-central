@@ -16,6 +16,22 @@ CIDADES = [
   dict(arquivo='osasco.html', slug='osasco', nome='Osasco', cadastro='Osasco/SP',
        selo='Osasco e região', atende='Osasco, Carapicuíba, Barueri, Cotia, Santana de Parnaíba e São Paulo.',
        quem='Engenheiro da região oeste da Grande SP, conhece de perto a obra e quem trabalha nela.'),
+  # cidades novas: página de recrutamento ("seja um dos primeiros"); sem página de cliente até ter profissionais
+  dict(arquivo='sorocaba.html', slug='sorocaba', nome='Sorocaba', cadastro='Sorocaba/SP', pioneira=True,
+       selo='Chegando em Sorocaba e região', atende='Sorocaba, Votorantim, Itu, Salto e região.',
+       quem='Engenheiro civil, fundador da Foster Central, abrindo a rede de profissionais de Sorocaba.'),
+  dict(arquivo='ribeirao-preto.html', slug='ribeirao-preto', nome='Ribeirão Preto', cadastro='Ribeirão Preto/SP', pioneira=True,
+       selo='Chegando em Ribeirão Preto e região', atende='Ribeirão Preto, Sertãozinho, Cravinhos, Jardinópolis e região.',
+       quem='Engenheiro civil, fundador da Foster Central, abrindo a rede de profissionais de Ribeirão Preto.'),
+  dict(arquivo='rio-de-janeiro.html', slug='rio-de-janeiro', nome='Rio de Janeiro', cadastro='Rio de Janeiro/RJ', pioneira=True,
+       selo='Chegando no Rio de Janeiro', atende='Rio de Janeiro, Niterói, São Gonçalo, Baixada Fluminense e região.',
+       quem='Engenheiro civil, fundador da Foster Central, abrindo a rede de profissionais do Rio.'),
+  dict(arquivo='sul-fluminense.html', slug='sul-fluminense', nome='Porto Real e Resende', cadastro='Porto Real/RJ', pioneira=True,
+       selo='Chegando no Sul Fluminense', atende='Porto Real, Resende, Volta Redonda, Barra Mansa, Itatiaia e região.',
+       quem='Engenheiro civil, fundador da Foster Central, abrindo a rede de profissionais do Sul Fluminense.'),
+  dict(arquivo='alagoas.html', slug='alagoas', nome='Major Izidoro', cadastro='Major Izidoro/AL', pioneira=True,
+       selo='Chegando em Alagoas', atende='Major Izidoro, Arapiraca, Maceió e região.',
+       quem='Engenheiro civil, fundador da Foster Central, abrindo a rede de profissionais de Alagoas.'),
 ]
 
 SCRIPT = """<script>
@@ -29,6 +45,13 @@ for c in CIDADES:
     cad = 'https://central.engfoster.com.br/?sou=profissional&cidade=' + urllib.parse.quote(c['cadastro']) + '&origem=convite-lp-' + c['slug']
     zap = 'https://wa.me/5524992096103?text=' + urllib.parse.quote(f"Olá! Vi a página da Foster Central de {c['nome']} e quero saber mais.")
     h = h.replace('{{CIDADE}}', c['nome']).replace('{{SELO}}', c['selo']).replace('{{ATENDE}}', c['atende']).replace('{{QUEM}}', c['quem'])
+    if c.get('pioneira'):
+        lead = f"A Foster Central está chegando em {c['nome']} e região. Cadastre-se agora e seja um dos primeiros: quando os pedidos começarem, eles vão para poucos profissionais, e você já estará lá."
+        final = f"Os primeiros profissionais de {c['nome']} saem na frente. Garanta seu perfil antes dos pedidos chegarem."
+    else:
+        lead = f"Pedidos reais de quem quer construir, reformar ou consertar em {c['nome']} e região. Você escolhe quais contatos liberar e paga só por eles."
+        final = f"Veja os pedidos de {c['nome']} e só gaste quando um cliente valer a pena."
+    h = h.replace('{{LEAD}}', lead).replace('{{FINAL}}', final)
     h = h.replace('{{ARQUIVO}}', c['arquivo']).replace('{{CADASTRO}}', cad.replace('&', '&amp;')).replace('{{ZAP}}', zap)
     h = h.replace('</body>', SCRIPT + '\n</body>')
     assert '{{' not in h, c['arquivo']
@@ -56,7 +79,7 @@ SERVICOS = [  # (ícone, rótulo, categoria do app, serviço do app) — os nome
 ]
 SCRIPT_CLI = SCRIPT.replace("a[data-cad]", "a[data-ped]")
 import html as _h
-for c in CIDADES:
+for c in [x for x in CIDADES if not x.get('pioneira')]:
     base = 'https://central.engfoster.com.br/?cidade=' + urllib.parse.quote(c['cadastro'].replace('/', ' - ')) + '&origem=cliente-lp-' + c['slug']
     servs = '\n'.join(f'<a class="serv" data-ped href="{_h.escape(base + "&cat=" + cat + "&servico=" + urllib.parse.quote(sv))}"><span>{ic}</span><b>{_h.escape(rot)}</b></a>' for ic, rot, cat, sv in SERVICOS)
     zap = 'https://wa.me/5524992096103?text=' + urllib.parse.quote(f"Olá! Preciso de um orçamento de obra em {c['nome']}.")

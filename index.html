@@ -537,7 +537,7 @@ details.checklist summary { font-weight: 700; font-size: 13px; cursor: pointer; 
             <div class="protocolo">
                 <h3>✅ Pedido enviado!</h3>
                 <div class="numero" id="numeroProtocolo">#0000</div>
-                <p style="font-size:13px;margin-top:8px;line-height:1.6;">Profissionais da área já foram avisados.<br>No máximo 3 vão receber seu contato.</p>
+                <p id="confirmacaoTexto" style="font-size:13px;margin-top:8px;line-height:1.6;">Profissionais da área já foram avisados.<br>No máximo 3 vão receber seu contato.</p>
             </div>
             <div class="aviso aviso-info"><b>Acompanhe quem pegou seu pedido.</b> Crie sua conta de cliente com <b>este mesmo telefone</b>: você vê o nome, os selos e as avaliações de cada profissional, chama no WhatsApp e avalia depois do serviço.</div>
             <details class="checklist" open><summary>✅ Antes de contratar, confira</summary><div id="checklistConfirmacao"></div></details>
@@ -1176,6 +1176,25 @@ details.checklist summary { font-weight: 700; font-size: 13px; cursor: pointer; 
             if (n === 3) setTimeout(() => document.getElementById('nomeCliente').focus(), 100);
         }
         function voltarStep(n) { irParaStep(n); }
+        // Quantos profissionais atendem a região do cliente: mensagem honesta antes e depois do pedido.
+        let coberturaAtual = null;
+        async function consultarCobertura(local) {
+            if (!supabaseClient || !local || local.length < 4) return null;
+            try {
+                const { data } = await supabaseClient.rpc('profissionais_na_regiao', { p_local: local, p_categoria: categoriaAtual || null });
+                if (!data) return null; coberturaAtual = data;
+                const el = document.getElementById('regiaoMensagem'), b = document.getElementById('bairroCliente');
+                if (el && b && b.value.trim() === local) el.textContent = textoCobertura(data, false);
+                return data;
+            } catch (e) { return null; }
+        }
+        function textoCobertura(c, enviado) {
+            if (!c || !c.regiao_conhecida) return enviado ? 'Seu pedido fica visível por 30 dias para os profissionais da plataforma. Dica: informe sempre a cidade (ex.: Barueri, SP) para chegar a quem atende perto de você.' : 'Informe também a cidade (ex.: Barueri, SP) para o pedido chegar a quem atende perto de você.';
+            const n = c.na_categoria > 0 ? c.na_categoria : c.total, area = c.na_categoria > 0 ? ' dessa área' : '';
+            if (n > 0) return enviado ? 'Os profissionais da sua região já foram avisados. No máximo 3 vão receber seu contato.' : '✅ ' + n + (n > 1 ? ' profissionais' : ' profissional') + area + ' da Foster Central ' + (n > 1 ? 'atendem' : 'atende') + ' a sua região.';
+            if (c.regiao_atendida) return enviado ? 'Estamos formando a rede de profissionais da sua região. Seu pedido fica visível por 30 dias para quem entrar nesse período. Para agilizar, fale com a gente no WhatsApp (24) 99209-6103.' : 'Estamos formando a rede de profissionais da sua região. Seu pedido fica visível por 30 dias para quem entrar nesse período.';
+            return enviado ? 'A Foster Central ainda está chegando na sua cidade. Seu pedido fica visível por 30 dias para os profissionais que se cadastrarem na sua região.' : 'A Foster Central ainda está chegando na sua cidade. Você pode deixar o pedido: ele fica visível por 30 dias para os profissionais que se cadastrarem na sua região.';
+        }
         function verificarRegiao(cidade) {
             const info = document.getElementById('regiaoInfo');
             if (cidade.length < 4) { info.style.display = 'none'; return; }
@@ -1187,6 +1206,7 @@ details.checklist summary { font-weight: 700; font-size: 13px; cursor: pointer; 
             document.getElementById('regiaoNome').textContent = '📍 ' + cidade;
             document.getElementById('regiaoMensagem').textContent = m ? m.msg : 'Vamos avisar os profissionais que atendem a sua região.';
             info.style.display = 'block';
+            clearTimeout(verificarRegiao._t); verificarRegiao._t = setTimeout(() => consultarCobertura(cidade), 500);
         }
         function formatarTelefone(input) {
             let v = input.value.replace(/\D/g, '').slice(0, 11);
@@ -1223,6 +1243,7 @@ details.checklist summary { font-weight: 700; font-size: 13px; cursor: pointer; 
                     document.getElementById('numeroProtocolo').textContent = '#' + String(data[0].id).padStart(4, '0');
                     ['step1', 'step2', 'step3', 'progressBar'].forEach(id => document.getElementById(id).style.display = 'none');
                     document.getElementById('confirmacaoPedido').style.display = 'block';
+                    const cob = await consultarCobertura(bairro); document.getElementById('confirmacaoTexto').textContent = textoCobertura(cob || coberturaAtual, true);
                     if (usuarioCliente) carregarPedidosCliente();
                     else { document.getElementById('telefoneClienteCad').value = telefone; document.getElementById('nomeClienteCad').value = nome; }
                 }
