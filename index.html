@@ -1235,7 +1235,8 @@ details.checklist summary { font-weight: 700; font-size: 13px; cursor: pointer; 
                 if (usuarioCliente) payload.cliente_id = usuarioCliente.id;
                 const { data, error } = await supabaseClient.from('chamados').insert(payload).select('id');
                 if (error) {
-                    if (/limite_pedidos/.test(error.message)) alert('Você já fez 3 pedidos hoje com este telefone. Acompanhe-os na Área do Cliente ou tente amanhã.');
+                    if (/pedido_duplicado/.test(error.message)) alert('Você já fez um pedido deste serviço nas últimas 24 horas. Ele já está com os profissionais — acompanhe na Área do Cliente.');
+                    else if (/limite_pedidos/.test(error.message)) alert('Você já fez 3 pedidos hoje com este telefone. Acompanhe-os na Área do Cliente ou tente amanhã.');
                     else alert('Erro: ' + error.message);
                     return;
                 }
