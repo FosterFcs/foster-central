@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /ferramentas/
 
 Sitemap: https://central.engfoster.com.br/sitemap.xml

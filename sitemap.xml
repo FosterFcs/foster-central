@@ -2,4 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://central.engfoster.com.br/</loc><lastmod>2026-10-29</lastmod><priority>1.0</priority></url>
   <url><loc>https://central.engfoster.com.br/termos.html</loc><lastmod>2026-10-29</lastmod><priority>0.3</priority></url>
+  <url><loc>https://central.engfoster.com.br/parnaiba.html</loc><lastmod>2026-11-02</lastmod><priority>0.7</priority></url>
+  <url><loc>https://central.engfoster.com.br/barueri.html</loc><lastmod>2026-11-02</lastmod><priority>0.7</priority></url>
+  <url><loc>https://central.engfoster.com.br/osasco.html</loc><lastmod>2026-11-02</lastmod><priority>0.7</priority></url>
 </urlset>
