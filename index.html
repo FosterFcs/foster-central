@@ -1079,6 +1079,7 @@ details.checklist summary { font-weight: 700; font-size: 13px; cursor: pointer; 
                 await carregarConta();
                 abrirPerfilPelaUrl();
                 abrirConvitePeloUrl();
+                abrirCompletarPeloUrl();
                 const orc = new URLSearchParams(location.search).get('orc');
                 if (orc && /^[0-9a-f-]{36}$/i.test(orc)) abrirOrcamentoPublico(orc);
                 if ('serviceWorker' in navigator) navigator.serviceWorker.register('service-worker.js').catch(() => {});
@@ -1097,6 +1098,14 @@ details.checklist summary { font-weight: 700; font-size: 13px; cursor: pointer; 
             atualizarPainelProf();
             atualizarPainelCliente();
             pedirPerfilBasico();
+        }
+        // Link do e-mail "Completar meu perfil" (?completar=perfil): abre a área do profissional; logado, abre o perfil.
+        function abrirCompletarPeloUrl() {
+            const q = new URLSearchParams(location.search); if (q.get('completar') !== 'perfil') return;
+            try { history.replaceState(null, '', location.pathname); } catch (e) {}
+            mudarAba('painel');
+            if (conta && conta.tipo === 'profissional') { try { sessionStorage.setItem('fc_pedi_perfil', '1'); } catch (e) {} setTimeout(() => abrirModalPerfil(true), 400); }
+            else { try { sessionStorage.removeItem('fc_pedi_perfil'); } catch (e) {} setTimeout(() => { const e = document.getElementById('emailProf'); if (e) e.focus(); toast('Entre com o seu e-mail e senha para completar o perfil. Esqueceu a senha? Toque em "Esqueci minha senha".'); }, 400); }
         }
         // Profissional sem cidade ou categoria não recebe os pedidos certos: pede para completar ao entrar (uma vez por sessão).
         function pedirPerfilBasico() {
